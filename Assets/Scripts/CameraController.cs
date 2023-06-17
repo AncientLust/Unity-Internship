@@ -2,15 +2,15 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
-    Transform playerTransform;
-    Vector3 startOffset;
+    Transform _playerTransform;
+    Vector3 _startOffset;
 
     [Range(0, 10)] [SerializeField] float smoothSpeed = 5f;
 
     void Start()
     {
-        startOffset  = transform.position;
-        playerTransform = GameObject.Find("Player").transform;
+        _startOffset  = transform.position;
+        _playerTransform = GameObject.Find("Player").transform;
     }
 
     void LateUpdate()
@@ -20,7 +20,7 @@ public class CameraController : MonoBehaviour
 
     void FollowPlayer()
     {
-        Vector3 targetPosition = playerTransform.position + startOffset;
+        Vector3 targetPosition = _playerTransform.position + _startOffset;
         transform.position = Vector3.Lerp(transform.position, targetPosition, smoothSpeed * Time.deltaTime);
     }
 }
