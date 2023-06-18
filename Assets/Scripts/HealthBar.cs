@@ -1,36 +1,39 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
-using System.Collections;
 
-public class HealthBar : MonoBehaviour
+public class HealthBar : MonoBehaviour 
 {
-    [SerializeField] Slider _slider;
     [SerializeField] Gradient _gradient;
-    [SerializeField] Image _fill;
 
-    float _updateSpeed = 100f;
-    float _targetHealth;
+    private float _barMaskWidth;
+    private RectTransform _barMaskRectTransform;
+    private RectTransform _edgeRectTransform;
+    private RawImage _barRawImage;
 
-    public void SetMaxHealth(float maxHealth)
+    private void Awake() 
     {
-        _slider.maxValue = maxHealth;
-        _slider.value = maxHealth;
-        _fill.color = _gradient.Evaluate(_slider.normalizedValue);
+        _barMaskRectTransform = transform.Find("barMask").GetComponent<RectTransform>();
+        _barRawImage = transform.Find("barMask").Find("bar").GetComponent<RawImage>();
+        _edgeRectTransform = transform.Find("edge").GetComponent<RectTransform>();
+        _barMaskWidth = _barMaskRectTransform.sizeDelta.x;
     }
 
-    public void SetHealth(float health)
+    private void Update() 
     {
-        _targetHealth = health;
-        StartCoroutine(SmoothHealthUpdate());
+        Rect uvRect = _barRawImage.uvRect;
+        uvRect.x += .2f * Time.deltaTime;
+        _barRawImage.uvRect = uvRect;
     }
 
-    private IEnumerator SmoothHealthUpdate()
+    public void SetHealth(float fillValue)
     {
-        while (_slider.value != _targetHealth)
-        {
-            _slider.value = Mathf.MoveTowards(_slider.value, _targetHealth, _updateSpeed * Time.deltaTime);
-            _fill.color = _gradient.Evaluate(_slider.normalizedValue);
-            yield return null;
-        }
+        Vector2 barMaskSizeDelta = _barMaskRectTransform.sizeDelta;
+        barMaskSizeDelta.x = fillValue * _barMaskWidth;
+        _barMaskRectTransform.sizeDelta = barMaskSizeDelta;
+
+        _barRawImage.color = _gradient.Evaluate(fillValue);
+
+        _edgeRectTransform.anchoredPosition = new Vector2(fillValue * _barMaskWidth, 0);
+        _edgeRectTransform.gameObject.SetActive(fillValue < 1f);
     }
 }
