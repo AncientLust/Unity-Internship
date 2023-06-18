@@ -2,9 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Player : MonoBehaviour
+public class Player : Human
 {
-    [SerializeField] private float _moveSpeed;
     [SerializeField] List<Weapon> _weapons = new List<Weapon>();
 
     Vector3 _movement;
@@ -14,17 +13,21 @@ public class Player : MonoBehaviour
 
     private void Start()
     {
+        InitHealth();
         _camera = Camera.main;
         InitializeWeapon();
     }
 
     void Update()
     {
-        MovePlayer();
-        RotatePlayer();
-        ShootHandler();
-        ReloadHandler();
-        ScrollWeaponSelect();
+        if (!IsDead)
+        {
+            MovePlayer();
+            RotatePlayer();
+            ShootHandler();
+            ReloadHandler();
+            ScrollWeaponSelect();
+        }
     }
 
     void MovePlayer()

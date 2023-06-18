@@ -2,8 +2,9 @@ using UnityEngine;
 
 public class Projectile : MonoBehaviour
 {
-    float _speed = 20;
-
+    [SerializeField] float _speed = 20;
+    [SerializeField] public float Damage { get; set; } = 0;
+    
     void Update()
     {
         MoveForward();
@@ -19,7 +20,7 @@ public class Projectile : MonoBehaviour
     {
         if (!GetComponent<Renderer>().isVisible)
         {
-            Destroy(transform.gameObject);
+            gameObject.SetActive(false);
         }
     }
 }

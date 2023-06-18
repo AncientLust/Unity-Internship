@@ -9,13 +9,14 @@ public class EnemySpawner : MonoBehaviour
     [SerializeField] float minEnemySpawnTime = 1;
     [SerializeField] float maxEnemySpawnTime = 2;
     [SerializeField] GameObject enemyObject;
+    [SerializeField] GameObject targetObject;
 
     private void Start()
     {
         StartCoroutine(EnemySpawnerTimer());
     }
 
-    IEnumerator EnemySpawnerTimer()
+    private IEnumerator EnemySpawnerTimer()
     {
         while (spawn)
         {
@@ -26,10 +27,18 @@ public class EnemySpawner : MonoBehaviour
 
     private void SpawnEnemy()
     {
-        Instantiate(enemyObject, GetEnemySpawnPosition(), enemyObject.transform.rotation);
+        GameObject enemy = EnemyPool.SharedInstance.GetPooledObject();
+        if (enemy != null)
+        {
+            enemy.gameObject.GetComponent<Enemy>().InitHealth();
+            enemy.gameObject.GetComponent<Enemy>().SetTarget(targetObject);
+            enemy.transform.position = GetEnemySpawnPosition();
+            enemy.transform.rotation = enemyObject.transform.rotation;
+            enemy.gameObject.SetActive(true);
+        }
     }
 
-    Vector3 GetEnemySpawnPosition()
+    private Vector3 GetEnemySpawnPosition()
     {
         float angle = Random.Range(0f, 360f);
         float theta = Mathf.Deg2Rad * angle;

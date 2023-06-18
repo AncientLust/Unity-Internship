@@ -9,7 +9,7 @@ public class Weapon : MonoBehaviour
     [SerializeField] int _clipCapacity;
     [SerializeField] GameObject _projectile;
 
-    int _currentClip;
+    int _currentClipCapacity;
     bool _isReloading = false;
     bool _canShoot = true;
     Transform _shootPoint;
@@ -17,19 +17,27 @@ public class Weapon : MonoBehaviour
     void Start()
     {
         _shootPoint = transform.Find("ShootPoint");
-        _currentClip = _clipCapacity;
+        _currentClipCapacity = _clipCapacity;
     }
 
     public void Shoot()
     {
         if (!_isReloading && _canShoot)
         {
-            if (_currentClip > 0)
+            if (_currentClipCapacity > 0)
             {
-                Instantiate(_projectile, _shootPoint);
-                _currentClip--;
+                GameObject projectile = ProjectilePool.SharedInstance.GetPooledObject();
+                if (projectile != null)
+                {
+                    projectile.GetComponent<Projectile>().Damage = _power;
+                    projectile.transform.position = _shootPoint.position;
+                    projectile.transform.rotation = _shootPoint.rotation;
+                    projectile.SetActive(true);
+                }
+
+                _currentClipCapacity--;
                 StartCoroutine(ShootDowntime());
-                Debug.Log($"Current ammo: {_currentClip}");
+                Debug.Log($"Current ammo: {_currentClipCapacity}");
             }
             else
             {
@@ -54,7 +62,7 @@ public class Weapon : MonoBehaviour
     public void FinishReload()
     {
         Debug.Log("Reloaded!");
-        _currentClip = _clipCapacity;
+        _currentClipCapacity = _clipCapacity;
         _isReloading = false;
     }
 
