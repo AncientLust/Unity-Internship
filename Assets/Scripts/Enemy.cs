@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class Enemy : Human
 {
-    float _stopDistance = 0.7f;
+    float _stopDistance = 0.25f;
     float _damage = 10;
     GameObject _target;
     Rigidbody _rigidbody;
@@ -14,6 +14,13 @@ public class Enemy : Human
     }
 
     void Update()
+    {
+        Regenerate();
+        HideHealthIfHealthy();
+        MoveIfPlayerAlive();
+    }
+
+    private void MoveIfPlayerAlive()
     {
         if (_target.activeInHierarchy)
         {
@@ -40,14 +47,23 @@ public class Enemy : Human
     {
         if (collision.gameObject.CompareTag("Player"))
         {
-            _target.GetComponent<Player>().TakeDamage(_damage);
+            GameObject player = collision.gameObject;
+            player.GetComponent<Player>().TakeDamage(_damage);
         }
+    }
 
-        if (collision.gameObject.CompareTag("Projectile"))
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.CompareTag("Projectile"))
         {
-            float damage = collision.gameObject.GetComponent<Projectile>().Damage;
+            float damage = other.gameObject.GetComponent<Projectile>().Damage;
             TakeDamage(damage);
         }
+    }
+
+    private void HideHealthIfHealthy()
+    {
+        _healthBar.gameObject.SetActive(_health != _maxHealth);
     }
 
     public void SetTarget(GameObject target)

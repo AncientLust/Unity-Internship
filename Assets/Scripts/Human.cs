@@ -5,7 +5,9 @@ public class Human : MonoBehaviour
     [SerializeField] protected HealthBar _healthBar;
     [SerializeField] protected float _maxHealth = 100;
     [SerializeField] protected float _moveSpeed = 5f;
-    [SerializeField] protected float _healthRegen = 1f;
+    [SerializeField] protected float _healthRegen = 5f;
+    [SerializeField] ParticleSystem _bloodSplat;
+
     public bool IsDead { get; private set; }
     
     protected float _health;
@@ -26,5 +28,14 @@ public class Human : MonoBehaviour
             IsDead = true;
             gameObject.SetActive(false);
         }
+
+        _bloodSplat.Play();
+    }
+
+    protected void Regenerate()
+    {
+        _health += _healthRegen * Time.deltaTime;
+        _health = Mathf.Clamp(_health, 0, _maxHealth);
+        _healthBar.SetHealth(_health / _maxHealth);
     }
 }

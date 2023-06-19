@@ -14,10 +14,15 @@ public class Weapon : MonoBehaviour
     bool _canShoot = true;
     Transform _shootPoint;
 
-    void Start()
+    void Awake()
     {
         _shootPoint = transform.Find("ShootPoint");
         _currentClipCapacity = _clipCapacity;
+    }
+
+    private void OnEnable()
+    {
+        UIManager.Instance.SetAmmo(_currentClipCapacity);
     }
 
     public void Shoot()
@@ -36,8 +41,9 @@ public class Weapon : MonoBehaviour
                 }
 
                 _currentClipCapacity--;
-                StartCoroutine(ShootDowntime());
+                UIManager.Instance.SetAmmo(_currentClipCapacity);
                 Debug.Log($"Current ammo: {_currentClipCapacity}");
+                StartCoroutine(ShootDowntime());
             }
             else
             {
@@ -63,6 +69,7 @@ public class Weapon : MonoBehaviour
     {
         Debug.Log("Reloaded!");
         _currentClipCapacity = _clipCapacity;
+        UIManager.Instance.SetAmmo(_currentClipCapacity);
         _isReloading = false;
     }
 

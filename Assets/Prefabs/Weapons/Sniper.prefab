@@ -284,7 +284,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a0d48c8305c10449b36c20925c8c01f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _power: 50
+  _power: 75
   _shootSpeed: 1
   _reloadTime: 3
   _clipCapacity: 10

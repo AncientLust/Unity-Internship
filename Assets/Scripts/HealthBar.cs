@@ -21,12 +21,14 @@ public class HealthBar : MonoBehaviour
     private void Update() 
     {
         Rect uvRect = _barRawImage.uvRect;
-        uvRect.x += .2f * Time.deltaTime;
+        uvRect.x -= .2f * Time.deltaTime;
         _barRawImage.uvRect = uvRect;
     }
 
     public void SetHealth(float fillValue)
     {
+        fillValue = Mathf.Clamp01(fillValue);
+
         Vector2 barMaskSizeDelta = _barMaskRectTransform.sizeDelta;
         barMaskSizeDelta.x = fillValue * _barMaskWidth;
         _barMaskRectTransform.sizeDelta = barMaskSizeDelta;
@@ -34,6 +36,6 @@ public class HealthBar : MonoBehaviour
         _barRawImage.color = _gradient.Evaluate(fillValue);
 
         _edgeRectTransform.anchoredPosition = new Vector2(fillValue * _barMaskWidth, 0);
-        _edgeRectTransform.gameObject.SetActive(fillValue < 1f);
+        _edgeRectTransform.gameObject.SetActive(fillValue > 0 && fillValue < 1f);
     }
 }

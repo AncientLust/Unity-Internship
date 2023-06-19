@@ -22,6 +22,7 @@ public class Player : Human
     {
         if (!IsDead)
         {
+            Regenerate();
             MovePlayer();
             RotatePlayer();
             ShootHandler();
@@ -49,6 +50,8 @@ public class Player : Human
     {
         _currentWeapon = _weapons[0];
         _equippedWeaponIndex = 0;
+        UIManager.Instance.SetWeapon(_currentWeapon.gameObject.name);
+        
         for (int i = 1; i < _weapons.Count; i++)
         {
             _weapons[i].gameObject.SetActive(false);
@@ -57,7 +60,7 @@ public class Player : Human
 
     private void ShootHandler()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButton(0))
         {
             _currentWeapon.Shoot();
         }
@@ -82,13 +85,13 @@ public class Player : Human
     {
         if (Input.mouseScrollDelta.y > 0)
         {
-            Debug.Log("Equip next weapon");
-            EquipNextWeapon();
+            Debug.Log("Equip previous weapon");
+            EquipPreviousWeapon();
         }
         else if (Input.mouseScrollDelta.y < 0)
         {
-            Debug.Log("Equip previous weapon");
-            EquipPreviousWeapon();
+            Debug.Log("Equip next weapon");
+            EquipNextWeapon();
         }
     }
 
@@ -107,6 +110,8 @@ public class Player : Human
 
             _weapons[i].gameObject.SetActive(false);
         }
+
+        UIManager.Instance.SetWeapon(_currentWeapon.gameObject.name);
     }
 
     private void EquipPreviousWeapon()
@@ -124,5 +129,7 @@ public class Player : Human
 
             _weapons[i].gameObject.SetActive(false);
         }
+
+        UIManager.Instance.SetWeapon(_currentWeapon.gameObject.name);
     }
 }
