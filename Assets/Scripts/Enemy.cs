@@ -10,14 +10,36 @@ public class Enemy : Human
     void Start()
     {
         InitHealth();
-        _rigidbody = gameObject.GetComponent<Rigidbody>();
+        _rigidbody = GetComponent<Rigidbody>();
     }
 
     void Update()
     {
+        if (!GameManager.Instance.IsStarted || GameManager.Instance.IsPaused)
+        {
+            ResetVelosity();
+            return;
+        }
+
+        CheckIfKilled();
         Regenerate();
         HideHealthIfHealthy();
         MoveIfPlayerAlive();
+    }
+
+    private void CheckIfKilled()
+    {
+        if (_health <= 0)
+        {
+            IsDead = true;
+            gameObject.SetActive(false);
+        }
+    }
+
+    private void ResetVelosity()
+    {
+        _rigidbody.velocity = Vector3.zero;
+        _rigidbody.angularVelocity = Vector3.zero;
     }
 
     private void MoveIfPlayerAlive()

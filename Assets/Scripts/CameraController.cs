@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
-    Transform _playerTransform;
+    [SerializeField] Transform _playerTransform;
     Vector3 _startOffset;
 
     [Range(0, 10)] [SerializeField] float smoothSpeed = 5f;
@@ -10,7 +10,6 @@ public class CameraController : MonoBehaviour
     void Start()
     {
         _startOffset  = transform.position;
-        _playerTransform = GameObject.Find("Player").transform;
     }
 
     void LateUpdate()

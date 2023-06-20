@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-public class EnemySpawnManager : MonoBehaviour
+public class EnemySpawner : Singleton<EnemySpawner>
 {
     [SerializeField] bool spawn = true;
     [SerializeField] float minRadius = 10f;
@@ -18,9 +18,14 @@ public class EnemySpawnManager : MonoBehaviour
 
     private IEnumerator EnemySpawnerTimer()
     {
-        while (spawn)
+        while (true)
         {
-            SpawnEnemy();
+            if (spawn && GameManager.Instance.IsStarted && !GameManager.Instance.IsPaused)
+            {
+                SpawnEnemy();
+                
+            }
+
             yield return new WaitForSeconds(Random.Range(minEnemySpawnTime, maxEnemySpawnTime));
         }
     }

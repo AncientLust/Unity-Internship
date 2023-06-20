@@ -20,6 +20,16 @@ public class HealthBar : MonoBehaviour
 
     private void Update() 
     {
+        AnimateBar();
+    }
+
+    private void AnimateBar()
+    {
+        if (!GameManager.Instance.IsStarted || GameManager.Instance.IsPaused)
+        {
+            return;
+        }
+
         Rect uvRect = _barRawImage.uvRect;
         uvRect.x -= .2f * Time.deltaTime;
         _barRawImage.uvRect = uvRect;

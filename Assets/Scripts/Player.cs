@@ -6,6 +6,8 @@ public class Player : Human
 {
     [SerializeField] List<Weapon> _weapons = new List<Weapon>();
 
+    private Rigidbody _rigidbody;
+
     Vector3 _movement;
     Camera _camera;
     Weapon _currentWeapon;
@@ -15,35 +17,56 @@ public class Player : Human
     {
         InitHealth();
         _camera = Camera.main;
+        _rigidbody = GetComponent<Rigidbody>();
         InitializeWeapon();
     }
 
     void Update()
     {
-        if (!IsDead)
+        if (IsDead || !GameManager.Instance.IsStarted || GameManager.Instance.IsPaused)
         {
-            Regenerate();
-            MovePlayer();
-            RotatePlayer();
-            ShootHandler();
-            ReloadHandler();
-            ScrollWeaponSelect();
+            ResetVelosity();
+            return;
+        }
+
+        CheckIfKilled();
+        Regenerate();
+        MovePlayer();
+        RotatePlayer();
+        ShootHandler();
+        ReloadHandler();
+        ScrollWeaponSelect();
+    }
+
+    private void CheckIfKilled()
+    {
+        if (_health <= 0)
+        {
+            IsDead = true;
+            gameObject.SetActive(false);
+            GameManager.Instance.GameOver();
         }
     }
 
-    void MovePlayer()
+    private void MovePlayer()
     {
         _movement.x = Input.GetAxisRaw("Horizontal");
         _movement.z = Input.GetAxisRaw("Vertical");
         transform.position += _movement * _moveSpeed * Time.deltaTime;
     }
 
-    void RotatePlayer()
+    private void RotatePlayer()
     {
         Vector3 mousePosition = _camera.ScreenToWorldPoint(Input.mousePosition);
         Vector3 playerToMouseDirection = mousePosition - transform.position;
         float angle = Mathf.Atan2(playerToMouseDirection.x, playerToMouseDirection.z) * Mathf.Rad2Deg;
         transform.rotation = Quaternion.Euler(0, angle, 0);
+    }
+
+    private void ResetVelosity()
+    {
+        _rigidbody.velocity = Vector3.zero;
+        _rigidbody.angularVelocity = Vector3.zero;
     }
 
     private void InitializeWeapon()

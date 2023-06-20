@@ -8,7 +8,7 @@ public class Human : MonoBehaviour
     [SerializeField] protected float _healthRegen = 5f;
     [SerializeField] ParticleSystem _bloodSplat;
 
-    public bool IsDead { get; private set; }
+    public bool IsDead { get; protected set; }
     
     protected float _health;
     
@@ -22,13 +22,6 @@ public class Human : MonoBehaviour
     {
         _health -= damage;
         _healthBar.SetHealth(_health / _maxHealth);
-
-        if (_health <= 0)
-        {
-            IsDead = true;
-            gameObject.SetActive(false);
-        }
-
         _bloodSplat.Play();
     }
 
