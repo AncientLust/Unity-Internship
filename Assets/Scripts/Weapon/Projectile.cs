@@ -2,10 +2,17 @@ using UnityEngine;
 
 public class Projectile : MonoBehaviour
 {
-    [SerializeField] float _speed = 20;
-    [SerializeField] public float Damage { get; set; } = 0;
+    private float _speed = 20;
+    private Renderer _renderer;
     
-    void Update()
+    public float Damage { get; set; } = 0;
+
+    private void Start()
+    {
+        _renderer = GetComponent<Renderer>();
+    }
+
+    private void Update()
     {
         if (!GameManager.Instance.IsStarted || GameManager.Instance.IsPaused)
         {
@@ -16,14 +23,14 @@ public class Projectile : MonoBehaviour
         DestroyOnceOutOfSight();
     }
 
-    void MoveForward()
+    private void MoveForward()
     {
         transform.Translate(Vector3.forward * _speed * Time.deltaTime);
     }
 
-    void DestroyOnceOutOfSight()
+    private void DestroyOnceOutOfSight()
     {
-        if (!GetComponent<Renderer>().isVisible)
+        if (!_renderer.isVisible)
         {
             gameObject.SetActive(false);
         }

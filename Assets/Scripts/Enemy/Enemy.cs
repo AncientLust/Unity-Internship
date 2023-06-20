@@ -1,19 +1,20 @@
 using UnityEngine;
 
-public class Enemy : Human
+public class Enemy : HealthSystem
 {
-    float _stopDistance = 0.25f;
-    float _damage = 10;
-    GameObject _target;
-    Rigidbody _rigidbody;
+    private float _stopDistance = 0.25f;
+    private float _damage = 10;
+    private float _moveSpeed = 5f;
+    private GameObject _target;
+    private Rigidbody _rigidbody;
 
-    void Start()
+    private void Start()
     {
         InitHealth();
         _rigidbody = GetComponent<Rigidbody>();
     }
 
-    void Update()
+    private void Update()
     {
         if (!GameManager.Instance.IsStarted || GameManager.Instance.IsPaused)
         {
@@ -56,7 +57,7 @@ public class Enemy : Human
 
     private void MoveToPlayer()
     {
-        float distanceToPlayer = Vector3.Distance(transform.position, _target.transform.position);
+        var distanceToPlayer = Vector3.Distance(transform.position, _target.transform.position);
         if (distanceToPlayer > _stopDistance)
         {
             transform.position = Vector3.MoveTowards(transform.position, _target.transform.position, _moveSpeed * Time.deltaTime);
@@ -69,8 +70,7 @@ public class Enemy : Human
     {
         if (collision.gameObject.CompareTag("Player"))
         {
-            GameObject player = collision.gameObject;
-            player.GetComponent<Player>().TakeDamage(_damage);
+            collision.gameObject.GetComponent<Player>().TakeDamage(_damage);
         }
     }
 
@@ -78,8 +78,7 @@ public class Enemy : Human
     {
         if (other.gameObject.CompareTag("Projectile"))
         {
-            float damage = other.gameObject.GetComponent<Projectile>().Damage;
-            TakeDamage(damage);
+            TakeDamage(other.gameObject.GetComponent<Projectile>().Damage);
         }
     }
 

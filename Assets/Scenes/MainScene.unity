@@ -2679,8 +2679,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1fb6a0c9aff61c747a645845254210d1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _playerTransform: {fileID: 1539669898}
   smoothSpeed: 5
+  _player: {fileID: 1539669898}
 --- !u!1 &996107447
 GameObject:
   m_ObjectHideFlags: 0
@@ -4403,15 +4403,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6b55aa9903e4b4c4dba4d0f74914e3f7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _healthBar: {fileID: 659681328}
-  _maxHealth: 100
-  _moveSpeed: 7
-  _healthRegen: 5
   _bloodSplat: {fileID: 727031274567674995}
+  _healthBar: {fileID: 659681328}
   _weapons:
   - {fileID: 1891686199}
   - {fileID: 1516405930}
   - {fileID: 1301483508}
+  _moveSpeed: 5
 --- !u!95 &1539669897
 Animator:
   serializedVersion: 5
@@ -5403,12 +5401,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spawn: 1
-  minRadius: 20
-  maxRadius: 25
-  minEnemySpawnTime: 1
-  maxEnemySpawnTime: 2
-  enemyObject: {fileID: 8057540496636529503, guid: 02ebe2fd15da3e742b67eab6508e3101, type: 3}
-  targetObject: {fileID: 1539669895}
+  enemy: {fileID: 8057540496636529503, guid: 02ebe2fd15da3e742b67eab6508e3101, type: 3}
+  target: {fileID: 1539669895}
 --- !u!1 &1757059968
 GameObject:
   m_ObjectHideFlags: 0

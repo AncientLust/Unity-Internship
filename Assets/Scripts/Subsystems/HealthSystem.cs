@@ -1,12 +1,12 @@
 using UnityEngine;
 
-public class Human : MonoBehaviour
+public class HealthSystem : MonoBehaviour
 {
+    [SerializeField] private ParticleSystem _bloodSplat;
     [SerializeField] protected HealthBar _healthBar;
-    [SerializeField] protected float _maxHealth = 100;
-    [SerializeField] protected float _moveSpeed = 5f;
-    [SerializeField] protected float _healthRegen = 5f;
-    [SerializeField] ParticleSystem _bloodSplat;
+    
+    protected float _maxHealth = 100;
+    protected float _healthRegen = 5f;
 
     public bool IsDead { get; protected set; }
     
@@ -15,13 +15,13 @@ public class Human : MonoBehaviour
     public void InitHealth()
     {
         _health = _maxHealth;
-        _healthBar.SetHealth(1);
+        _healthBar.SetHealthFill(1);
     }
 
     public void TakeDamage(float damage)
     {
         _health -= damage;
-        _healthBar.SetHealth(_health / _maxHealth);
+        _healthBar.SetHealthFill(_health / _maxHealth);
         _bloodSplat.Play();
     }
 
@@ -29,6 +29,6 @@ public class Human : MonoBehaviour
     {
         _health += _healthRegen * Time.deltaTime;
         _health = Mathf.Clamp(_health, 0, _maxHealth);
-        _healthBar.SetHealth(_health / _maxHealth);
+        _healthBar.SetHealthFill(_health / _maxHealth);
     }
 }

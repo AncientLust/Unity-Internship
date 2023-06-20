@@ -3,18 +3,18 @@ using UnityEngine;
 
 public class Weapon : MonoBehaviour
 {
-    [SerializeField] float _power;
-    [SerializeField] float _shootSpeed;
-    [SerializeField] float _reloadTime;
-    [SerializeField] int _clipCapacity;
-    [SerializeField] GameObject _projectile;
+    [SerializeField] private float _power;
+    [SerializeField] private float _shootSpeed;
+    [SerializeField] private float _reloadTime;
+    [SerializeField] private int _clipCapacity;
+    [SerializeField] private GameObject _projectile;
 
-    int _currentClipCapacity;
-    bool _isReloading = false;
-    bool _canShoot = true;
-    Transform _shootPoint;
+    private int _currentClipCapacity;
+    private bool _isReloading = false;
+    private bool _canShoot = true;
+    private Transform _shootPoint;
 
-    void Awake()
+    private void Awake()
     {
         _shootPoint = transform.Find("ShootPoint");
         _currentClipCapacity = _clipCapacity;
@@ -22,6 +22,7 @@ public class Weapon : MonoBehaviour
 
     private void OnEnable()
     {
+        _canShoot = true;
         UIManager.Instance.SetAmmo(_currentClipCapacity);
     }
 
@@ -69,13 +70,16 @@ public class Weapon : MonoBehaviour
     {
         Debug.Log("Reloaded!");
         _currentClipCapacity = _clipCapacity;
-        UIManager.Instance.SetAmmo(_currentClipCapacity);
         _isReloading = false;
+
+        if (gameObject.activeInHierarchy)
+        {
+            UIManager.Instance.SetAmmo(_currentClipCapacity);
+        }
     }
 
     public float GetReloadTime()
     {
         return _reloadTime;
     }
-
 }

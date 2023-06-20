@@ -2,26 +2,32 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Player : Human
+public class Player : HealthSystem
 {
-    [SerializeField] List<Weapon> _weapons = new List<Weapon>();
+    [SerializeField] private List<Weapon> _weapons = new List<Weapon>();
+    [SerializeField] private float _moveSpeed = 5f;
 
     private Rigidbody _rigidbody;
 
-    Vector3 _movement;
-    Camera _camera;
-    Weapon _currentWeapon;
-    int _equippedWeaponIndex;
+    private Vector3 _movement;
+    private Camera _camera;
+    private Weapon _currentWeapon;
+    private int _equippedWeaponIndex;
 
     private void Start()
     {
+        CacheComponents();
         InitHealth();
-        _camera = Camera.main;
-        _rigidbody = GetComponent<Rigidbody>();
         InitializeWeapon();
     }
 
-    void Update()
+    private void CacheComponents()
+    {
+        _camera = Camera.main;
+        _rigidbody = GetComponent<Rigidbody>();
+    }
+
+    private void Update()
     {
         if (IsDead || !GameManager.Instance.IsStarted || GameManager.Instance.IsPaused)
         {
@@ -57,9 +63,9 @@ public class Player : Human
 
     private void RotatePlayer()
     {
-        Vector3 mousePosition = _camera.ScreenToWorldPoint(Input.mousePosition);
-        Vector3 playerToMouseDirection = mousePosition - transform.position;
-        float angle = Mathf.Atan2(playerToMouseDirection.x, playerToMouseDirection.z) * Mathf.Rad2Deg;
+        var mousePosition = _camera.ScreenToWorldPoint(Input.mousePosition);
+        var playerToMouseDirection = mousePosition - transform.position;
+        var angle = Mathf.Atan2(playerToMouseDirection.x, playerToMouseDirection.z) * Mathf.Rad2Deg;
         transform.rotation = Quaternion.Euler(0, angle, 0);
     }
 
@@ -126,8 +132,8 @@ public class Player : Human
         {
             if (i == _equippedWeaponIndex)
             {
-                _weapons[i].gameObject.SetActive(true);
                 _currentWeapon = _weapons[i];
+                _currentWeapon.gameObject.SetActive(true);
                 continue;
             }
 
@@ -145,8 +151,8 @@ public class Player : Human
         {
             if (i == _equippedWeaponIndex)
             {
-                _weapons[i].gameObject.SetActive(true);
                 _currentWeapon = _weapons[i];
+                _currentWeapon.gameObject.SetActive(true);
                 continue;
             }
 

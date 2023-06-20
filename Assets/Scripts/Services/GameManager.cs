@@ -4,14 +4,15 @@ using UnityEngine.SceneManagement;
 public class GameManager : Singleton<GameManager>
 {
     [SerializeField] private GameObject _player;
+    
     private static bool _startGameImmediately = false;
+    private const string _gameplay = "Gameplay";
+    private const string _pause = "Pause";
+    private const string _gameOver = "GameOver";
 
     public bool IsPaused { get; private set; }
     public bool IsStarted { get; private set; }
 
-    private const string _gameplay = "Gameplay";
-    private const string _pause = "Pause";
-    private const string _gameOver = "GameOver";
 
     private void Start()
     {
