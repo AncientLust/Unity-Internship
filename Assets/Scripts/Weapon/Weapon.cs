@@ -23,7 +23,7 @@ public class Weapon : MonoBehaviour
     private void OnEnable()
     {
         _canShoot = true;
-        UIManager.Instance.SetAmmo(_currentClipCapacity);
+        GameplayUI.Instance.SetAmmo(_currentClipCapacity);
     }
 
     public void Shoot()
@@ -42,7 +42,7 @@ public class Weapon : MonoBehaviour
                 }
 
                 _currentClipCapacity--;
-                UIManager.Instance.SetAmmo(_currentClipCapacity);
+                GameplayUI.Instance.SetAmmo(_currentClipCapacity);
                 Debug.Log($"Current ammo: {_currentClipCapacity}");
                 StartCoroutine(ShootDowntime());
             }
@@ -74,7 +74,7 @@ public class Weapon : MonoBehaviour
 
         if (gameObject.activeInHierarchy)
         {
-            UIManager.Instance.SetAmmo(_currentClipCapacity);
+            GameplayUI.Instance.SetAmmo(_currentClipCapacity);
         }
     }
 

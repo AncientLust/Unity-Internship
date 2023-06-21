@@ -25,7 +25,6 @@ public class EnemySpawner : Singleton<EnemySpawner>
             if (spawn && GameManager.Instance.IsStarted && !GameManager.Instance.IsPaused)
             {
                 SpawnEnemy();
-                
             }
 
             yield return new WaitForSeconds(Random.Range(minEnemySpawnTime, maxEnemySpawnTime));
@@ -47,9 +46,11 @@ public class EnemySpawner : Singleton<EnemySpawner>
 
     private Vector3 GetEnemySpawnPosition()
     {
-        float angle = Random.Range(0f, spawnRaduis);
-        float theta = Mathf.Deg2Rad * angle;
-        float radius = Random.Range(minRadius, maxRadius);
-        return new Vector3(radius * Mathf.Cos(theta), 0, radius * Mathf.Sin(theta));
+        var angle = Random.Range(0f, spawnRaduis);
+        var theta = Mathf.Deg2Rad * angle;
+        var radius = Random.Range(minRadius, maxRadius);
+        var spawnVector = new Vector3(radius * Mathf.Cos(theta), 0, radius * Mathf.Sin(theta));
+
+        return spawnVector + target.transform.position;
     }
 }

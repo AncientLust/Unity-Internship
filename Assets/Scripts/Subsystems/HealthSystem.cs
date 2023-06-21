@@ -4,9 +4,9 @@ public class HealthSystem : MonoBehaviour
 {
     [SerializeField] private ParticleSystem _bloodSplat;
     [SerializeField] protected HealthBar _healthBar;
+    [SerializeField] protected float _healthRegen = 5f;
     
     protected float _maxHealth = 100;
-    protected float _healthRegen = 5f;
 
     public bool IsDead { get; protected set; }
     
@@ -22,7 +22,11 @@ public class HealthSystem : MonoBehaviour
     {
         _health -= damage;
         _healthBar.SetHealthFill(_health / _maxHealth);
-        _bloodSplat.Play();
+
+        if (GameSettings.Instance.BloodEffect)
+        {
+            _bloodSplat.Play();
+        }
     }
 
     protected void Regenerate()

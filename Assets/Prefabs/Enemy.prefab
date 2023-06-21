@@ -683,11 +683,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d3a285f529b70644893156db270d55c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _healthBar: {fileID: 4055098204368343938}
-  _maxHealth: 100
-  _moveSpeed: 5
-  _healthRegen: 25
   _bloodSplat: {fileID: 2770688613658267093}
+  _healthBar: {fileID: 4055098204368343938}
+  _healthRegen: 20
 --- !u!136 &3924825712199938124
 CapsuleCollider:
   m_ObjectHideFlags: 0

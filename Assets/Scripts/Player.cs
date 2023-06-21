@@ -79,7 +79,7 @@ public class Player : HealthSystem
     {
         _currentWeapon = _weapons[0];
         _equippedWeaponIndex = 0;
-        UIManager.Instance.SetWeapon(_currentWeapon.gameObject.name);
+        GameplayUI.Instance.SetWeapon(_currentWeapon.gameObject.name);
         
         for (int i = 1; i < _weapons.Count; i++)
         {
@@ -140,7 +140,7 @@ public class Player : HealthSystem
             _weapons[i].gameObject.SetActive(false);
         }
 
-        UIManager.Instance.SetWeapon(_currentWeapon.gameObject.name);
+        GameplayUI.Instance.SetWeapon(_currentWeapon.gameObject.name);
     }
 
     private void EquipPreviousWeapon()
@@ -159,6 +159,6 @@ public class Player : HealthSystem
             _weapons[i].gameObject.SetActive(false);
         }
 
-        UIManager.Instance.SetWeapon(_currentWeapon.gameObject.name);
+        GameplayUI.Instance.SetWeapon(_currentWeapon.gameObject.name);
     }
 }

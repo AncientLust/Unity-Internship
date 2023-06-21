@@ -16,6 +16,11 @@ public class Enemy : HealthSystem
 
     private void Update()
     {
+        ActIfGameRunning();
+    }
+
+    private void ActIfGameRunning()
+    {
         if (!GameManager.Instance.IsStarted || GameManager.Instance.IsPaused)
         {
             ResetVelosity();

@@ -3,11 +3,11 @@ using UnityEngine;
 
 public class ObjectPool<T> : MonoBehaviour where T : Component
 {
-    public static ObjectPool<T> SharedInstance;
-
-    [SerializeField] protected List<GameObject> _pooledObjects;
     [SerializeField] protected GameObject _objectToPool;
     [SerializeField] protected int _amountToPool;
+
+    protected List<GameObject> _pooledObjects;
+    public static ObjectPool<T> SharedInstance;
     
     void Awake()
     {
@@ -15,6 +15,11 @@ public class ObjectPool<T> : MonoBehaviour where T : Component
     }
 
     void Start()
+    {
+        InitiatePool();
+    }
+
+    protected void InitiatePool()
     {
         _pooledObjects = new List<GameObject>();
         GameObject tmp;
