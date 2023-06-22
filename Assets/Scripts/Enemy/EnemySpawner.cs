@@ -12,6 +12,7 @@ public class EnemySpawner : Singleton<EnemySpawner>
     private float _spawnRaduis = 360f;
     private float _minEnemySpawnTime = 1;
     private float _maxEnemySpawnTime = 2;
+    private float _doubleSpawnChance = 0.33f;
 
     private void Start()
     {
@@ -24,7 +25,7 @@ public class EnemySpawner : Singleton<EnemySpawner>
         {
             if (_spawn && GameManager.Instance.IsStarted && !GameManager.Instance.IsPaused)
             {
-                if (Random.value <= .33f)
+                if (Random.value <= _doubleSpawnChance)
                 {
                     SpawnEnemy();
                     SpawnEnemy();

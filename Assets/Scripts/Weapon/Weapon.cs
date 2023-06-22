@@ -9,14 +9,13 @@ public class Weapon : MonoBehaviour
     [SerializeField] private int _clipCapacity;
     [SerializeField] private GameObject _projectile;
 
-
     private int _currentClipCapacity;
     private bool _isReloading = false;
     private bool _canShoot = true;
     private Transform _shootPoint;
 
     public float ClipCapacityMultiplier { set; get; } = 1;
-    public float PowerUpMultiplier { set; get; } = 1;
+    public float PowerMultiplier { set; get; } = 1;
 
     private void Awake()
     {
@@ -39,7 +38,7 @@ public class Weapon : MonoBehaviour
                 GameObject projectile = ProjectilePool.SharedInstance.GetPooledObject();
                 if (projectile != null)
                 {
-                    projectile.GetComponent<Projectile>().Damage = _power * PowerUpMultiplier;
+                    projectile.GetComponent<Projectile>().Damage = _power * PowerMultiplier;
                     projectile.transform.position = _shootPoint.position;
                     projectile.transform.rotation = _shootPoint.rotation;
                     projectile.SetActive(true);

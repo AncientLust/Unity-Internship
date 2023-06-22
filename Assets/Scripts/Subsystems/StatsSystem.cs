@@ -30,6 +30,16 @@ public class StatsSystem : MonoBehaviour
 
     private void Start()
     {
+        InitStats();
+    }
+
+    private void OnEnable()
+    {
+        InitStats();
+    }
+
+    private void InitStats()
+    {
         MaxHealth = _initialHealth;
         CurrentHealth = _initialHealth;
         HealthRegen = _initialHealthRegen;

@@ -112,7 +112,7 @@ public class Player : MonoBehaviour
     {
         _equippedWeaponIndex = 0;
         _currentWeapon = _weapons[0];
-        _currentWeapon.PowerUpMultiplier = _statsSystem.PowerMultiplier;
+        _currentWeapon.PowerMultiplier = _statsSystem.PowerMultiplier;
         _currentWeapon.ClipCapacityMultiplier = _statsSystem.AmmoMultiplier;
         GameplayUI.Instance.SetWeapon(_currentWeapon.gameObject.name);
 
@@ -126,23 +126,23 @@ public class Player : MonoBehaviour
     {
         if (Input.mouseScrollDelta.y > 0)
         {
-            Debug.Log("Equip previous weapon");
             EquipPreviousWeapon();
         }
         else if (Input.mouseScrollDelta.y < 0)
         {
-            Debug.Log("Equip next weapon");
             EquipNextWeapon();
         }
     }
 
     private void EquipNextWeapon()
     {
+        Debug.Log("Equip next weapon");
         EquipWeapon((_equippedWeaponIndex + 1) % _weapons.Count);
     }
 
     private void EquipPreviousWeapon()
     {
+        Debug.Log("Equip previous weapon");
         EquipWeapon(_equippedWeaponIndex == 0 ? _weapons.Count - 1 : --_equippedWeaponIndex);
     }
 
@@ -155,7 +155,7 @@ public class Player : MonoBehaviour
             if (i == _equippedWeaponIndex)
             {
                 _currentWeapon = _weapons[i];
-                _currentWeapon.PowerUpMultiplier = _statsSystem.PowerMultiplier;
+                _currentWeapon.PowerMultiplier = _statsSystem.PowerMultiplier;
                 _currentWeapon.ClipCapacityMultiplier = _statsSystem.AmmoMultiplier;
                 _currentWeapon.gameObject.SetActive(true);
                 continue;
