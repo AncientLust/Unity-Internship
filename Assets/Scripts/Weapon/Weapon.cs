@@ -9,15 +9,19 @@ public class Weapon : MonoBehaviour
     [SerializeField] private int _clipCapacity;
     [SerializeField] private GameObject _projectile;
 
+
     private int _currentClipCapacity;
     private bool _isReloading = false;
     private bool _canShoot = true;
     private Transform _shootPoint;
 
+    public float ClipCapacityMultiplier { set; get; } = 1;
+    public float PowerUpMultiplier { set; get; } = 1;
+
     private void Awake()
     {
         _shootPoint = transform.Find("ShootPoint");
-        _currentClipCapacity = _clipCapacity;
+        _currentClipCapacity = (int)(_clipCapacity * ClipCapacityMultiplier);
     }
 
     private void OnEnable()
@@ -35,7 +39,7 @@ public class Weapon : MonoBehaviour
                 GameObject projectile = ProjectilePool.SharedInstance.GetPooledObject();
                 if (projectile != null)
                 {
-                    projectile.GetComponent<Projectile>().Damage = _power;
+                    projectile.GetComponent<Projectile>().Damage = _power * PowerUpMultiplier;
                     projectile.transform.position = _shootPoint.position;
                     projectile.transform.rotation = _shootPoint.rotation;
                     projectile.SetActive(true);
@@ -69,7 +73,7 @@ public class Weapon : MonoBehaviour
     public void FinishReload()
     {
         Debug.Log("Reloaded!");
-        _currentClipCapacity = _clipCapacity;
+        _currentClipCapacity = (int)(_clipCapacity * ClipCapacityMultiplier);
         _isReloading = false;
 
         if (gameObject.activeInHierarchy)
@@ -81,5 +85,10 @@ public class Weapon : MonoBehaviour
     public float GetReloadTime()
     {
         return _reloadTime;
+    }
+
+    public bool HasEmptyClip()
+    {
+        return _currentClipCapacity == 0;
     }
 }

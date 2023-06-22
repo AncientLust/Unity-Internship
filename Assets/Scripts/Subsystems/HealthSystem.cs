@@ -4,35 +4,55 @@ public class HealthSystem : MonoBehaviour
 {
     [SerializeField] private ParticleSystem _bloodSplat;
     [SerializeField] protected HealthBar _healthBar;
-    [SerializeField] protected float _healthRegen = 5f;
     
-    protected float _maxHealth = 100;
+    private StatsSystem _statsSystem;
 
     public bool IsDead { get; protected set; }
     
-    protected float _health;
-    
-    public void InitHealth()
+    private void Start()
     {
-        _health = _maxHealth;
-        _healthBar.SetHealthFill(1);
+        CacheComponents();
     }
 
-    public void TakeDamage(float damage)
+    private void CacheComponents()
     {
-        _health -= damage;
-        _healthBar.SetHealthFill(_health / _maxHealth);
+        _statsSystem = gameObject.GetComponent<StatsSystem>();
+    }
 
+    public bool TakeDamageTrueIfFatal(float damage)
+    {
+        if (_statsSystem.CurrentHealth - damage > 0)
+        {
+            _statsSystem.CurrentHealth -= damage;
+            _healthBar.SetFill(_statsSystem.CurrentHealth / _statsSystem.MaxHealth);
+            PlayBloodEffect();
+            return false;
+        }
+        else
+        {
+            IsDead = true;
+            gameObject.SetActive(false);
+            return true;
+        }
+    }
+
+    private void PlayBloodEffect()
+    {
         if (GameSettings.Instance.BloodEffect)
         {
             _bloodSplat.Play();
         }
     }
 
-    protected void Regenerate()
+    public void Regenerate()
     {
-        _health += _healthRegen * Time.deltaTime;
-        _health = Mathf.Clamp(_health, 0, _maxHealth);
-        _healthBar.SetHealthFill(_health / _maxHealth);
+        _statsSystem.CurrentHealth += _statsSystem.HealthRegen * Time.deltaTime;
+        _statsSystem.CurrentHealth = Mathf.Clamp(_statsSystem.CurrentHealth, 0, _statsSystem.MaxHealth);
+        _healthBar.SetFill(_statsSystem.CurrentHealth / _statsSystem.MaxHealth);
+    }
+
+    public void HideHealthIfHealthy()
+    {
+        _healthBar.gameObject.SetActive(_statsSystem.CurrentHealth != _statsSystem.MaxHealth);
     }
 }

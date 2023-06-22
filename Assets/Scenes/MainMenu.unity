@@ -1277,7 +1277,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2c710c5545416514a90208c99dc1462a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  BloodEffect: 1
 --- !u!4 &1078541312
 Transform:
   m_ObjectHideFlags: 0

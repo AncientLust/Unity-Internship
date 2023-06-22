@@ -1,22 +1,29 @@
 using UnityEngine;
 
-public class Enemy : HealthSystem
+public class Enemy : MonoBehaviour
 {
     private float _stopDistance = 0.25f;
     private float _damage = 10;
-    private float _moveSpeed = 5f;
     private GameObject _target;
     private Rigidbody _rigidbody;
+    private HealthSystem _healthSystem;
+    private StatsSystem _statsSystem;
 
     private void Start()
     {
-        InitHealth();
-        _rigidbody = GetComponent<Rigidbody>();
+        CacheComponents();
     }
 
     private void Update()
     {
         ActIfGameRunning();
+    }
+
+    private void CacheComponents()
+    {
+        _rigidbody = GetComponent<Rigidbody>();
+        _statsSystem = GetComponent<StatsSystem>();
+        _healthSystem = GetComponent<HealthSystem>();
     }
 
     private void ActIfGameRunning()
@@ -27,19 +34,9 @@ public class Enemy : HealthSystem
             return;
         }
 
-        CheckIfKilled();
-        Regenerate();
-        HideHealthIfHealthy();
+        _healthSystem.Regenerate();
+        _healthSystem.HideHealthIfHealthy();
         MoveIfPlayerAlive();
-    }
-
-    private void CheckIfKilled()
-    {
-        if (_health <= 0)
-        {
-            IsDead = true;
-            gameObject.SetActive(false);
-        }
     }
 
     private void ResetVelosity()
@@ -50,7 +47,7 @@ public class Enemy : HealthSystem
 
     private void MoveIfPlayerAlive()
     {
-        if (_target.activeInHierarchy)
+        if (_target.gameObject.activeInHierarchy)
         {
             MoveToPlayer();
         }
@@ -65,7 +62,7 @@ public class Enemy : HealthSystem
         var distanceToPlayer = Vector3.Distance(transform.position, _target.transform.position);
         if (distanceToPlayer > _stopDistance)
         {
-            transform.position = Vector3.MoveTowards(transform.position, _target.transform.position, _moveSpeed * Time.deltaTime);
+            transform.position = Vector3.MoveTowards(transform.position, _target.transform.position, _statsSystem.MoveSpeed * Time.deltaTime);
         }
 
         transform.LookAt(_target.transform);
@@ -75,7 +72,13 @@ public class Enemy : HealthSystem
     {
         if (collision.gameObject.CompareTag("Player"))
         {
-            collision.gameObject.GetComponent<Player>().TakeDamage(_damage);
+            var playersHealthSystem = collision.gameObject.GetComponent<HealthSystem>();
+            bool playerKilled = playersHealthSystem.TakeDamageTrueIfFatal(_damage * _statsSystem.PowerMultiplier);
+
+            if (playerKilled)
+            {
+                GameManager.Instance.GameOver();
+            }
         }
     }
 
@@ -83,13 +86,12 @@ public class Enemy : HealthSystem
     {
         if (other.gameObject.CompareTag("Projectile"))
         {
-            TakeDamage(other.gameObject.GetComponent<Projectile>().Damage);
+            var projectileDamage = other.gameObject.GetComponent<Projectile>().Damage;
+            if (_healthSystem.TakeDamageTrueIfFatal(projectileDamage))
+            {
+                _target.gameObject.GetComponent<ExperienceSystem>().AddExperience(10);
+            }
         }
-    }
-
-    private void HideHealthIfHealthy()
-    {
-        _healthBar.gameObject.SetActive(_health != _maxHealth);
     }
 
     public void SetTarget(GameObject target)

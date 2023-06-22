@@ -2,41 +2,48 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Player : HealthSystem
+public class Player : MonoBehaviour
 {
     [SerializeField] private List<Weapon> _weapons = new List<Weapon>();
-    [SerializeField] private float _moveSpeed = 5f;
 
     private Rigidbody _rigidbody;
-
+    private StatsSystem _statsSystem;
+    private HealthSystem _healthSystem;
+    private int _equippedWeaponIndex;
     private Vector3 _movement;
     private Camera _camera;
     private Weapon _currentWeapon;
-    private int _equippedWeaponIndex;
 
     private void Start()
     {
         CacheComponents();
-        InitHealth();
         InitializeWeapon();
+    }
+
+    private void Update()
+    {
+        ActIfGameRunning();
     }
 
     private void CacheComponents()
     {
         _camera = Camera.main;
         _rigidbody = GetComponent<Rigidbody>();
+        _statsSystem = GetComponent<StatsSystem>();
+        _healthSystem = GetComponent<HealthSystem>();
     }
 
-    private void Update()
+    private void ActIfGameRunning()
     {
-        if (IsDead || !GameManager.Instance.IsStarted || GameManager.Instance.IsPaused)
+        if (_healthSystem.IsDead || !GameManager.Instance.IsStarted || GameManager.Instance.IsPaused)
         {
             ResetVelosity();
             return;
         }
 
-        CheckIfKilled();
-        Regenerate();
+        _healthSystem.Regenerate();
+        _healthSystem.HideHealthIfHealthy();
+
         MovePlayer();
         RotatePlayer();
         ShootHandler();
@@ -44,21 +51,11 @@ public class Player : HealthSystem
         ScrollWeaponSelect();
     }
 
-    private void CheckIfKilled()
-    {
-        if (_health <= 0)
-        {
-            IsDead = true;
-            gameObject.SetActive(false);
-            GameManager.Instance.GameOver();
-        }
-    }
-
     private void MovePlayer()
     {
         _movement.x = Input.GetAxisRaw("Horizontal");
         _movement.z = Input.GetAxisRaw("Vertical");
-        transform.position += _movement * _moveSpeed * Time.deltaTime;
+        transform.position += _movement * _statsSystem.MoveSpeed * Time.deltaTime;
     }
 
     private void RotatePlayer()
@@ -75,23 +72,18 @@ public class Player : HealthSystem
         _rigidbody.angularVelocity = Vector3.zero;
     }
 
-    private void InitializeWeapon()
-    {
-        _currentWeapon = _weapons[0];
-        _equippedWeaponIndex = 0;
-        GameplayUI.Instance.SetWeapon(_currentWeapon.gameObject.name);
-        
-        for (int i = 1; i < _weapons.Count; i++)
-        {
-            _weapons[i].gameObject.SetActive(false);
-        }
-    }
-
     private void ShootHandler()
     {
         if (Input.GetMouseButton(0))
         {
-            _currentWeapon.Shoot();
+            if (!_currentWeapon.HasEmptyClip())
+            {
+                _currentWeapon.Shoot();
+            }
+            else
+            {
+                Reload();
+            }
         }
     }
 
@@ -99,15 +91,35 @@ public class Player : HealthSystem
     {
         if (Input.GetKeyDown(KeyCode.R))
         {
-            _currentWeapon.BeginReload();
-            StartCoroutine(Reload(_currentWeapon));
+            Reload();
         }
+    }
+
+    private void Reload()
+    {
+        _currentWeapon.ClipCapacityMultiplier = _statsSystem.AmmoMultiplier;
+        _currentWeapon.BeginReload();
+        StartCoroutine(Reload(_currentWeapon));
     }
 
     private IEnumerator Reload(Weapon weapon)
     {
-        yield return new WaitForSeconds(weapon.GetReloadTime());
+        yield return new WaitForSeconds(weapon.GetReloadTime() * _statsSystem.ReloadMultiplier);
         weapon.FinishReload();
+    }
+
+    private void InitializeWeapon()
+    {
+        _equippedWeaponIndex = 0;
+        _currentWeapon = _weapons[0];
+        _currentWeapon.PowerUpMultiplier = _statsSystem.PowerMultiplier;
+        _currentWeapon.ClipCapacityMultiplier = _statsSystem.AmmoMultiplier;
+        GameplayUI.Instance.SetWeapon(_currentWeapon.gameObject.name);
+
+        for (int i = 1; i < _weapons.Count; i++)
+        {
+            _weapons[i].gameObject.SetActive(false);
+        }
     }
 
     private void ScrollWeaponSelect()
@@ -126,32 +138,25 @@ public class Player : HealthSystem
 
     private void EquipNextWeapon()
     {
-        _equippedWeaponIndex = (_equippedWeaponIndex + 1) % _weapons.Count;
-
-        for (int i = 0; i < _weapons.Count; i++)
-        {
-            if (i == _equippedWeaponIndex)
-            {
-                _currentWeapon = _weapons[i];
-                _currentWeapon.gameObject.SetActive(true);
-                continue;
-            }
-
-            _weapons[i].gameObject.SetActive(false);
-        }
-
-        GameplayUI.Instance.SetWeapon(_currentWeapon.gameObject.name);
+        EquipWeapon((_equippedWeaponIndex + 1) % _weapons.Count);
     }
 
     private void EquipPreviousWeapon()
     {
-        _equippedWeaponIndex = _equippedWeaponIndex ==  0 ? _weapons.Count - 1 : --_equippedWeaponIndex;
+        EquipWeapon(_equippedWeaponIndex == 0 ? _weapons.Count - 1 : --_equippedWeaponIndex);
+    }
+
+    private void EquipWeapon(int weaponIndex)
+    {
+        _equippedWeaponIndex = weaponIndex;
 
         for (int i = 0; i < _weapons.Count; i++)
         {
             if (i == _equippedWeaponIndex)
             {
                 _currentWeapon = _weapons[i];
+                _currentWeapon.PowerUpMultiplier = _statsSystem.PowerMultiplier;
+                _currentWeapon.ClipCapacityMultiplier = _statsSystem.AmmoMultiplier;
                 _currentWeapon.gameObject.SetActive(true);
                 continue;
             }

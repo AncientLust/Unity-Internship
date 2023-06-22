@@ -10,17 +10,23 @@ public class HealthBar : MonoBehaviour
     private RectTransform _edgeRect;
     private RawImage _barRawImage;
 
-    private void Awake() 
+    private void Awake()
     {
-        _barMaskRect = transform.Find("barMask").GetComponent<RectTransform>();
-        _barRawImage = transform.Find("barMask").Find("bar").GetComponent<RawImage>();
-        _edgeRect = transform.Find("edge").GetComponent<RectTransform>();
-        _barMaskWidth = _barMaskRect.sizeDelta.x;
+        CacheComponents();
+        SetFill(1);
     }
 
     private void Update() 
     {
         AnimateBar();
+    }
+
+    private void CacheComponents()
+    {
+        _barRawImage = transform.Find("barMask").Find("bar").GetComponent<RawImage>();
+        _edgeRect = transform.Find("edge").GetComponent<RectTransform>();
+        _barMaskRect = transform.Find("barMask").GetComponent<RectTransform>();
+        _barMaskWidth = _barMaskRect.sizeDelta.x;
     }
 
     private void AnimateBar()
@@ -35,7 +41,7 @@ public class HealthBar : MonoBehaviour
         _barRawImage.uvRect = uvRect;
     }
 
-    public void SetHealthFill(float fillValue)
+    public void SetFill(float fillValue)
     {
         fillValue = Mathf.Clamp01(fillValue);
 
