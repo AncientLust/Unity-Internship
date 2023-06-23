@@ -36,9 +36,9 @@ public class Projectile : MonoBehaviour
         }
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void OnTriggerEnter(Collider collider)
     {
-        var damagable = other.gameObject.GetComponent<IDamageable>();
+        var damagable = collider.gameObject.GetComponent<IDamageable>();
 
         if (damagable != null)
         {

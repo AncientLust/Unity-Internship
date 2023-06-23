@@ -27,6 +27,7 @@ public class StatsSystem : MonoBehaviour
     public float CurrentHealth { get; set; }
     public float HealthRegen { get; private set; } 
     public float MoveSpeed { get; private set; }
+    public int Level { get; private set; }
 
     private void Start()
     {
@@ -35,6 +36,7 @@ public class StatsSystem : MonoBehaviour
 
     private void InitStats()
     {
+        Level = 1;
         MaxHealth = _initialHealth;
         CurrentHealth = _initialHealth;
         HealthRegen = _initialHealthRegen;
@@ -43,6 +45,8 @@ public class StatsSystem : MonoBehaviour
 
     public void SetLevel(int level)
     {
+        Level = level;
+
         PowerMultiplier = 1 + _powerLevelIncrement * level;
         AmmoMultiplier = 1 + _ammoLevelIncrement * level;
         ReloadMultiplier *= Mathf.Pow(_reloadLevelIncrement, level);
@@ -50,6 +54,8 @@ public class StatsSystem : MonoBehaviour
         MaxHealth = _initialHealth * (1 + _speedLevelIncrement * level);
         HealthRegen = _initialHealthRegen * (1 + _speedLevelIncrement * level);
         MoveSpeed = _initialMoveSpeed * (1 + _healthLevelIncrement * level);
+
+        CurrentHealth = MaxHealth;
 
         UpdatePlayerUIStats();
     }

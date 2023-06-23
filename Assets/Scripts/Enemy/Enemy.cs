@@ -5,6 +5,7 @@ public class Enemy : MonoBehaviour, IDamageable
     private float _stopDistance = 0.25f;
     private float _damage = 10;
     private float _levelsPerMinute = 3;
+    private int _killExperience = 10;
     private Transform _target;
     private Rigidbody _rigidbody;
     private HealthSystem _healthSystem;
@@ -13,6 +14,7 @@ public class Enemy : MonoBehaviour, IDamageable
     private void Awake()
     {
         CacheComponents();
+        SetLevelBasedOnGameDuration();
     }
 
     private void Update()
@@ -34,14 +36,14 @@ public class Enemy : MonoBehaviour, IDamageable
 
     private void SetLevelBasedOnGameDuration()
     {
-        var minutesSceneLoaded = (int)(Time.timeSinceLevelLoad / 60.0f);
-        var enemyLevel = (int)(minutesSceneLoaded * _levelsPerMinute);
-        _statsSystem.SetLevel(enemyLevel);
+        var minutesSceneLoaded = Time.timeSinceLevelLoad / 60.0f;
+        var enemyLevel = (int)Mathf.Ceil(minutesSceneLoaded * _levelsPerMinute);
+        _statsSystem.SetLevel(enemyLevel > 1 ? enemyLevel : 1);
     }
 
     public void Die()
     {
-        _target.GetComponent<ExperienceSystem>().AddExperience(10);
+        _target.GetComponent<ExperienceSystem>().AddExperience(_killExperience * _statsSystem.Level);
         gameObject.SetActive(false);
     }
 
@@ -100,6 +102,7 @@ public class Enemy : MonoBehaviour, IDamageable
 
     private void OnCollisionEnter(Collision collision)
     {
+        // Read about comparison between collision and trigger
         var damagable = collision.gameObject.GetComponent<IDamageable>();
         var isAnotherEnemy = collision.gameObject.GetComponent<Enemy>();
 

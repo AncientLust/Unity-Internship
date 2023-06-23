@@ -40,7 +40,7 @@ public class ExperienceSystem : MonoBehaviour
         if (_experience >= _nextLevelExperience)
         {
             Level++;
-            _experience = _nextLevelExperience - _experience;
+            _experience = _experience - _nextLevelExperience;
             _nextLevelExperience *= _nextLevelMultiplier;
             _levelUp.Play();
             _statSystem.SetLevel(Level);

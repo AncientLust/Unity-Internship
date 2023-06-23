@@ -102,9 +102,12 @@ public class Player : MonoBehaviour, IDamageable
 
     private void Reload()
     {
-        _currentWeapon.ClipCapacityMultiplier = _statsSystem.AmmoMultiplier;
-        _currentWeapon.BeginReload();
-        StartCoroutine(Reload(_currentWeapon));
+        if (!_currentWeapon.InReloading)
+        {
+            _currentWeapon.ClipCapacityMultiplier = _statsSystem.AmmoMultiplier;
+            _currentWeapon.BeginReload();
+            StartCoroutine(Reload(_currentWeapon));
+        }
     }
 
     private IEnumerator Reload(Weapon weapon)
