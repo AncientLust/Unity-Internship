@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Player : MonoBehaviour
+public class Player : MonoBehaviour, IDamageable
 {
     [SerializeField] private List<Weapon> _weapons = new List<Weapon>();
 
@@ -25,6 +25,12 @@ public class Player : MonoBehaviour
         ActIfGameRunning();
     }
 
+    public void Die()
+    {
+        GameManager.Instance.GameOver();
+        gameObject.SetActive(false);
+    }
+
     private void CacheComponents()
     {
         _camera = Camera.main;
@@ -42,7 +48,6 @@ public class Player : MonoBehaviour
         }
 
         _healthSystem.Regenerate();
-        _healthSystem.HideHealthIfHealthy();
 
         MovePlayer();
         RotatePlayer();
@@ -165,5 +170,10 @@ public class Player : MonoBehaviour
         }
 
         GameplayUI.Instance.SetWeapon(_currentWeapon.gameObject.name);
+    }
+
+    public void TakeDamage(float damage)
+    {
+        _healthSystem.TakeDamage(damage);
     }
 }

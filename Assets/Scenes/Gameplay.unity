@@ -3192,7 +3192,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   smoothSpeed: 5
-  _player: {fileID: 1539669898}
+  _playerTarget: {fileID: 1539669898}
 --- !u!1 &996107447
 GameObject:
   m_ObjectHideFlags: 0
@@ -6360,11 +6360,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4579582627282152, guid: 013d9a0813bc10a49b399ed38a3c4fdd, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.03436173
+      value: 0.034
       objectReference: {fileID: 0}
     - target: {fileID: 4579582627282152, guid: 013d9a0813bc10a49b399ed38a3c4fdd, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -0.06395832
+      value: 0.06
       objectReference: {fileID: 0}
     - target: {fileID: 4579582627282152, guid: 013d9a0813bc10a49b399ed38a3c4fdd, type: 3}
       propertyPath: m_LocalRotation.w
@@ -7038,7 +7038,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _spawn: 1
   _enemy: {fileID: 8057540496636529503, guid: 02ebe2fd15da3e742b67eab6508e3101, type: 3}
-  _target: {fileID: 1539669895}
+  _playerTransform: {fileID: 1539669898}
 --- !u!1 &1757059968
 GameObject:
   m_ObjectHideFlags: 0

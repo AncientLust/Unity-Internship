@@ -35,4 +35,14 @@ public class Projectile : MonoBehaviour
             gameObject.SetActive(false);
         }
     }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        var damagable = other.gameObject.GetComponent<IDamageable>();
+
+        if (damagable != null)
+        {
+            damagable.TakeDamage(Damage);
+        }
+    }
 }

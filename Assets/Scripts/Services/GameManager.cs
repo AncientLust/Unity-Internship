@@ -23,7 +23,6 @@ public class GameManager : Singleton<GameManager>
         IsStarted = true;
         EnemySpawner.Instance.enabled = true;
         GameplayUI.Instance.SetScreen(_gameplay);
-        _player.SetActive(true);
     }
 
     public void PauseGame()

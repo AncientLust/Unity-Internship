@@ -6,33 +6,36 @@ public class HealthSystem : MonoBehaviour
     [SerializeField] protected HealthBar _healthBar;
     
     private StatsSystem _statsSystem;
+    private IDamageable _damageable;
 
-    public bool IsDead { get; protected set; }
+    public bool IsDead { get; set; }
     
-    private void Start()
+    private void Awake()
     {
         CacheComponents();
+        IsDead = false;
     }
 
     private void CacheComponents()
     {
-        _statsSystem = gameObject.GetComponent<StatsSystem>();
+        _statsSystem = GetComponent<StatsSystem>();
+        _damageable = GetComponent<IDamageable>();
     }
 
-    public bool TakeDamageTrueIfFatal(float damage)
+    public void TakeDamage(float damage)
     {
-        if (_statsSystem.CurrentHealth - damage > 0)
-        {
-            _statsSystem.CurrentHealth -= damage;
-            _healthBar.SetFill(_statsSystem.CurrentHealth / _statsSystem.MaxHealth);
-            PlayBloodEffect();
-            return false;
-        }
-        else
+        _statsSystem.CurrentHealth -= damage;
+        _healthBar.SetFill(_statsSystem.CurrentHealth / _statsSystem.MaxHealth);
+        PlayBloodEffect();
+        CheckIfDied();
+    }
+
+    private void CheckIfDied()
+    {
+        if (_statsSystem.CurrentHealth <= 0)
         {
             IsDead = true;
-            gameObject.SetActive(false);
-            return true;
+            _damageable.Die();
         }
     }
 
@@ -46,9 +49,14 @@ public class HealthSystem : MonoBehaviour
 
     public void Regenerate()
     {
-        _statsSystem.CurrentHealth += _statsSystem.HealthRegen * Time.deltaTime;
-        _statsSystem.CurrentHealth = Mathf.Clamp(_statsSystem.CurrentHealth, 0, _statsSystem.MaxHealth);
-        _healthBar.SetFill(_statsSystem.CurrentHealth / _statsSystem.MaxHealth);
+        if (!IsDead)
+        {
+            _statsSystem.CurrentHealth += _statsSystem.HealthRegen * Time.deltaTime;
+            _statsSystem.CurrentHealth = Mathf.Clamp(_statsSystem.CurrentHealth, 0, _statsSystem.MaxHealth);
+            _healthBar.SetFill(_statsSystem.CurrentHealth / _statsSystem.MaxHealth);
+            
+            HideHealthIfHealthy();
+        }
     }
 
     public void HideHealthIfHealthy()

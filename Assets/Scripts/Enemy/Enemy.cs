@@ -1,15 +1,16 @@
 using UnityEngine;
 
-public class Enemy : MonoBehaviour
+public class Enemy : MonoBehaviour, IDamageable
 {
     private float _stopDistance = 0.25f;
     private float _damage = 10;
-    private GameObject _target;
+    private float _levelsPerMinute = 3;
+    private Transform _target;
     private Rigidbody _rigidbody;
     private HealthSystem _healthSystem;
     private StatsSystem _statsSystem;
 
-    private void Start()
+    private void Awake()
     {
         CacheComponents();
     }
@@ -19,11 +20,41 @@ public class Enemy : MonoBehaviour
         ActIfGameRunning();
     }
 
+    private void OnEnable()
+    {
+        ResetHealth();
+        SetLevelBasedOnGameDuration();
+    }
+
+    public void ResetHealth()
+    {
+        _statsSystem.CurrentHealth = _statsSystem.MaxHealth;
+        _healthSystem.IsDead = false;
+    }
+
+    private void SetLevelBasedOnGameDuration()
+    {
+        var minutesSceneLoaded = (int)(Time.timeSinceLevelLoad / 60.0f);
+        var enemyLevel = (int)(minutesSceneLoaded * _levelsPerMinute);
+        _statsSystem.SetLevel(enemyLevel);
+    }
+
+    public void Die()
+    {
+        _target.GetComponent<ExperienceSystem>().AddExperience(10);
+        gameObject.SetActive(false);
+    }
+
     private void CacheComponents()
     {
         _rigidbody = GetComponent<Rigidbody>();
         _statsSystem = GetComponent<StatsSystem>();
         _healthSystem = GetComponent<HealthSystem>();
+    }
+
+    public void TakeDamage(float damage)
+    {
+        _healthSystem.TakeDamage(damage);
     }
 
     private void ActIfGameRunning()
@@ -35,7 +66,6 @@ public class Enemy : MonoBehaviour
         }
 
         _healthSystem.Regenerate();
-        _healthSystem.HideHealthIfHealthy();
         MoveIfPlayerAlive();
     }
 
@@ -59,10 +89,10 @@ public class Enemy : MonoBehaviour
 
     private void MoveToPlayer()
     {
-        var distanceToPlayer = Vector3.Distance(transform.position, _target.transform.position);
+        var distanceToPlayer = Vector3.Distance(transform.position, _target.position);
         if (distanceToPlayer > _stopDistance)
         {
-            transform.position = Vector3.MoveTowards(transform.position, _target.transform.position, _statsSystem.MoveSpeed * Time.deltaTime);
+            transform.position = Vector3.MoveTowards(transform.position, _target.position, _statsSystem.MoveSpeed * Time.deltaTime);
         }
 
         transform.LookAt(_target.transform);
@@ -70,31 +100,16 @@ public class Enemy : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.CompareTag("Player"))
-        {
-            var playersHealthSystem = collision.gameObject.GetComponent<HealthSystem>();
-            bool playerKilled = playersHealthSystem.TakeDamageTrueIfFatal(_damage * _statsSystem.PowerMultiplier);
+        var damagable = collision.gameObject.GetComponent<IDamageable>();
+        var isAnotherEnemy = collision.gameObject.GetComponent<Enemy>();
 
-            if (playerKilled)
-            {
-                GameManager.Instance.GameOver();
-            }
+        if (damagable != null && !isAnotherEnemy)
+        {
+            damagable.TakeDamage(_damage * _statsSystem.PowerMultiplier);
         }
     }
 
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.gameObject.CompareTag("Projectile"))
-        {
-            var projectileDamage = other.gameObject.GetComponent<Projectile>().Damage;
-            if (_healthSystem.TakeDamageTrueIfFatal(projectileDamage))
-            {
-                _target.gameObject.GetComponent<ExperienceSystem>().AddExperience(10);
-            }
-        }
-    }
-
-    public void SetTarget(GameObject target)
+    public void SetTarget(Transform target)
     {
         _target = target;
     }
