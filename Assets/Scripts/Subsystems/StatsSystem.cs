@@ -13,9 +13,9 @@ public class StatsSystem : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _reloadMultiplier;
 
     private float _powerLevelIncrement = 0.05f;
-    private float _ammoLevelIncrement = 0.1f;
+    private float _ammoLevelIncrement = 0.05f;
     private float _reloadLevelIncrement = 0.95f;
-    private float _speedLevelIncrement = 0.05f;
+    private float _speedLevelIncrement = 0.01f;
     private float _healthLevelIncrement = 0.05f;
 
     private string _player = "Player";
@@ -43,13 +43,11 @@ public class StatsSystem : MonoBehaviour
         MoveSpeed = _initialMoveSpeed;
     }
 
-    public void SetLevel(int level)
+    public void SetLevelStats(int level)
     {
-        Level = level;
-
         PowerMultiplier = 1 + _powerLevelIncrement * level;
         AmmoMultiplier = 1 + _ammoLevelIncrement * level;
-        ReloadMultiplier *= Mathf.Pow(_reloadLevelIncrement, level);
+        ReloadMultiplier = Mathf.Pow(_reloadLevelIncrement, level);
 
         MaxHealth = _initialHealth * (1 + _speedLevelIncrement * level);
         HealthRegen = _initialHealthRegen * (1 + _speedLevelIncrement * level);

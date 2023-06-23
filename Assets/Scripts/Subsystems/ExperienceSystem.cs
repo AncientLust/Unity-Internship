@@ -13,7 +13,7 @@ public class ExperienceSystem : MonoBehaviour
     private float _nextLevelMultiplier = 1.2f;
     private StatsSystem _statSystem;
 
-    public int Level { get; private set; } = 0;
+    public int Level { get; private set; } = 1;
 
     private void Start()
     {
@@ -43,7 +43,7 @@ public class ExperienceSystem : MonoBehaviour
             _experience = _experience - _nextLevelExperience;
             _nextLevelExperience *= _nextLevelMultiplier;
             _levelUp.Play();
-            _statSystem.SetLevel(Level);
+            _statSystem.SetLevelStats(Level);
         }
 
         UpdateGUIExperienceElements();

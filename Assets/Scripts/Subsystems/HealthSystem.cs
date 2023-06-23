@@ -41,10 +41,13 @@ public class HealthSystem : MonoBehaviour
 
     private void PlayBloodEffect()
     {
-        //if (GameSettings.Instance.BloodEffect)
-        //{
+        if (!_bloodSplat.isPlaying)
+        {
+            //if (GameSettings.Instance.BloodEffect)
+            //{
             _bloodSplat.Play();
-        //}
+            //}
+        }
     }
 
     public void Regenerate()

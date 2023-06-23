@@ -60,6 +60,7 @@ public class Player : MonoBehaviour, IDamageable
     {
         _movement.x = Input.GetAxisRaw("Horizontal");
         _movement.z = Input.GetAxisRaw("Vertical");
+        _movement.Normalize();
         transform.position += _movement * _statsSystem.MoveSpeed * Time.deltaTime;
     }
 

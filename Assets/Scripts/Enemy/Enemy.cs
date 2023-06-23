@@ -2,8 +2,8 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour, IDamageable
 {
-    private float _stopDistance = 0.25f;
-    private float _damage = 10;
+    private float _stopDistance = 0.35f;
+    private float _damagePerSecond = 10;
     private float _levelsPerMinute = 3;
     private int _killExperience = 10;
     private Transform _target;
@@ -38,7 +38,7 @@ public class Enemy : MonoBehaviour, IDamageable
     {
         var minutesSceneLoaded = Time.timeSinceLevelLoad / 60.0f;
         var enemyLevel = (int)Mathf.Ceil(minutesSceneLoaded * _levelsPerMinute);
-        _statsSystem.SetLevel(enemyLevel > 1 ? enemyLevel : 1);
+        _statsSystem.SetLevelStats(enemyLevel > 1 ? enemyLevel : 1);
     }
 
     public void Die()
@@ -100,15 +100,14 @@ public class Enemy : MonoBehaviour, IDamageable
         transform.LookAt(_target.transform);
     }
 
-    private void OnCollisionEnter(Collision collision)
+    private void OnCollisionStay(Collision collision)
     {
-        // Read about comparison between collision and trigger
         var damagable = collision.gameObject.GetComponent<IDamageable>();
         var isAnotherEnemy = collision.gameObject.GetComponent<Enemy>();
 
         if (damagable != null && !isAnotherEnemy)
         {
-            damagable.TakeDamage(_damage * _statsSystem.PowerMultiplier);
+            damagable.TakeDamage(_damagePerSecond * Time.deltaTime * _statsSystem.PowerMultiplier);
         }
     }
 

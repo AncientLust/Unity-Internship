@@ -731,8 +731,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _initialHealth: 100
+  _currentHealth: 0
   _initialHealthRegen: 15
   _initialMoveSpeed: 6
+  _powerMultiplier: {fileID: 0}
+  _ammoMultiplier: {fileID: 0}
+  _reloadMultiplier: {fileID: 0}
 --- !u!114 &4801241201795869793
 MonoBehaviour:
   m_ObjectHideFlags: 0
