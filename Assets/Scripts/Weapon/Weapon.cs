@@ -7,11 +7,11 @@ public class Weapon : MonoBehaviour
     [SerializeField] private float _shootSpeed;
     [SerializeField] private float _reloadTime;
     [SerializeField] private int _clipCapacity;
-    [SerializeField] private GameObject _projectile;
 
     private int _currentClipCapacity;
     private bool _canShoot = true;
     private Transform _shootPoint;
+    private const string _projectile = "Projectile";
 
     public float ClipCapacityMultiplier { set; get; } = 1;
     public float PowerMultiplier { set; get; } = 1;
@@ -35,7 +35,7 @@ public class Weapon : MonoBehaviour
         {
             if (_currentClipCapacity > 0)
             {
-                GameObject projectile = ProjectilePool.SharedInstance.GetPooledObject();
+                GameObject projectile = ObjectPool.Instance.Get(_projectile);
                 if (projectile != null)
                 {
                     projectile.GetComponent<Projectile>().Damage = _power * PowerMultiplier;

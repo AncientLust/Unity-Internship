@@ -44,7 +44,7 @@ public class Enemy : MonoBehaviour, IDamageable
     public void Die()
     {
         _target.GetComponent<ExperienceSystem>().AddExperience(_killExperience * _statsSystem.Level);
-        gameObject.SetActive(false);
+        ObjectPool.Instance.Add(gameObject);
     }
 
     private void CacheComponents()

@@ -4,7 +4,6 @@ using UnityEngine;
 public class EnemySpawner : Singleton<EnemySpawner>
 {
     [SerializeField] private bool _spawn = true;
-    [SerializeField] private GameObject _enemy;
     [SerializeField] private Transform _playerTransform;
 
     private float _minRadius = 10f;
@@ -14,7 +13,8 @@ public class EnemySpawner : Singleton<EnemySpawner>
     private float _maxEnemySpawnTime = 2;
     private int _minEnemiesToSpawn = 1;
     private int _maxEnemiesToSpawn = 3;
-
+    private const string _enemy = "Enemy";
+    
     private void Start()
     {
         StartCoroutine(EnemySpawnerCycle());
@@ -37,14 +37,11 @@ public class EnemySpawner : Singleton<EnemySpawner>
     {
         for (int i = 0; i < enemiesToSpawn; i++)
         {
-            // Make enemy fabric
-            // Fabric makes objects for pool, creates new ones if necessary
-            GameObject enemy = EnemyPool.SharedInstance.GetPooledObject();
+            GameObject enemy = ObjectPool.Instance.Get(_enemy);
             if (enemy != null)
             { 
                 enemy.GetComponent<Enemy>().SetTarget(_playerTransform);
                 enemy.transform.position = GetEnemySpawnPosition();
-                enemy.gameObject.SetActive(true);
             }
         }
     }

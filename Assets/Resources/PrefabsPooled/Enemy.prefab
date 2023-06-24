@@ -1849,7 +1849,7 @@ GameObject:
   - component: {fileID: 8054673439787290159}
   - component: {fileID: 7943969018407973273}
   m_Layer: 0
-  m_Name: Character_GhillieSuit_01
+  m_Name: Character
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
