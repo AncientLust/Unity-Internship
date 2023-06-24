@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Enemy : MonoBehaviour, IDamageable
+public class Enemy : MonoBehaviour, IDamageable, IPushiable
 {
     private float _stopDistance = 0.35f;
     private float _damagePerSecond = 10;
@@ -20,6 +20,11 @@ public class Enemy : MonoBehaviour, IDamageable
     private void Update()
     {
         ActIfGameRunning();
+    }
+
+    private void FixedUpdate()
+    {
+        ActPhisicallyIfGameRunning();
     }
 
     private void OnEnable()
@@ -59,16 +64,34 @@ public class Enemy : MonoBehaviour, IDamageable
         _healthSystem.TakeDamage(damage);
     }
 
+    public void Push(Vector3 force)
+    {
+        _rigidbody.AddForce(force, ForceMode.Impulse);
+    }
+
     private void ActIfGameRunning()
     {
-        if (!GameManager.Instance.IsStarted || GameManager.Instance.IsPaused)
+        if (ShouldAct())
+        {
+            _healthSystem.Regenerate();
+        }
+    }
+
+    private bool ShouldAct()
+    {
+        return GameManager.Instance.IsStarted && !GameManager.Instance.IsPaused;
+    }
+
+    private void ActPhisicallyIfGameRunning()
+    {
+        if (ShouldAct())
+        {
+            MoveIfPlayerAlive();
+        }
+        else
         {
             ResetVelosity();
-            return;
         }
-
-        _healthSystem.Regenerate();
-        MoveIfPlayerAlive();
     }
 
     private void ResetVelosity()
@@ -82,6 +105,7 @@ public class Enemy : MonoBehaviour, IDamageable
         if (_target.gameObject.activeInHierarchy)
         {
             MoveToPlayer();
+            RotateToPlayer();
         }
         else
         {
@@ -94,10 +118,17 @@ public class Enemy : MonoBehaviour, IDamageable
         var distanceToPlayer = Vector3.Distance(transform.position, _target.position);
         if (distanceToPlayer > _stopDistance)
         {
-            transform.position = Vector3.MoveTowards(transform.position, _target.position, _statsSystem.MoveSpeed * Time.deltaTime);
-        }
+            Vector3 direction = (_target.position - transform.position).normalized;
 
-        transform.LookAt(_target.transform);
+            _rigidbody.MovePosition(_rigidbody.position + direction * _statsSystem.MoveSpeed * Time.deltaTime);
+        }
+    }
+
+    private void RotateToPlayer()
+    {
+        Vector3 directionToTarget = (_target.position - _rigidbody.position).normalized;
+        Quaternion targetRotation = Quaternion.LookRotation(directionToTarget);
+        _rigidbody.MoveRotation(targetRotation);
     }
 
     private void OnCollisionStay(Collision collision)
@@ -107,7 +138,7 @@ public class Enemy : MonoBehaviour, IDamageable
 
         if (damagable != null && !isAnotherEnemy)
         {
-            damagable.TakeDamage(_damagePerSecond * Time.deltaTime * _statsSystem.PowerMultiplier);
+            damagable.TakeDamage(_damagePerSecond * Time.deltaTime * _statsSystem.DamageMultiplier);
         }
     }
 

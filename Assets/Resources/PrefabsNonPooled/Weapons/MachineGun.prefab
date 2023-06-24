@@ -198,11 +198,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a0d48c8305c10449b36c20925c8c01f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _power: 10
+  _damage: 10
   _shootSpeed: 20
   _reloadTime: 2
   _clipCapacity: 30
-  _projectile: {fileID: 1003485616670832, guid: e389ce2fcb95cc5438fc84f260bb8dcd, type: 3}
+  _pushPower: 2
 --- !u!1 &1563589280250594
 GameObject:
   m_ObjectHideFlags: 0

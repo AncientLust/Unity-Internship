@@ -1255,7 +1255,7 @@ GameObject:
   m_Component:
   - component: {fileID: 305222590}
   m_Layer: 0
-  m_Name: Power
+  m_Name: Damage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3085,7 +3085,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Power multiplier '
+  m_text: 'Damage multiplier '
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: fd8f833d6987b7248827a5c48c521f5f, type: 2}
   m_sharedMaterial: {fileID: -416060171403804303, guid: fd8f833d6987b7248827a5c48c521f5f, type: 2}
@@ -5207,6 +5207,10 @@ PrefabInstance:
       objectReference: {fileID: 234839777}
     - target: {fileID: 8636505104562662026, guid: 4bf3cdea61c13f04c8a44d41c1ce4498, type: 3}
       propertyPath: _powerMultiplier
+      value: 
+      objectReference: {fileID: 1936759522}
+    - target: {fileID: 8636505104562662026, guid: 4bf3cdea61c13f04c8a44d41c1ce4498, type: 3}
+      propertyPath: _damageMultiplier
       value: 
       objectReference: {fileID: 1936759522}
     - target: {fileID: 8636505104562662026, guid: 4bf3cdea61c13f04c8a44d41c1ce4498, type: 3}

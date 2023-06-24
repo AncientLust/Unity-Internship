@@ -25,6 +25,11 @@ public class Player : MonoBehaviour, IDamageable
         ActIfGameRunning();
     }
 
+    private void FixedUpdate()
+    {
+        ActPhisicallyIfGameRunning();
+    }
+
     public void Die()
     {
         GameManager.Instance.GameOver();
@@ -41,19 +46,31 @@ public class Player : MonoBehaviour, IDamageable
 
     private void ActIfGameRunning()
     {
-        if (_healthSystem.IsDead || !GameManager.Instance.IsStarted || GameManager.Instance.IsPaused)
+        if (ShouldAct())
+        {
+            _healthSystem.Regenerate();
+            ShootHandler();
+            ReloadHandler();
+            ScrollWeaponSelect();
+        }
+    }
+
+    private void ActPhisicallyIfGameRunning()
+    {
+        if (ShouldAct())
+        {
+            MovePlayer();
+            RotatePlayer();
+        }
+        else
         {
             ResetVelosity();
-            return;
         }
+    }
 
-        _healthSystem.Regenerate();
-
-        MovePlayer();
-        RotatePlayer();
-        ShootHandler();
-        ReloadHandler();
-        ScrollWeaponSelect();
+    private bool ShouldAct()
+    {
+        return !_healthSystem.IsDead && GameManager.Instance.IsStarted && !GameManager.Instance.IsPaused;
     }
 
     private void MovePlayer()
@@ -61,7 +78,7 @@ public class Player : MonoBehaviour, IDamageable
         _movement.x = Input.GetAxisRaw("Horizontal");
         _movement.z = Input.GetAxisRaw("Vertical");
         _movement.Normalize();
-        transform.position += _movement * _statsSystem.MoveSpeed * Time.deltaTime;
+        _rigidbody.MovePosition(_rigidbody.position + _movement * _statsSystem.MoveSpeed * Time.deltaTime);
     }
 
     private void RotatePlayer()
@@ -69,7 +86,8 @@ public class Player : MonoBehaviour, IDamageable
         var mousePosition = _camera.ScreenToWorldPoint(Input.mousePosition);
         var playerToMouseDirection = mousePosition - transform.position;
         var angle = Mathf.Atan2(playerToMouseDirection.x, playerToMouseDirection.z) * Mathf.Rad2Deg;
-        transform.rotation = Quaternion.Euler(0, angle, 0);
+        Quaternion targetRotation = Quaternion.Euler(0, angle, 0);
+        _rigidbody.MoveRotation(targetRotation);
     }
 
     private void ResetVelosity()
@@ -121,7 +139,7 @@ public class Player : MonoBehaviour, IDamageable
     {
         _equippedWeaponIndex = 0;
         _currentWeapon = _weapons[0];
-        _currentWeapon.PowerMultiplier = _statsSystem.PowerMultiplier;
+        _currentWeapon.DamageMultiplier = _statsSystem.DamageMultiplier;
         _currentWeapon.ClipCapacityMultiplier = _statsSystem.AmmoMultiplier;
         GameplayUI.Instance.SetWeapon(_currentWeapon.gameObject.name);
 
@@ -145,13 +163,11 @@ public class Player : MonoBehaviour, IDamageable
 
     private void EquipNextWeapon()
     {
-        Debug.Log("Equip next weapon");
         EquipWeapon((_equippedWeaponIndex + 1) % _weapons.Count);
     }
 
     private void EquipPreviousWeapon()
     {
-        Debug.Log("Equip previous weapon");
         EquipWeapon(_equippedWeaponIndex == 0 ? _weapons.Count - 1 : --_equippedWeaponIndex);
     }
 
@@ -164,7 +180,7 @@ public class Player : MonoBehaviour, IDamageable
             if (i == _equippedWeaponIndex)
             {
                 _currentWeapon = _weapons[i];
-                _currentWeapon.PowerMultiplier = _statsSystem.PowerMultiplier;
+                _currentWeapon.DamageMultiplier = _statsSystem.DamageMultiplier;
                 _currentWeapon.ClipCapacityMultiplier = _statsSystem.AmmoMultiplier;
                 _currentWeapon.gameObject.SetActive(true);
                 continue;

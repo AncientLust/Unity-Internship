@@ -20,6 +20,11 @@ public class EnemySpawner : Singleton<EnemySpawner>
         StartCoroutine(EnemySpawnerCycle());
     }
 
+    private void OnApplicationQuit()
+    {
+        StopAllCoroutines();
+    }
+
     private IEnumerator EnemySpawnerCycle()
     {
         while (true)

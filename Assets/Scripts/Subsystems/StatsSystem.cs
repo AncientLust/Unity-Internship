@@ -8,7 +8,7 @@ public class StatsSystem : MonoBehaviour
     [SerializeField] private float _initialHealthRegen;
     [SerializeField] private float _initialMoveSpeed;
 
-    [SerializeField] private TextMeshProUGUI _powerMultiplier;
+    [SerializeField] private TextMeshProUGUI _damageMultiplier;
     [SerializeField] private TextMeshProUGUI _ammoMultiplier;
     [SerializeField] private TextMeshProUGUI _reloadMultiplier;
 
@@ -20,7 +20,7 @@ public class StatsSystem : MonoBehaviour
 
     private string _player = "Player";
 
-    public float PowerMultiplier { get; private set; } = 1;
+    public float DamageMultiplier { get; private set; } = 1;
     public float AmmoMultiplier { get; private set; } = 1;
     public float ReloadMultiplier { get; private set; } = 1;
     public float MaxHealth { get; private set; }
@@ -45,7 +45,7 @@ public class StatsSystem : MonoBehaviour
 
     public void SetLevelStats(int level)
     {
-        PowerMultiplier = 1 + _powerLevelIncrement * level;
+        DamageMultiplier = 1 + _powerLevelIncrement * level;
         AmmoMultiplier = 1 + _ammoLevelIncrement * level;
         ReloadMultiplier = Mathf.Pow(_reloadLevelIncrement, level);
 
@@ -62,7 +62,7 @@ public class StatsSystem : MonoBehaviour
     {
         if (gameObject.name == _player)
         {
-            _powerMultiplier.text = PowerMultiplier.ToString("F1");
+            _damageMultiplier.text = DamageMultiplier.ToString("F1");
             _ammoMultiplier.text = AmmoMultiplier.ToString("F1");
             _reloadMultiplier.text = ReloadMultiplier.ToString("F1");
         }

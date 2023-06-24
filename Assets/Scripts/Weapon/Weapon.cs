@@ -3,10 +3,11 @@ using UnityEngine;
 
 public class Weapon : MonoBehaviour
 {
-    [SerializeField] private float _power;
+    [SerializeField] private float _damage;
     [SerializeField] private float _shootSpeed;
     [SerializeField] private float _reloadTime;
     [SerializeField] private int _clipCapacity;
+    [SerializeField] private float _pushPower;
 
     private int _currentClipCapacity;
     private bool _canShoot = true;
@@ -14,7 +15,7 @@ public class Weapon : MonoBehaviour
     private const string _projectile = "Projectile";
 
     public float ClipCapacityMultiplier { set; get; } = 1;
-    public float PowerMultiplier { set; get; } = 1;
+    public float DamageMultiplier { set; get; } = 1;
     public bool InReloading { get; private set; }
 
     private void Awake()
@@ -38,7 +39,8 @@ public class Weapon : MonoBehaviour
                 GameObject projectile = ObjectPool.Instance.Get(_projectile);
                 if (projectile != null)
                 {
-                    projectile.GetComponent<Projectile>().Damage = _power * PowerMultiplier;
+                    projectile.GetComponent<Projectile>().Damage = _damage * DamageMultiplier;
+                    projectile.GetComponent<Projectile>().PushPower = _pushPower;
                     projectile.transform.position = _shootPoint.position;
                     projectile.transform.rotation = _shootPoint.rotation;
                     projectile.SetActive(true);

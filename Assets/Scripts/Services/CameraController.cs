@@ -11,7 +11,7 @@ public class CameraController : MonoBehaviour
         _startOffset  = transform.position;
     }
 
-    private void LateUpdate()
+    private void FixedUpdate()
     {
         FollowPlayer();
     }
@@ -19,6 +19,6 @@ public class CameraController : MonoBehaviour
     private void FollowPlayer()
     {
         var targetPosition = _playerTarget.position + _startOffset;
-        transform.position = Vector3.Lerp(transform.position, targetPosition, smoothSpeed * Time.deltaTime);
+        transform.position = Vector3.Lerp(transform.position, targetPosition, smoothSpeed * Time.fixedDeltaTime);
     }
 }

@@ -6,6 +6,7 @@ public class Projectile : MonoBehaviour
     private Renderer _renderer;
     
     public float Damage { get; set; } = 0;
+    public float PushPower { get; set; } = 0;
 
     private void Start()
     {
@@ -20,7 +21,7 @@ public class Projectile : MonoBehaviour
         }
 
         MoveForward();
-        DestroyOnceOutOfSight();
+        ReturnToPoolOnceOutOfSight();
     }
 
     private void MoveForward()
@@ -28,7 +29,7 @@ public class Projectile : MonoBehaviour
         transform.Translate(Vector3.forward * _speed * Time.deltaTime);
     }
 
-    private void DestroyOnceOutOfSight()
+    private void ReturnToPoolOnceOutOfSight()
     {
         if (!_renderer.isVisible)
         {
@@ -38,11 +39,25 @@ public class Projectile : MonoBehaviour
 
     private void OnTriggerEnter(Collider collider)
     {
-        var damagable = collider.gameObject.GetComponent<IDamageable>();
+        ApplyDamage(collider);
+        ApplyPush(collider);
+    }
 
+    private void ApplyDamage(Collider collider)
+    {
+        var damagable = collider.gameObject.GetComponent<IDamageable>();
         if (damagable != null)
         {
             damagable.TakeDamage(Damage);
+        }
+    }
+
+    private void ApplyPush(Collider collider)
+    {
+        var pushiable = collider.gameObject.GetComponent<IPushiable>();
+        if (pushiable != null)
+        {
+            pushiable.Push(transform.forward * PushPower);
         }
     }
 }
