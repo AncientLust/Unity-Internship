@@ -27,7 +27,7 @@ public class ObjectPool
         }
     }
 
-    public void Add(GameObject obj)
+    private void Add(GameObject obj)
     {
         string name = obj.name.Replace("(Clone)", "").Trim();
 
@@ -36,6 +36,12 @@ public class ObjectPool
             pool[name] = new Queue<GameObject>();
         }
 
+        pool[name].Enqueue(obj);
+    }
+
+    public void Return(GameObject obj)
+    {
+        string name = obj.name.Replace("(Clone)", "").Trim();
         obj.SetActive(false);
         pool[name].Enqueue(obj);
     }

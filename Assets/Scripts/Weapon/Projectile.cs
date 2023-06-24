@@ -33,7 +33,7 @@ public class Projectile : MonoBehaviour
     {
         if (!_renderer.isVisible)
         {
-            ObjectPool.Instance.Add(gameObject);
+            ObjectPool.Instance.Return(gameObject);
         }
     }
 

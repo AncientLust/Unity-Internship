@@ -49,7 +49,7 @@ public class Enemy : MonoBehaviour, IDamageable, IPushiable
     public void Die()
     {
         _target.GetComponent<ExperienceSystem>().AddExperience(_killExperience * _statsSystem.Level);
-        ObjectPool.Instance.Add(gameObject);
+        ObjectPool.Instance.Return(gameObject);
     }
 
     private void CacheComponents()
