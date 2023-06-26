@@ -2,13 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Player : MonoBehaviour, IDamageable
+public class Player : MonoBehaviour, IDamageable, ISaveable
 {
     [SerializeField] private List<Weapon> _weapons = new List<Weapon>();
 
     private Rigidbody _rigidbody;
     private StatsSystem _statsSystem;
     private HealthSystem _healthSystem;
+    private ExperienceSystem _experienceSystem;
     private int _equippedWeaponIndex;
     private Vector3 _movement;
     private Camera _camera;
@@ -42,6 +43,7 @@ public class Player : MonoBehaviour, IDamageable
         _rigidbody = GetComponent<Rigidbody>();
         _statsSystem = GetComponent<StatsSystem>();
         _healthSystem = GetComponent<HealthSystem>();
+        _experienceSystem = GetComponent<ExperienceSystem>();
     }
 
     private void ActIfGameRunning()
@@ -123,7 +125,7 @@ public class Player : MonoBehaviour, IDamageable
     {
         if (!_currentWeapon.InReloading)
         {
-            _currentWeapon.ClipCapacityMultiplier = _statsSystem.AmmoMultiplier;
+            _currentWeapon.AmmoMultiplier = _statsSystem.AmmoMultiplier;
             _currentWeapon.BeginReload();
             StartCoroutine(Reload(_currentWeapon));
         }
@@ -140,7 +142,7 @@ public class Player : MonoBehaviour, IDamageable
         _equippedWeaponIndex = 0;
         _currentWeapon = _weapons[0];
         _currentWeapon.DamageMultiplier = _statsSystem.DamageMultiplier;
-        _currentWeapon.ClipCapacityMultiplier = _statsSystem.AmmoMultiplier;
+        _currentWeapon.AmmoMultiplier = _statsSystem.AmmoMultiplier;
         GameplayUI.Instance.SetWeapon(_currentWeapon.gameObject.name);
 
         for (int i = 1; i < _weapons.Count; i++)
@@ -181,7 +183,7 @@ public class Player : MonoBehaviour, IDamageable
             {
                 _currentWeapon = _weapons[i];
                 _currentWeapon.DamageMultiplier = _statsSystem.DamageMultiplier;
-                _currentWeapon.ClipCapacityMultiplier = _statsSystem.AmmoMultiplier;
+                _currentWeapon.AmmoMultiplier = _statsSystem.AmmoMultiplier;
                 _currentWeapon.gameObject.SetActive(true);
                 continue;
             }
@@ -195,5 +197,28 @@ public class Player : MonoBehaviour, IDamageable
     public void TakeDamage(float damage)
     {
         _healthSystem.TakeDamage(damage);
+    }
+
+    public EntityData CaptureState()
+    {
+        EntityData data = new EntityData();
+        
+        data.position = transform.position;
+        data.level = _experienceSystem.Level;
+        data.experience = _experienceSystem.Experience;
+        data.health = _statsSystem.CurrentHealth;
+        data.equippedWeaponIndex = _equippedWeaponIndex;
+        data.ammo = _currentWeapon.CurrentAmmo;
+        return data;
+    }
+
+    public void LoadState(EntityData data)
+    {
+        transform.position = data.position;
+        _experienceSystem.Level = data.level;
+        _experienceSystem.AddExperience(data.experience);
+        EquipWeapon(data.equippedWeaponIndex);
+        _statsSystem.CurrentHealth = data.health;
+        _currentWeapon.CurrentAmmo = data.ammo;
     }
 }

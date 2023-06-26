@@ -3,9 +3,9 @@ using UnityEngine;
 
 public class EnemySpawner : Singleton<EnemySpawner>
 {
-    [SerializeField] private bool _spawn = true;
     [SerializeField] private Transform _playerTransform;
 
+    private bool _spawn = true;
     private float _minRadius = 10f;
     private float _maxRadius = 20f;
     private float _spawnRaduis = 360f;
@@ -20,16 +20,17 @@ public class EnemySpawner : Singleton<EnemySpawner>
         StartCoroutine(EnemySpawnerCycle());
     }
 
-    private void OnApplicationQuit()
+    private void OnDestroy()
     {
+        _spawn = false;
         StopAllCoroutines();
     }
 
     private IEnumerator EnemySpawnerCycle()
     {
-        while (true)
+        while (_spawn)
         {
-            if (_spawn && GameManager.Instance.IsStarted && !GameManager.Instance.IsPaused)
+            if (GameManager.Instance.IsStarted && !GameManager.Instance.IsPaused)
             {
                 SpawnEnemy(Random.Range(_minEnemiesToSpawn, _maxEnemiesToSpawn));
             }
@@ -42,11 +43,15 @@ public class EnemySpawner : Singleton<EnemySpawner>
     {
         for (int i = 0; i < enemiesToSpawn; i++)
         {
-            GameObject enemy = ObjectPool.Instance.Get(_enemy);
-            if (enemy != null)
-            { 
-                enemy.GetComponent<Enemy>().SetTarget(_playerTransform);
-                enemy.transform.position = GetEnemySpawnPosition();
+            if (ObjectPool.Instance != null)
+            {
+                GameObject enemy = ObjectPool.Instance.Get(_enemy);
+                if (enemy != null)
+                { 
+                    enemy.GetComponent<Enemy>().SetTarget(_playerTransform);
+                    enemy.GetComponent<Enemy>().Init();
+                    enemy.transform.position = GetEnemySpawnPosition();
+                }
             }
         }
     }

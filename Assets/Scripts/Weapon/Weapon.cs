@@ -9,32 +9,45 @@ public class Weapon : MonoBehaviour
     [SerializeField] private int _clipCapacity;
     [SerializeField] private float _pushPower;
 
-    private int _currentClipCapacity;
+    private int _currentAmmo;
     private bool _canShoot = true;
     private Transform _shootPoint;
     private const string _projectile = "Projectile";
 
-    public float ClipCapacityMultiplier { set; get; } = 1;
+    public float AmmoMultiplier { set; get; } = 1;
     public float DamageMultiplier { set; get; } = 1;
-    public bool InReloading { get; private set; }
+    public bool InReloading { get; private set; } = false;
+
+    public int CurrentAmmo 
+    {
+        get 
+        {
+            return _currentAmmo;
+        }
+        set 
+        {
+            _currentAmmo = value;
+            GameplayUI.Instance.SetAmmo(_currentAmmo);
+        }
+    }
 
     private void Awake()
     {
         _shootPoint = transform.Find("ShootPoint");
-        _currentClipCapacity = (int)(_clipCapacity * ClipCapacityMultiplier);
+        CurrentAmmo = (int)(_clipCapacity * AmmoMultiplier);
     }
 
     private void OnEnable()
     {
         _canShoot = true;
-        GameplayUI.Instance.SetAmmo(_currentClipCapacity);
+        GameplayUI.Instance.SetAmmo(CurrentAmmo);
     }
 
     public void Shoot()
     {
         if (!InReloading && _canShoot)
         {
-            if (_currentClipCapacity > 0)
+            if (CurrentAmmo > 0)
             {
                 GameObject projectile = ObjectPool.Instance.Get(_projectile);
                 if (projectile != null)
@@ -46,8 +59,8 @@ public class Weapon : MonoBehaviour
                     projectile.SetActive(true);
                 }
 
-                _currentClipCapacity--;
-                GameplayUI.Instance.SetAmmo(_currentClipCapacity);
+                CurrentAmmo--;
+                GameplayUI.Instance.SetAmmo(CurrentAmmo);
                 StartCoroutine(ShootDowntime());
             }
             else
@@ -73,12 +86,12 @@ public class Weapon : MonoBehaviour
     public void FinishReload()
     {
         Debug.Log("Reloaded!");
-        _currentClipCapacity = (int)(_clipCapacity * ClipCapacityMultiplier);
+        CurrentAmmo = (int)(_clipCapacity * AmmoMultiplier);
         InReloading = false;
 
         if (gameObject.activeInHierarchy)
         {
-            GameplayUI.Instance.SetAmmo(_currentClipCapacity);
+            GameplayUI.Instance.SetAmmo(CurrentAmmo);
         }
     }
 
@@ -89,6 +102,6 @@ public class Weapon : MonoBehaviour
 
     public bool HasEmptyClip()
     {
-        return _currentClipCapacity == 0;
+        return CurrentAmmo == 0;
     }
 }

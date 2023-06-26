@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Enemy : MonoBehaviour, IDamageable, IPushiable
+public class Enemy : MonoBehaviour, IDamageable, IPushiable, ISaveable
 {
     private float _stopDistance = 0.35f;
     private float _damagePerSecond = 10;
@@ -10,10 +10,15 @@ public class Enemy : MonoBehaviour, IDamageable, IPushiable
     private Rigidbody _rigidbody;
     private HealthSystem _healthSystem;
     private StatsSystem _statsSystem;
+    private ExperienceSystem _experienceSystem;
 
     private void Awake()
     {
         CacheComponents();
+    }
+
+    private void Start()
+    {
         SetLevelBasedOnGameDuration();
     }
 
@@ -27,46 +32,15 @@ public class Enemy : MonoBehaviour, IDamageable, IPushiable
         ActPhisicallyIfGameRunning();
     }
 
-    private void OnEnable()
+    public void Init()
     {
         ResetHealth();
         SetLevelBasedOnGameDuration();
     }
 
-    public void ResetHealth()
+    private bool ShouldAct()
     {
-        _statsSystem.CurrentHealth = _statsSystem.MaxHealth;
-        _healthSystem.IsDead = false;
-    }
-
-    private void SetLevelBasedOnGameDuration()
-    {
-        var minutesSceneLoaded = Time.timeSinceLevelLoad / 60.0f;
-        var enemyLevel = (int)Mathf.Ceil(minutesSceneLoaded * _levelsPerMinute);
-        _statsSystem.SetLevelStats(enemyLevel > 1 ? enemyLevel : 1);
-    }
-
-    public void Die()
-    {
-        _target.GetComponent<ExperienceSystem>().AddExperience(_killExperience * _statsSystem.Level);
-        ObjectPool.Instance.Return(gameObject);
-    }
-
-    private void CacheComponents()
-    {
-        _rigidbody = GetComponent<Rigidbody>();
-        _statsSystem = GetComponent<StatsSystem>();
-        _healthSystem = GetComponent<HealthSystem>();
-    }
-
-    public void TakeDamage(float damage)
-    {
-        _healthSystem.TakeDamage(damage);
-    }
-
-    public void Push(Vector3 force)
-    {
-        _rigidbody.AddForce(force, ForceMode.Impulse);
+        return GameManager.Instance.IsStarted && !GameManager.Instance.IsPaused;
     }
 
     private void ActIfGameRunning()
@@ -75,11 +49,6 @@ public class Enemy : MonoBehaviour, IDamageable, IPushiable
         {
             _healthSystem.Regenerate();
         }
-    }
-
-    private bool ShouldAct()
-    {
-        return GameManager.Instance.IsStarted && !GameManager.Instance.IsPaused;
     }
 
     private void ActPhisicallyIfGameRunning()
@@ -92,6 +61,43 @@ public class Enemy : MonoBehaviour, IDamageable, IPushiable
         {
             ResetVelosity();
         }
+    }
+
+    public void ResetHealth()
+    {
+        _statsSystem.CurrentHealth = _statsSystem.MaxHealth;
+        _healthSystem.IsDead = false;
+    }
+
+    private void SetLevelBasedOnGameDuration()
+    {
+        var minutesSceneLoaded = Time.timeSinceLevelLoad / 60.0f;
+        var enemyLevel = (int)Mathf.Ceil(minutesSceneLoaded * _levelsPerMinute);
+        _experienceSystem.Level = enemyLevel;
+    }
+
+    public void Die()
+    {
+        _target.GetComponent<ExperienceSystem>().AddExperience(_killExperience * _experienceSystem.Level);
+        ObjectPool.Instance.Return(gameObject);
+    }
+
+    private void CacheComponents()
+    {
+        _rigidbody = GetComponent<Rigidbody>();
+        _statsSystem = GetComponent<StatsSystem>();
+        _healthSystem = GetComponent<HealthSystem>();
+        _experienceSystem = GetComponent<ExperienceSystem>();
+    }
+
+    public void TakeDamage(float damage)
+    {
+        _healthSystem.TakeDamage(damage);
+    }
+
+    public void Push(Vector3 force)
+    {
+        _rigidbody.AddForce(force, ForceMode.Impulse);
     }
 
     private void ResetVelosity()
@@ -136,7 +142,7 @@ public class Enemy : MonoBehaviour, IDamageable, IPushiable
         var damagable = collision.gameObject.GetComponent<IDamageable>();
         var isAnotherEnemy = collision.gameObject.GetComponent<Enemy>();
 
-        if (damagable != null && !isAnotherEnemy)
+        if (damagable != null && !isAnotherEnemy && ShouldAct())
         {
             damagable.TakeDamage(_damagePerSecond * Time.deltaTime * _statsSystem.DamageMultiplier);
         }
@@ -145,5 +151,22 @@ public class Enemy : MonoBehaviour, IDamageable, IPushiable
     public void SetTarget(Transform target)
     {
         _target = target;
+    }
+
+    public EntityData CaptureState()
+    {
+        EntityData data = new EntityData();
+        data.health = _statsSystem.CurrentHealth;
+        data.position = transform.position;
+        data.level = _experienceSystem.Level;
+
+        return data;
+    }
+
+    public void LoadState(EntityData data)
+    {
+        transform.position = data.position;
+        _statsSystem.CurrentHealth = data.health;
+        _experienceSystem.Level = data.level;
     }
 }

@@ -27,7 +27,6 @@ public class StatsSystem : MonoBehaviour
     public float CurrentHealth { get; set; }
     public float HealthRegen { get; private set; } 
     public float MoveSpeed { get; private set; }
-    public int Level { get; private set; }
 
     private void Start()
     {
@@ -36,7 +35,6 @@ public class StatsSystem : MonoBehaviour
 
     private void InitStats()
     {
-        Level = 1;
         MaxHealth = _initialHealth;
         CurrentHealth = _initialHealth;
         HealthRegen = _initialHealthRegen;
