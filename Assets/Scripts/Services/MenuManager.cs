@@ -5,7 +5,7 @@ public class MenuManager : MonoBehaviour
 {
     private string _menu = "Menu";
     private string _settings = "Settings";
-    private string _gameplay = "Gameplay";
+    private string _gameplay = "Game";
 
     public void StartGame()
     {

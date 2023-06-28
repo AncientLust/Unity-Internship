@@ -22,18 +22,18 @@ public class GameManager : Singleton<GameManager>
     {
         IsStarted = true;
         EnemySpawner.Instance.enabled = true;
-        GameplayUI.Instance.SetScreen(_gameplay);
+        //GameplayUI.Instance.SetScreen(_gameplay);
     }
 
     public void PauseGame()
     {
-        GameplayUI.Instance.SetScreen(_pause);
+        //GameplayUI.Instance.SetScreen(_pause);
         IsPaused = true;
     }
 
     public void ResumeGame()
     {
-        GameplayUI.Instance.SetScreen(_gameplay);
+        //GameplayUI.Instance.SetScreen(_gameplay);
         IsPaused = false;
     }
 
@@ -49,7 +49,7 @@ public class GameManager : Singleton<GameManager>
 
     public void GameOver()
     {
-        GameplayUI.Instance.SetScreen(_gameOver);
+        //GameplayUI.Instance.SetScreen(_gameOver);
         IsPaused = true;
     }
 }

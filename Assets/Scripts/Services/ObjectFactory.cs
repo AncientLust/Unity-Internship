@@ -3,11 +3,12 @@ using UnityEngine;
 
 public class ObjectFactory
 {
-    public static ObjectFactory Instance { get; } = new ObjectFactory();
+    // Get rid of Instance property
+    //public static ObjectFactory Instance { get; } = new ObjectFactory();
 
     private readonly Dictionary<string, GameObject> _prefabDict;
 
-    private ObjectFactory()
+    public ObjectFactory()
     {
         _prefabDict = new Dictionary<string, GameObject>();
         var prefabs = Resources.LoadAll<GameObject>("PrefabsPooled");
@@ -21,7 +22,7 @@ public class ObjectFactory
     {
         if (_prefabDict.TryGetValue(name, out var prefab))
         {
-            return Object.Instantiate(prefab, prefab.transform.position, prefab.transform.rotation);
+            return Object.Instantiate(prefab);
         }
         else
         {

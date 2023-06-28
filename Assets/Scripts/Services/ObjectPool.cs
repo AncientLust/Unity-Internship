@@ -6,9 +6,12 @@ public class ObjectPool
     public static ObjectPool Instance { get; } = new ObjectPool();
     private readonly Dictionary<string, Queue<GameObject>> pool;
 
-    private ObjectPool()
+    private ObjectFactory _objectFactory;
+
+    public ObjectPool()
     {
         pool = new Dictionary<string, Queue<GameObject>>();
+        _objectFactory = new ObjectFactory();
     }
 
     public GameObject Get(string name)
@@ -21,13 +24,14 @@ public class ObjectPool
         }
         else
         {
-            var obj = ObjectFactory.Instance.Instantiate(name);
+            var obj = _objectFactory.Instantiate(name);
             return obj;
         }
     }
 
     public void Return(GameObject obj)
     {
+        // Use enums instead of strings
         string name = obj.name.Replace("(Clone)", "").Trim();
 
         if (!pool.ContainsKey(name))

@@ -18,6 +18,9 @@ public class Weapon : MonoBehaviour
     public float DamageMultiplier { set; get; } = 1;
     public bool InReloading { get; private set; } = false;
 
+    public delegate void AmmoChangedHandler(int ammo);
+    public event AmmoChangedHandler OnAmmoChanged;
+
     public int CurrentAmmo 
     {
         get 
@@ -27,7 +30,7 @@ public class Weapon : MonoBehaviour
         set 
         {
             _currentAmmo = value;
-            GameplayUI.Instance.SetAmmo(_currentAmmo);
+            OnAmmoChanged.Invoke(value);
         }
     }
 
@@ -40,7 +43,8 @@ public class Weapon : MonoBehaviour
     private void OnEnable()
     {
         _canShoot = true;
-        GameplayUI.Instance.SetAmmo(CurrentAmmo);
+        OnAmmoChanged.Invoke(CurrentAmmo);
+        //GameplayUI.Instance.SetAmmo(CurrentAmmo);
     }
 
     public void Shoot()
@@ -60,7 +64,8 @@ public class Weapon : MonoBehaviour
                 }
 
                 CurrentAmmo--;
-                GameplayUI.Instance.SetAmmo(CurrentAmmo);
+                //GameplayUI.Instance.SetAmmo(CurrentAmmo);
+                
                 StartCoroutine(ShootDowntime());
             }
             else
@@ -85,15 +90,21 @@ public class Weapon : MonoBehaviour
 
     public void FinishReload()
     {
-        Debug.Log("Reloaded!");
-        CurrentAmmo = (int)(_clipCapacity * AmmoMultiplier);
         InReloading = false;
 
         if (gameObject.activeInHierarchy)
         {
-            GameplayUI.Instance.SetAmmo(CurrentAmmo);
+            CurrentAmmo = (int)(_clipCapacity * AmmoMultiplier);
         }
+        else
+        {
+            _currentAmmo = (int)(_clipCapacity * AmmoMultiplier);
+        }
+
+        Debug.Log("Reloaded!");
     }
+
+    //private void 
 
     public float GetReloadTime()
     {

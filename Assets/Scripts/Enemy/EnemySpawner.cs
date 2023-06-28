@@ -5,6 +5,8 @@ public class EnemySpawner : Singleton<EnemySpawner>
 {
     [SerializeField] private Transform _playerTransform;
 
+    private ObjectPool _objectPool;
+
     private bool _spawn = true;
     private float _minRadius = 10f;
     private float _maxRadius = 20f;
@@ -15,6 +17,11 @@ public class EnemySpawner : Singleton<EnemySpawner>
     private int _maxEnemiesToSpawn = 3;
     private const string _enemy = "Enemy";
     
+    public void Init(ObjectPool objectPool)
+    {
+        _objectPool = objectPool;
+    }
+
     private void Start()
     {
         StartCoroutine(EnemySpawnerCycle());

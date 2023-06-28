@@ -1,32 +1,38 @@
-using TMPro;
 using UnityEngine;
 
 public class StatsSystem : MonoBehaviour
 {
     [SerializeField] private float _initialHealth;
-    [SerializeField] private float _currentHealth;
     [SerializeField] private float _initialHealthRegen;
     [SerializeField] private float _initialMoveSpeed;
+    //[SerializeField] private float _currentHealth;
 
-    [SerializeField] private TextMeshProUGUI _damageMultiplier;
-    [SerializeField] private TextMeshProUGUI _ammoMultiplier;
-    [SerializeField] private TextMeshProUGUI _reloadMultiplier;
+    //[SerializeField] private TextMeshProUGUI _damageMultiplier;
+    //[SerializeField] private TextMeshProUGUI _ammoMultiplier;
+    //[SerializeField] private TextMeshProUGUI _reloadMultiplier;
 
-    private float _powerLevelIncrement = 0.05f;
-    private float _ammoLevelIncrement = 0.05f;
-    private float _reloadLevelIncrement = 0.95f;
-    private float _speedLevelIncrement = 0.01f;
-    private float _healthLevelIncrement = 0.05f;
+    private struct _levelUpGrowth
+    {
+        public const float damage = .05f;
+        public const float ammo = .05f;
+        public const float reload = .95f;
+        public const float maxHealth = .05f;
+        public const float healthRegen = .05f;
+        public const float moveSpeed = .01f;
+    }
 
-    private string _player = "Player";
+    private StatsMultipliers _multipliers;
 
-    public float DamageMultiplier { get; private set; } = 1;
-    public float AmmoMultiplier { get; private set; } = 1;
-    public float ReloadMultiplier { get; private set; } = 1;
+    public float DamageMultiplier { get; private set; } = 1; // Event to weapon system
+    public float AmmoMultiplier { get; private set; } = 1; // Event to weapon system
+    public float ReloadMultiplier { get; private set; } = 1; // Event to weapon system
     public float MaxHealth { get; private set; }
-    public float CurrentHealth { get; set; }
+    public float CurrentHealth { get; set; } // Could be put out of stats system?
     public float HealthRegen { get; private set; } 
-    public float MoveSpeed { get; private set; }
+    public float MoveSpeed { get; private set; } // Event to move system
+
+    public delegate void OnStatsChangedHandler(StatsMultipliers statsMultipliers);
+    public event OnStatsChangedHandler OnStatsChanged;  
 
     private void Start()
     {
@@ -43,26 +49,35 @@ public class StatsSystem : MonoBehaviour
 
     public void SetLevelStats(int level)
     {
-        DamageMultiplier = 1 + _powerLevelIncrement * level;
-        AmmoMultiplier = 1 + _ammoLevelIncrement * level;
-        ReloadMultiplier = Mathf.Pow(_reloadLevelIncrement, level);
-
-        MaxHealth = _initialHealth * (1 + _speedLevelIncrement * level);
-        HealthRegen = _initialHealthRegen * (1 + _speedLevelIncrement * level);
-        MoveSpeed = _initialMoveSpeed * (1 + _healthLevelIncrement * level);
-
-        CurrentHealth = MaxHealth;
-
-        UpdatePlayerUIStats();
+        UpdateStatsMultipliers(level);
+        UpdatePublicStats();
     }
 
-    public void UpdatePlayerUIStats()
+    private void UpdateStatsMultipliers(int level)
     {
-        if (gameObject.name == _player)
+        _multipliers.damage = 1 + _levelUpGrowth.damage * level;
+        _multipliers.ammo = 1 + _levelUpGrowth.ammo * level;
+        _multipliers.reload = Mathf.Pow(_levelUpGrowth.reload, level);
+        _multipliers.maxHealth = 1 + _levelUpGrowth.maxHealth * level;
+        _multipliers.healthRegen = 1 + _levelUpGrowth.healthRegen * level;
+        _multipliers.moveSpeed = 1 + _levelUpGrowth.moveSpeed * level;
+    }
+
+    private void UpdatePublicStats()
+    {
+        CurrentHealth = _initialHealth * _multipliers.maxHealth;
+        MaxHealth = _initialHealth * _multipliers.maxHealth;
+        HealthRegen = _initialHealthRegen * _multipliers.healthRegen;
+        MoveSpeed = _initialMoveSpeed * _multipliers.moveSpeed;
+
+        UpdateHUDStats();
+    }
+
+    public void UpdateHUDStats()
+    {
+        if (gameObject.CompareTag(Tags.Player.ToString()))
         {
-            _damageMultiplier.text = DamageMultiplier.ToString("F1");
-            _ammoMultiplier.text = AmmoMultiplier.ToString("F1");
-            _reloadMultiplier.text = ReloadMultiplier.ToString("F1");
+            OnStatsChanged.Invoke(_multipliers);
         }
     }
 }

@@ -3,9 +3,9 @@ using UnityEngine;
 
 public class ExperienceSystem : MonoBehaviour
 {
-    [SerializeField] private TextMeshProUGUI _levelText;
-    [SerializeField] private TextMeshProUGUI _levelPercentText;
-    [SerializeField] private ExperienceBar _experienceBar;
+    //[SerializeField] private TextMeshProUGUI _levelText;
+    //[SerializeField] private TextMeshProUGUI _levelPercentText;
+    //[SerializeField] private ExperienceBar _experienceBar;
     [SerializeField] private ParticleSystem _levelUp;
 
     private int _level = 1;
@@ -14,6 +14,13 @@ public class ExperienceSystem : MonoBehaviour
     private float _nextLevelExperience;
     private float _nextLevelMultiplier = 1.2f;
     private StatsSystem _statSystem;
+    private Player _player;
+
+    public delegate void OnLevelChangedHandler(int level);
+    public delegate void OnExperienceChangedHandler(float levelPercent);
+
+    public event OnLevelChangedHandler OnLevelChanged;
+    public event OnExperienceChangedHandler OnExperienceChanged;
 
     public int Level { 
         get 
@@ -26,7 +33,7 @@ public class ExperienceSystem : MonoBehaviour
             _level = value > 1 ? value : 1;
             _statSystem.SetLevelStats(_level);
             _nextLevelExperience = _nextLevelExperienceStartValue * Mathf.Pow(_nextLevelMultiplier, _level);
-            UpdateGUIExperienceElements();
+            UpdateExperienceOnHUD();
         } 
     }
     public float Experience => _experience;
@@ -39,12 +46,13 @@ public class ExperienceSystem : MonoBehaviour
     private void Start()
     {
         _nextLevelExperience = _nextLevelExperienceStartValue * _nextLevelMultiplier;
-        UpdateGUIExperienceElements();
+        UpdateExperienceOnHUD();
     }
 
     private void CacheComponents()
     {
         _statSystem = gameObject.GetComponent<StatsSystem>();
+        _player = GetComponent<Player>();
     }
 
     public void AddExperience(float experience)
@@ -56,7 +64,8 @@ public class ExperienceSystem : MonoBehaviour
             LevelUp();
         }
 
-        UpdateGUIExperienceElements();
+        //OnExperienceChanged.Invoke(_experience / _nextLevelExperience);
+        UpdateExperienceOnHUD();
     }
 
     private void LevelUp()
@@ -68,13 +77,17 @@ public class ExperienceSystem : MonoBehaviour
         _statSystem.SetLevelStats(_level);
     }
 
-    private void UpdateGUIExperienceElements()
+    private void UpdateExperienceOnHUD()
     {
-        if (GetComponent<Player>() != null)
+        if (_player != null)
         {
-            _levelText.text = _level.ToString();
-            _levelPercentText.text = ((int)(_experience / _nextLevelExperience * 100)).ToString() + " %";
-            _experienceBar.SetFill(_experience / _nextLevelExperience);
+            //OnLevelChanged.Invoke(_level);
+            //OnExperienceChanged.Invoke(_experience / _nextLevelExperience);
+            //_levelText.text = _level.ToString();
+            //_levelPercentText.text = ((int)(_experience / _nextLevelExperience * 100)).ToString() + " %";
+            //_experienceBar.SetFill(_experience / _nextLevelExperience);
+            OnLevelChanged.Invoke(_level);
+            OnExperienceChanged.Invoke(_experience / _nextLevelExperience);
         }
     }
 }

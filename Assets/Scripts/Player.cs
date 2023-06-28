@@ -15,10 +15,17 @@ public class Player : MonoBehaviour, IDamageable, ISaveable
     private Camera _camera;
     private Weapon _currentWeapon;
 
+    public delegate void WeaponChangedHandler(string weapon);
+    //public delegate void AmmoChangedHandler(int ammo);
+
+    public event WeaponChangedHandler OnWeaponChanged;
+    //public event AmmoChangedHandler OnAmmoChanged;
+
     private void Start()
     {
         CacheComponents();
-        InitializeWeapon();
+        EquipWeapon(0);
+        //InitializeWeapon();
     }
 
     private void Update()
@@ -137,19 +144,20 @@ public class Player : MonoBehaviour, IDamageable, ISaveable
         weapon.FinishReload();
     }
 
-    private void InitializeWeapon()
-    {
-        _equippedWeaponIndex = 0;
-        _currentWeapon = _weapons[0];
-        _currentWeapon.DamageMultiplier = _statsSystem.DamageMultiplier;
-        _currentWeapon.AmmoMultiplier = _statsSystem.AmmoMultiplier;
-        GameplayUI.Instance.SetWeapon(_currentWeapon.gameObject.name);
+    //private void InitializeWeapon()
+    //{
+    //    _equippedWeaponIndex = 0;
+    //    _currentWeapon = _weapons[0];
+    //    _currentWeapon.DamageMultiplier = _statsSystem.DamageMultiplier;
+    //    _currentWeapon.AmmoMultiplier = _statsSystem.AmmoMultiplier;
+    //    //GameplayUI.Instance.SetWeapon(_currentWeapon.gameObject.name);
+    //    OnWeaponChanged.Invoke(_currentWeapon.gameObject.name);
 
-        for (int i = 1; i < _weapons.Count; i++)
-        {
-            _weapons[i].gameObject.SetActive(false);
-        }
-    }
+    //    for (int i = 1; i < _weapons.Count; i++)
+    //    {
+    //        _weapons[i].gameObject.SetActive(false);
+    //    }
+    //}
 
     private void ScrollWeaponSelect()
     {
@@ -191,7 +199,9 @@ public class Player : MonoBehaviour, IDamageable, ISaveable
             _weapons[i].gameObject.SetActive(false);
         }
 
-        GameplayUI.Instance.SetWeapon(_currentWeapon.gameObject.name);
+        OnWeaponChanged.Invoke(_currentWeapon.gameObject.name);
+        //OnAmmoChanged.Invoke(_currentWeapon.CurrentAmmo);
+        //GameplayUI.Instance.SetWeapon(_currentWeapon.gameObject.name);
     }
 
     public void TakeDamage(float damage)
