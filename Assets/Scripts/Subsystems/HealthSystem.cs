@@ -1,19 +1,42 @@
 using UnityEngine;
 
-public class HealthSystem : MonoBehaviour
+public class HealthSystem : MonoBehaviour, IDamageable
 {
     [SerializeField] private ParticleSystem _bloodSplat;
     [SerializeField] protected HealthBar _healthBar;
-    
+
+    [SerializeField] private float _baseHealth;
+    [SerializeField] private float _baseHealthRegen;
+
     private StatsSystem _statsSystem;
     private IDamageable _damageable;
 
-    public bool IsDead { get; set; }
+    private float _maxHealth;
+    private float _health;
+    private float _regenPerSecond;
+    private bool _isDead;
     
     private void Awake()
     {
         CacheComponents();
-        IsDead = false;
+        _isDead = false;
+    }
+
+    private void Start()
+    {
+        _maxHealth = _baseHealth;
+        _health = _maxHealth;
+        _regenPerSecond = _baseHealthRegen;
+    }
+
+    private void OnEnable()
+    {
+        _statsSystem.onStatsChanged += SetLevelUpMultipliers;
+    }
+
+    private void OnDisable()
+    {
+        _statsSystem.onStatsChanged -= SetLevelUpMultipliers;
     }
 
     private void CacheComponents()
@@ -24,24 +47,37 @@ public class HealthSystem : MonoBehaviour
 
     public void TakeDamage(float damage)
     {
-        _statsSystem.CurrentHealth -= damage;
-        _healthBar.SetFill(_statsSystem.CurrentHealth / _statsSystem.MaxHealth);
+        _health -= damage;
+        _healthBar.SetFill(_health / _maxHealth);
+
         PlayBloodEffect();
         CheckIfDied();
     }
 
+    public void Die()
+    {
+        if (gameObject.CompareTag(Tags.Player.ToString()))
+        {
+            GameManager.Instance.GameOver();
+        }
+        else
+        {
+            ObjectPool.Instance.Return(gameObject);
+        }
+    }
+
     private void CheckIfDied()
     {
-        if (_statsSystem.CurrentHealth <= 0)
+        if (_health <= 0)
         {
-            IsDead = true;
+            _isDead = true;
             _damageable.Die();
         }
     }
 
     private void PlayBloodEffect()
     {
-        if (!_bloodSplat.isPlaying)
+        if (!_bloodSplat.isPlaying) // Ask SettingsSystem if enabled
         {
             //if (GameSettings.Instance.BloodEffect)
             //{
@@ -52,11 +88,11 @@ public class HealthSystem : MonoBehaviour
 
     public void Regenerate()
     {
-        if (!IsDead)
+        if (!_isDead)
         {
-            _statsSystem.CurrentHealth += _statsSystem.HealthRegen * Time.deltaTime;
-            _statsSystem.CurrentHealth = Mathf.Clamp(_statsSystem.CurrentHealth, 0, _statsSystem.MaxHealth);
-            _healthBar.SetFill(_statsSystem.CurrentHealth / _statsSystem.MaxHealth);
+            _health += _regenPerSecond * Time.deltaTime;
+            _health = Mathf.Clamp(_health, 0, _maxHealth);
+            _healthBar.SetFill(_health / _maxHealth);
             
             HideHealthIfHealthy();
         }
@@ -64,6 +100,20 @@ public class HealthSystem : MonoBehaviour
 
     public void HideHealthIfHealthy()
     {
-        _healthBar.gameObject.SetActive(_statsSystem.CurrentHealth != _statsSystem.MaxHealth);
+        _healthBar.gameObject.SetActive(_health != _maxHealth);
+    }
+
+    private void SetLevelUpMultipliers(StatsMultipliers stats)
+    {
+        _maxHealth = _baseHealth * stats.maxHealth;
+        _regenPerSecond = _baseHealthRegen * stats.maxHealth;
+    }
+
+    public void ResetHealth()
+    {
+        _isDead = false;
+        _health = _baseHealth;
+        _regenPerSecond = _baseHealthRegen;
+        _healthBar.SetFill(1);
     }
 }

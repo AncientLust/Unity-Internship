@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Player : MonoBehaviour, IDamageable, ISaveable
+public class Player : MonoBehaviour, ISaveable
 {
     private Rigidbody _rigidbody;
     private StatsSystem _statsSystem;
@@ -34,11 +34,11 @@ public class Player : MonoBehaviour, IDamageable, ISaveable
         ActPhisicallyIfGameRunning();
     }
 
-    public void Die()
-    {
-        GameManager.Instance.GameOver();
-        gameObject.SetActive(false);
-    }
+    //public void Die()
+    //{
+    //    GameManager.Instance.GameOver();
+    //    gameObject.SetActive(false);
+    //}
 
     private void CacheComponents()
     {
@@ -73,7 +73,7 @@ public class Player : MonoBehaviour, IDamageable, ISaveable
 
     private bool ShouldAct()
     {
-        return !_healthSystem.IsDead && GameManager.Instance.IsStarted && !GameManager.Instance.IsPaused;
+        return GameManager.Instance.IsStarted && !GameManager.Instance.IsPaused;
     }
 
     private void MovePlayer()
@@ -134,7 +134,7 @@ public class Player : MonoBehaviour, IDamageable, ISaveable
         data.position = transform.position;
         data.level = _experienceSystem.Level;
         data.experience = _experienceSystem.Experience;
-        data.health = _statsSystem.CurrentHealth;
+        //data.health = _statsSystem.CurrentHealth;
         //data.equippedWeaponIndex = _equippedWeaponIndex;
         //data.ammo = _currentWeapon.CurrentAmmo;
         return data;
@@ -146,7 +146,7 @@ public class Player : MonoBehaviour, IDamageable, ISaveable
         _experienceSystem.Level = data.level;
         _experienceSystem.AddExperience(data.experience);
         //EquipWeapon(data.equippedWeaponIndex);
-        _statsSystem.CurrentHealth = data.health;
+        //_statsSystem.CurrentHealth = data.health;
         //_currentWeapon.CurrentAmmo = data.ammo;
     }
 }

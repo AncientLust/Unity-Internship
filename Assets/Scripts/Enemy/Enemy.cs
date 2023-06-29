@@ -34,7 +34,7 @@ public class Enemy : MonoBehaviour, IDamageable, IPushiable, ISaveable
 
     public void Init()
     {
-        ResetHealth();
+        //ResetHealth();
         SetLevelBasedOnGameDuration();
     }
 
@@ -61,12 +61,6 @@ public class Enemy : MonoBehaviour, IDamageable, IPushiable, ISaveable
         {
             ResetVelosity();
         }
-    }
-
-    public void ResetHealth()
-    {
-        _statsSystem.CurrentHealth = _statsSystem.MaxHealth;
-        _healthSystem.IsDead = false;
     }
 
     private void SetLevelBasedOnGameDuration()
@@ -144,7 +138,8 @@ public class Enemy : MonoBehaviour, IDamageable, IPushiable, ISaveable
 
         if (damagable != null && !isAnotherEnemy && ShouldAct())
         {
-            damagable.TakeDamage(_damagePerSecond * Time.deltaTime * _statsSystem.DamageMultiplier);
+            damagable.TakeDamage(_damagePerSecond * Time.deltaTime);
+            //damagable.TakeDamage(_damagePerSecond * Time.deltaTime * _statsSystem.DamageMultiplier);
         }
     }
 
@@ -156,7 +151,7 @@ public class Enemy : MonoBehaviour, IDamageable, IPushiable, ISaveable
     public EntityData CaptureState()
     {
         EntityData data = new EntityData();
-        data.health = _statsSystem.CurrentHealth;
+        //data.health = _statsSystem.CurrentHealth;
         data.position = transform.position;
         data.level = _experienceSystem.Level;
 
@@ -166,7 +161,7 @@ public class Enemy : MonoBehaviour, IDamageable, IPushiable, ISaveable
     public void LoadState(EntityData data)
     {
         transform.position = data.position;
-        _statsSystem.CurrentHealth = data.health;
+        //_statsSystem.CurrentHealth = data.health;
         _experienceSystem.Level = data.level;
     }
 }

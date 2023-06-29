@@ -17,13 +17,14 @@ public class EnemySpawner : Singleton<EnemySpawner>
     private int _maxEnemiesToSpawn = 3;
     private const string _enemy = "Enemy";
     
-    public void Init(ObjectPool objectPool)
-    {
-        _objectPool = objectPool;
-    }
+    //public void Init(ObjectPool objectPool)
+    //{
+    //    _objectPool = objectPool;
+    //}
 
     private void Start()
     {
+        _objectPool = new ObjectPool();
         StartCoroutine(EnemySpawnerCycle());
     }
 
@@ -50,13 +51,14 @@ public class EnemySpawner : Singleton<EnemySpawner>
     {
         for (int i = 0; i < enemiesToSpawn; i++)
         {
-            if (ObjectPool.Instance != null)
+            if (_objectPool != null)
             {
                 GameObject enemy = ObjectPool.Instance.Get(_enemy);
                 if (enemy != null)
                 { 
                     enemy.GetComponent<Enemy>().SetTarget(_playerTransform);
                     enemy.GetComponent<Enemy>().Init();
+                    enemy.GetComponent<HealthSystem>().ResetHealth();
                     enemy.transform.position = GetEnemySpawnPosition();
                 }
             }

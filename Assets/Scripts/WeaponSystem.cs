@@ -33,7 +33,7 @@ public class WeaponSystem : MonoBehaviour
         _player.onScrollDown += EquipPreviousWeapon;
         _player.onLeftMouseClicked += ShootHandler;
         _player.onReloadPressed += ReloadHandler;
-        _statsSystem.onStatsChanged += SetBonusMultipliers;
+        _statsSystem.onStatsChanged += SetLevelUpMultipliers;
     }
 
     private void OnDisable()
@@ -42,7 +42,7 @@ public class WeaponSystem : MonoBehaviour
         _player.onScrollDown -= EquipPreviousWeapon;
         _player.onLeftMouseClicked -= ShootHandler;
         _player.onReloadPressed -= ReloadHandler;
-        _statsSystem.onStatsChanged -= SetBonusMultipliers;
+        _statsSystem.onStatsChanged -= SetLevelUpMultipliers;
     }
 
     private void CacheComponents()
@@ -51,7 +51,7 @@ public class WeaponSystem : MonoBehaviour
         _statsSystem = _player.GetComponent<StatsSystem>();
     }
 
-    private void SetBonusMultipliers(StatsMultipliers multipliers)
+    private void SetLevelUpMultipliers(StatsMultipliers multipliers)
     {
         foreach (var weapon in _weapons)
         {

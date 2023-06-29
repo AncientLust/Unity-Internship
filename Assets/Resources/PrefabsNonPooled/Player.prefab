@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8636505102794799577}
   m_Layer: 0
-  m_Name: WeaponPlaceholder
+  m_Name: Weapons
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1461,9 +1461,9 @@ GameObject:
   - component: {fileID: 8636505104562662030}
   - component: {fileID: 8636505104562662029}
   - component: {fileID: 8636505104562662028}
+  - component: {fileID: 1575444740352014160}
   - component: {fileID: 8636505104562662025}
   - component: {fileID: 8636505104562662026}
-  - component: {fileID: 8636505104562662027}
   - component: {fileID: 2759440190656251412}
   - component: {fileID: 8636505104562662031}
   - component: {fileID: 8636505104562662024}
@@ -1492,7 +1492,7 @@ Transform:
   - {fileID: 8636505104125027677}
   - {fileID: 8636505103288246873}
   m_Father: {fileID: 0}
-  m_RootOrder: 8
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!95 &8636505104562662029
 Animator:
@@ -1527,10 +1527,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6b55aa9903e4b4c4dba4d0f74914e3f7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _weapons:
-  - {fileID: 3298973096056664412}
-  - {fileID: 4691649608432069734}
-  - {fileID: 5361379320155048662}
+--- !u!114 &1575444740352014160
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8636505104562662019}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8386ca1899a728449901ccf4567698e2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _bloodSplat: {fileID: 9065157491951663479}
+  _healthBar: {fileID: 654333292181770868}
+  _baseHealth: 100
+  _baseHealthRegen: 5
 --- !u!114 &8636505104562662025
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1556,23 +1568,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c284ad348d4911240ae648f6b3cadd7a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _initialHealth: 100
-  _initialHealthRegen: 5
   _initialMoveSpeed: 5
---- !u!114 &8636505104562662027
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8636505104562662019}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8386ca1899a728449901ccf4567698e2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _bloodSplat: {fileID: 9065157491951663479}
-  _healthBar: {fileID: 654333292181770868}
 --- !u!114 &2759440190656251412
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1585,6 +1581,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 614681871066f654490e92e788416277, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _weapons:
+  - {fileID: 3298973096056664412}
+  - {fileID: 4691649608432069734}
+  - {fileID: 5361379320155048662}
 --- !u!136 &8636505104562662031
 CapsuleCollider:
   m_ObjectHideFlags: 0

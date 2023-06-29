@@ -2,8 +2,6 @@ using UnityEngine;
 
 public class StatsSystem : MonoBehaviour
 {
-    [SerializeField] private float _initialHealth;
-    [SerializeField] private float _initialHealthRegen;
     [SerializeField] private float _initialMoveSpeed;
     //[SerializeField] private float _currentHealth;
 
@@ -23,12 +21,12 @@ public class StatsSystem : MonoBehaviour
 
     private StatsMultipliers _multipliers;
 
-    public float DamageMultiplier { get; private set; } = 1; // Event to weapon system
-    public float AmmoMultiplier { get; private set; } = 1; // Event to weapon system
-    public float ReloadMultiplier { get; private set; } = 1; // Event to weapon system
-    public float MaxHealth { get; private set; }
-    public float CurrentHealth { get; set; } // Could be put out of stats system?
-    public float HealthRegen { get; private set; } 
+    //public float DamageMultiplier { get; private set; } = 1; // Event to weapon system
+    //public float AmmoMultiplier { get; private set; } = 1; // Event to weapon system
+    //public float ReloadMultiplier { get; private set; } = 1; // Event to weapon system
+    //public float MaxHealth { get; private set; } // Could be put out of stats system?
+    //public float CurrentHealth { get; set; } // Could be put out of stats system?
+    //public float HealthRegen { get; private set; } // Could be put out of stats system?
     public float MoveSpeed { get; private set; } // Event to move system
 
     public delegate void OnStatsChangedHandler(StatsMultipliers statsMultipliers);
@@ -41,9 +39,6 @@ public class StatsSystem : MonoBehaviour
 
     private void InitStats()
     {
-        MaxHealth = _initialHealth;
-        CurrentHealth = _initialHealth;
-        HealthRegen = _initialHealthRegen;
         MoveSpeed = _initialMoveSpeed;
     }
 
@@ -65,9 +60,9 @@ public class StatsSystem : MonoBehaviour
 
     private void UpdatePublicStats()
     {
-        CurrentHealth = _initialHealth * _multipliers.maxHealth;
-        MaxHealth = _initialHealth * _multipliers.maxHealth;
-        HealthRegen = _initialHealthRegen * _multipliers.healthRegen;
+        //CurrentHealth = _initialHealth * _multipliers.maxHealth;
+        //MaxHealth = _initialHealth * _multipliers.maxHealth;
+        //HealthRegen = _initialHealthRegen * _multipliers.healthRegen;
         MoveSpeed = _initialMoveSpeed * _multipliers.moveSpeed;
 
         RaiseStatsChangeEvent();
