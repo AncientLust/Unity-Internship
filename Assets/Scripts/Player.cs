@@ -7,7 +7,7 @@ public class Player : MonoBehaviour, ISaveable
     private HealthSystem _healthSystem;
     private ExperienceSystem _experienceSystem;
     private Vector3 _movement;
-    private Camera _camera;
+    //private Camera _camera;
 
     public delegate void OnScrollUpHandler();
     public delegate void OnScrollDownHandler();
@@ -29,20 +29,14 @@ public class Player : MonoBehaviour, ISaveable
         ActIfGameRunning();
     }
 
-    private void FixedUpdate()
-    {
-        ActPhisicallyIfGameRunning();
-    }
-
-    //public void Die()
+    //private void FixedUpdate()
     //{
-    //    GameManager.Instance.GameOver();
-    //    gameObject.SetActive(false);
+    //    ActPhisicallyIfGameRunning();
     //}
 
     private void CacheComponents()
     {
-        _camera = Camera.main;
+        //_camera = Camera.main;
         _rigidbody = GetComponent<Rigidbody>();
         _statsSystem = GetComponent<StatsSystem>();
         _healthSystem = GetComponent<HealthSystem>();
@@ -53,51 +47,50 @@ public class Player : MonoBehaviour, ISaveable
     {
         if (ShouldAct())
         {
-            _healthSystem.Regenerate();
             InputHandler();
         }
     }
 
-    private void ActPhisicallyIfGameRunning()
-    {
-        if (ShouldAct())
-        {
-            MovePlayer();
-            RotatePlayer();
-        }
-        else
-        {
-            ResetVelosity();
-        }
-    }
+    //private void ActPhisicallyIfGameRunning()
+    //{
+    //    if (ShouldAct())
+    //    {
+    //        MovePlayer();
+    //        RotatePlayer();
+    //    }
+    //    else
+    //    {
+    //        ResetVelosity();
+    //    }
+    //}
 
     private bool ShouldAct()
     {
         return GameManager.Instance.IsStarted && !GameManager.Instance.IsPaused;
     }
 
-    private void MovePlayer()
-    {
-        _movement.x = Input.GetAxisRaw("Horizontal");
-        _movement.z = Input.GetAxisRaw("Vertical");
-        _movement.Normalize();
-        _rigidbody.MovePosition(_rigidbody.position + _movement * _statsSystem.MoveSpeed * Time.deltaTime);
-    }
+    //private void MovePlayer()
+    //{
+    //    _movement.x = Input.GetAxisRaw("Horizontal");
+    //    _movement.z = Input.GetAxisRaw("Vertical");
+    //    _movement.Normalize();
+    //    _rigidbody.MovePosition(_rigidbody.position + _movement * _statsSystem.MoveSpeed * Time.deltaTime);
+    //}
 
-    private void RotatePlayer()
-    {
-        var mousePosition = _camera.ScreenToWorldPoint(Input.mousePosition);
-        var playerToMouseDirection = mousePosition - transform.position;
-        var angle = Mathf.Atan2(playerToMouseDirection.x, playerToMouseDirection.z) * Mathf.Rad2Deg;
-        Quaternion targetRotation = Quaternion.Euler(0, angle, 0);
-        _rigidbody.MoveRotation(targetRotation);
-    }
+    //private void RotatePlayer()
+    //{
+    //    var mousePosition = _camera.ScreenToWorldPoint(Input.mousePosition);
+    //    var playerToMouseDirection = mousePosition - transform.position;
+    //    var angle = Mathf.Atan2(playerToMouseDirection.x, playerToMouseDirection.z) * Mathf.Rad2Deg;
+    //    Quaternion targetRotation = Quaternion.Euler(0, angle, 0);
+    //    _rigidbody.MoveRotation(targetRotation);
+    //}
 
-    private void ResetVelosity()
-    {
-        _rigidbody.velocity = Vector3.zero;
-        _rigidbody.angularVelocity = Vector3.zero;
-    }
+    //private void ResetVelosity()
+    //{
+    //    _rigidbody.velocity = Vector3.zero;
+    //    _rigidbody.angularVelocity = Vector3.zero;
+    //}
 
     private void InputHandler()
     {
@@ -122,10 +115,10 @@ public class Player : MonoBehaviour, ISaveable
         }
     }
 
-    public void TakeDamage(float damage)
-    {
-        _healthSystem.TakeDamage(damage);
-    }
+    //public void TakeDamage(float damage)
+    //{
+    //    _healthSystem.TakeDamage(damage);
+    //}
 
     public EntityData CaptureState()
     {

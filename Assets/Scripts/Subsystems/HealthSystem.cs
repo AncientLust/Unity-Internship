@@ -31,12 +31,17 @@ public class HealthSystem : MonoBehaviour, IDamageable
 
     private void OnEnable()
     {
-        _statsSystem.onStatsChanged += SetLevelUpMultipliers;
+        _statsSystem.onStatsChanged += ApplyLevelUpMultipliers;
+    }
+
+    private void Update()
+    {
+        Regenerate();
     }
 
     private void OnDisable()
     {
-        _statsSystem.onStatsChanged -= SetLevelUpMultipliers;
+        _statsSystem.onStatsChanged -= ApplyLevelUpMultipliers;
     }
 
     private void CacheComponents()
@@ -54,8 +59,18 @@ public class HealthSystem : MonoBehaviour, IDamageable
         CheckIfDied();
     }
 
-    public void Die()
+    private void CheckIfDied()
     {
+        if (_health <= 0)
+        {
+            _isDead = true;
+            Die();
+        }
+    }
+
+    private void Die()
+    {
+        // This definitely must be refactored
         if (gameObject.CompareTag(Tags.Player.ToString()))
         {
             GameManager.Instance.GameOver();
@@ -63,15 +78,6 @@ public class HealthSystem : MonoBehaviour, IDamageable
         else
         {
             ObjectPool.Instance.Return(gameObject);
-        }
-    }
-
-    private void CheckIfDied()
-    {
-        if (_health <= 0)
-        {
-            _isDead = true;
-            _damageable.Die();
         }
     }
 
@@ -103,7 +109,7 @@ public class HealthSystem : MonoBehaviour, IDamageable
         _healthBar.gameObject.SetActive(_health != _maxHealth);
     }
 
-    private void SetLevelUpMultipliers(StatsMultipliers stats)
+    private void ApplyLevelUpMultipliers(StatsMultipliers stats)
     {
         _maxHealth = _baseHealth * stats.maxHealth;
         _regenPerSecond = _baseHealthRegen * stats.maxHealth;
