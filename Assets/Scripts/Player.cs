@@ -1,31 +1,27 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Player : MonoBehaviour, IDamageable, ISaveable
 {
-    [SerializeField] private List<Weapon> _weapons = new List<Weapon>();
-
     private Rigidbody _rigidbody;
     private StatsSystem _statsSystem;
     private HealthSystem _healthSystem;
     private ExperienceSystem _experienceSystem;
-    private int _equippedWeaponIndex;
     private Vector3 _movement;
     private Camera _camera;
-    private Weapon _currentWeapon;
 
-    public delegate void WeaponChangedHandler(string weapon);
-    //public delegate void AmmoChangedHandler(int ammo);
+    public delegate void OnScrollUpHandler();
+    public delegate void OnScrollDownHandler();
+    public delegate void OnLeftMouseClickedHandler();
+    public delegate void OnReloadPressedHandler();
 
-    public event WeaponChangedHandler OnWeaponChanged;
-    //public event AmmoChangedHandler OnAmmoChanged;
+    public event OnScrollUpHandler onScrollUp;
+    public event OnScrollDownHandler onScrollDown;
+    public event OnLeftMouseClickedHandler onLeftMouseClicked;
+    public event OnReloadPressedHandler onReloadPressed;
 
     private void Start()
     {
         CacheComponents();
-        EquipWeapon(0);
-        //InitializeWeapon();
     }
 
     private void Update()
@@ -58,9 +54,7 @@ public class Player : MonoBehaviour, IDamageable, ISaveable
         if (ShouldAct())
         {
             _healthSystem.Regenerate();
-            ShootHandler();
-            ReloadHandler();
-            ScrollWeaponSelect();
+            InputHandler();
         }
     }
 
@@ -105,103 +99,27 @@ public class Player : MonoBehaviour, IDamageable, ISaveable
         _rigidbody.angularVelocity = Vector3.zero;
     }
 
-    private void ShootHandler()
+    private void InputHandler()
     {
         if (Input.GetMouseButton(0))
         {
-            if (!_currentWeapon.HasEmptyClip())
-            {
-                _currentWeapon.Shoot();
-            }
-            else
-            {
-                Reload();
-            }
+            onLeftMouseClicked.Invoke();
         }
-    }
 
-    private void ReloadHandler()
-    {
         if (Input.GetKeyDown(KeyCode.R))
         {
-            Reload();
+            onReloadPressed.Invoke();
         }
-    }
 
-    private void Reload()
-    {
-        if (!_currentWeapon.InReloading)
-        {
-            _currentWeapon.AmmoMultiplier = _statsSystem.AmmoMultiplier;
-            _currentWeapon.BeginReload();
-            StartCoroutine(Reload(_currentWeapon));
-        }
-    }
-
-    private IEnumerator Reload(Weapon weapon)
-    {
-        yield return new WaitForSeconds(weapon.GetReloadTime() * _statsSystem.ReloadMultiplier);
-        weapon.FinishReload();
-    }
-
-    //private void InitializeWeapon()
-    //{
-    //    _equippedWeaponIndex = 0;
-    //    _currentWeapon = _weapons[0];
-    //    _currentWeapon.DamageMultiplier = _statsSystem.DamageMultiplier;
-    //    _currentWeapon.AmmoMultiplier = _statsSystem.AmmoMultiplier;
-    //    //GameplayUI.Instance.SetWeapon(_currentWeapon.gameObject.name);
-    //    OnWeaponChanged.Invoke(_currentWeapon.gameObject.name);
-
-    //    for (int i = 1; i < _weapons.Count; i++)
-    //    {
-    //        _weapons[i].gameObject.SetActive(false);
-    //    }
-    //}
-
-    private void ScrollWeaponSelect()
-    {
         if (Input.mouseScrollDelta.y > 0)
         {
-            EquipPreviousWeapon();
+            onScrollDown.Invoke();
         }
-        else if (Input.mouseScrollDelta.y < 0)
+        
+        if (Input.mouseScrollDelta.y < 0)
         {
-            EquipNextWeapon();
+            onScrollUp.Invoke();
         }
-    }
-
-    private void EquipNextWeapon()
-    {
-        EquipWeapon((_equippedWeaponIndex + 1) % _weapons.Count);
-    }
-
-    private void EquipPreviousWeapon()
-    {
-        EquipWeapon(_equippedWeaponIndex == 0 ? _weapons.Count - 1 : --_equippedWeaponIndex);
-    }
-
-    private void EquipWeapon(int weaponIndex)
-    {
-        _equippedWeaponIndex = weaponIndex;
-
-        for (int i = 0; i < _weapons.Count; i++)
-        {
-            if (i == _equippedWeaponIndex)
-            {
-                _currentWeapon = _weapons[i];
-                _currentWeapon.DamageMultiplier = _statsSystem.DamageMultiplier;
-                _currentWeapon.AmmoMultiplier = _statsSystem.AmmoMultiplier;
-                _currentWeapon.gameObject.SetActive(true);
-                continue;
-            }
-
-            _weapons[i].gameObject.SetActive(false);
-        }
-
-        OnWeaponChanged.Invoke(_currentWeapon.gameObject.name);
-        //OnAmmoChanged.Invoke(_currentWeapon.CurrentAmmo);
-        //GameplayUI.Instance.SetWeapon(_currentWeapon.gameObject.name);
     }
 
     public void TakeDamage(float damage)
@@ -217,8 +135,8 @@ public class Player : MonoBehaviour, IDamageable, ISaveable
         data.level = _experienceSystem.Level;
         data.experience = _experienceSystem.Experience;
         data.health = _statsSystem.CurrentHealth;
-        data.equippedWeaponIndex = _equippedWeaponIndex;
-        data.ammo = _currentWeapon.CurrentAmmo;
+        //data.equippedWeaponIndex = _equippedWeaponIndex;
+        //data.ammo = _currentWeapon.CurrentAmmo;
         return data;
     }
 
@@ -227,8 +145,8 @@ public class Player : MonoBehaviour, IDamageable, ISaveable
         transform.position = data.position;
         _experienceSystem.Level = data.level;
         _experienceSystem.AddExperience(data.experience);
-        EquipWeapon(data.equippedWeaponIndex);
+        //EquipWeapon(data.equippedWeaponIndex);
         _statsSystem.CurrentHealth = data.health;
-        _currentWeapon.CurrentAmmo = data.ammo;
+        //_currentWeapon.CurrentAmmo = data.ammo;
     }
 }

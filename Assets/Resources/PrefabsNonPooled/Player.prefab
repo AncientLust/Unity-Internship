@@ -1464,6 +1464,7 @@ GameObject:
   - component: {fileID: 8636505104562662025}
   - component: {fileID: 8636505104562662026}
   - component: {fileID: 8636505104562662027}
+  - component: {fileID: 2759440190656251412}
   - component: {fileID: 8636505104562662031}
   - component: {fileID: 8636505104562662024}
   m_Layer: 0
@@ -1556,12 +1557,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _initialHealth: 100
-  _currentHealth: 0
   _initialHealthRegen: 5
   _initialMoveSpeed: 5
-  _damageMultiplier: {fileID: 0}
-  _ammoMultiplier: {fileID: 0}
-  _reloadMultiplier: {fileID: 0}
 --- !u!114 &8636505104562662027
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1576,6 +1573,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _bloodSplat: {fileID: 9065157491951663479}
   _healthBar: {fileID: 654333292181770868}
+--- !u!114 &2759440190656251412
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8636505104562662019}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 614681871066f654490e92e788416277, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!136 &8636505104562662031
 CapsuleCollider:
   m_ObjectHideFlags: 0

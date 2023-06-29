@@ -9,49 +9,32 @@ public class Weapon : MonoBehaviour
     [SerializeField] private int _clipCapacity;
     [SerializeField] private float _pushPower;
 
-    private int _currentAmmo;
-    private bool _canShoot = true;
+    private bool _inDowntime = true;
     private Transform _shootPoint;
     private const string _projectile = "Projectile";
 
-    public float AmmoMultiplier { set; get; } = 1;
-    public float DamageMultiplier { set; get; } = 1;
+    public float DamageMultiplier { private get; set; } = 1;
+    public float AmmoMultiplier { private get; set; } = 1;
+    public float ReloadMultiplier { private get; set; } = 1;
     public bool InReloading { get; private set; } = false;
-
-    public delegate void AmmoChangedHandler(int ammo);
-    public event AmmoChangedHandler OnAmmoChanged;
-
-    public int CurrentAmmo 
-    {
-        get 
-        {
-            return _currentAmmo;
-        }
-        set 
-        {
-            _currentAmmo = value;
-            OnAmmoChanged.Invoke(value);
-        }
-    }
+    public int Ammo { set; get; }
 
     private void Awake()
     {
         _shootPoint = transform.Find("ShootPoint");
-        CurrentAmmo = (int)(_clipCapacity * AmmoMultiplier);
+        Ammo = _clipCapacity;
     }
 
     private void OnEnable()
     {
-        _canShoot = true;
-        OnAmmoChanged.Invoke(CurrentAmmo);
-        //GameplayUI.Instance.SetAmmo(CurrentAmmo);
+        _inDowntime = false;
     }
 
     public void Shoot()
     {
-        if (!InReloading && _canShoot)
+        if (!InReloading && !_inDowntime)
         {
-            if (CurrentAmmo > 0)
+            if (Ammo > 0)
             {
                 GameObject projectile = ObjectPool.Instance.Get(_projectile);
                 if (projectile != null)
@@ -63,8 +46,7 @@ public class Weapon : MonoBehaviour
                     projectile.SetActive(true);
                 }
 
-                CurrentAmmo--;
-                //GameplayUI.Instance.SetAmmo(CurrentAmmo);
+                Ammo--;
                 
                 StartCoroutine(ShootDowntime());
             }
@@ -77,9 +59,9 @@ public class Weapon : MonoBehaviour
 
     private IEnumerator ShootDowntime()
     {
-        _canShoot = false;
+        _inDowntime = true;
         yield return new WaitForSeconds(1 / _shootSpeed);
-        _canShoot = true;
+        _inDowntime = false;
     }
 
     public void BeginReload()
@@ -91,28 +73,17 @@ public class Weapon : MonoBehaviour
     public void FinishReload()
     {
         InReloading = false;
-
-        if (gameObject.activeInHierarchy)
-        {
-            CurrentAmmo = (int)(_clipCapacity * AmmoMultiplier);
-        }
-        else
-        {
-            _currentAmmo = (int)(_clipCapacity * AmmoMultiplier);
-        }
-
+        Ammo = (int)(_clipCapacity * AmmoMultiplier);
         Debug.Log("Reloaded!");
     }
 
-    //private void 
-
     public float GetReloadTime()
     {
-        return _reloadTime;
+        return _reloadTime * ReloadMultiplier;
     }
 
     public bool HasEmptyClip()
     {
-        return CurrentAmmo == 0;
+        return Ammo == 0;
     }
 }

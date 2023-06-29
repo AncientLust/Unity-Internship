@@ -32,7 +32,7 @@ public class StatsSystem : MonoBehaviour
     public float MoveSpeed { get; private set; } // Event to move system
 
     public delegate void OnStatsChangedHandler(StatsMultipliers statsMultipliers);
-    public event OnStatsChangedHandler OnStatsChanged;  
+    public event OnStatsChangedHandler onStatsChanged;  
 
     private void Start()
     {
@@ -70,14 +70,14 @@ public class StatsSystem : MonoBehaviour
         HealthRegen = _initialHealthRegen * _multipliers.healthRegen;
         MoveSpeed = _initialMoveSpeed * _multipliers.moveSpeed;
 
-        UpdateHUDStats();
+        RaiseStatsChangeEvent();
     }
 
-    public void UpdateHUDStats()
+    public void RaiseStatsChangeEvent()
     {
         if (gameObject.CompareTag(Tags.Player.ToString()))
         {
-            OnStatsChanged.Invoke(_multipliers);
+            onStatsChanged.Invoke(_multipliers);
         }
     }
 }

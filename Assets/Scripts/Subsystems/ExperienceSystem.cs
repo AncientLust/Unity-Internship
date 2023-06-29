@@ -1,11 +1,7 @@
-using TMPro;
 using UnityEngine;
 
 public class ExperienceSystem : MonoBehaviour
 {
-    //[SerializeField] private TextMeshProUGUI _levelText;
-    //[SerializeField] private TextMeshProUGUI _levelPercentText;
-    //[SerializeField] private ExperienceBar _experienceBar;
     [SerializeField] private ParticleSystem _levelUp;
 
     private int _level = 1;

@@ -9,40 +9,35 @@ public class HUD : MonoBehaviour
     [SerializeField] private StatsMultipliersUI _statsMultipliersUI;
 
     private Player _player;
-    private Weapon[] _playerWeapons;
+    //private Weapon[] _playerWeapons;
     private ExperienceSystem _experienceSystem;
     private StatsSystem _statsSystem;
+    private WeaponSystem _weaponSystem;
 
     private void Awake()
     {
-        _player = FindObjectOfType<Player>();
-        _playerWeapons = FindObjectsOfType<Weapon>(true);
+        _player = FindObjectOfType<Player>(); // Must be passed via constructor
         _experienceSystem = _player.GetComponent<ExperienceSystem>();
         _statsSystem = _player.GetComponent<StatsSystem>();
+        _weaponSystem = _player.GetComponent<WeaponSystem>();
     }
 
     private void OnEnable()
     {
-        _player.OnWeaponChanged += SetWeaponInfo;
+        _weaponSystem.onWeaponChanged += SetWeaponInfo;
+        _weaponSystem.onAmmoChanged += SetAmmoInfo;
         _experienceSystem.OnLevelChanged += UpdateLevelInfo;
         _experienceSystem.OnExperienceChanged += UpdateExperienceInfo;
-        _statsSystem.OnStatsChanged += UpdateStatsInfo;
-        foreach (Weapon weapon in _playerWeapons)
-        {
-            weapon.OnAmmoChanged += SetAmmoInfo;
-        }
+        _statsSystem.onStatsChanged += UpdateStatsInfo;
     }
 
     private void OnDisable()
     {
-        _player.OnWeaponChanged -= SetWeaponInfo;
+        _weaponSystem.onWeaponChanged -= SetWeaponInfo;
+        _weaponSystem.onAmmoChanged -= SetAmmoInfo;
         _experienceSystem.OnLevelChanged -= UpdateLevelInfo;
         _experienceSystem.OnExperienceChanged -= UpdateExperienceInfo;
-        _statsSystem.OnStatsChanged -= UpdateStatsInfo;
-        foreach (Weapon weapon in _playerWeapons)
-        {
-            weapon.OnAmmoChanged -= SetAmmoInfo;
-        }
+        _statsSystem.onStatsChanged -= UpdateStatsInfo;
     }
 
     private void SetWeaponInfo(string weapon)

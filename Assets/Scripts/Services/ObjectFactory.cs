@@ -3,9 +3,6 @@ using UnityEngine;
 
 public class ObjectFactory
 {
-    // Get rid of Instance property
-    //public static ObjectFactory Instance { get; } = new ObjectFactory();
-
     private readonly Dictionary<string, GameObject> _prefabDict;
 
     public ObjectFactory()
