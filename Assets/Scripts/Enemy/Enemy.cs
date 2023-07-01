@@ -71,12 +71,12 @@ public class Enemy : MonoBehaviour, IPushiable, ISaveable
     {
         var minutesSceneLoaded = Time.timeSinceLevelLoad / 60.0f;
         var enemyLevel = (int)Mathf.Ceil(minutesSceneLoaded * _levelsPerMinute);
-        _experienceSystem.Level = enemyLevel;
+        _experienceSystem.SetLevel(enemyLevel);
     }
 
     private void Die()
     {
-        _playerExperienceSystem.AddExperience(_killExperience * _experienceSystem.Level);
+        _playerExperienceSystem.AddExperience(_killExperience * _experienceSystem.GetLevel());
         ObjectPool.Instance.Return(gameObject);
     }
 
@@ -84,7 +84,7 @@ public class Enemy : MonoBehaviour, IPushiable, ISaveable
     {
         _rigidbody = GetComponent<Rigidbody>();
         _statsSystem = GetComponent<StatsSystem>();
-        _experienceSystem = GetComponent<ExperienceSystem>();
+        _experienceSystem = GetComponent<EnemyExperienceSystem>();
         _healthSystem = GetComponent<HealthSystem>();
     }
 
@@ -152,7 +152,7 @@ public class Enemy : MonoBehaviour, IPushiable, ISaveable
         EntityData data = new EntityData();
         //data.health = _statsSystem.CurrentHealth;
         data.position = transform.position;
-        data.level = _experienceSystem.Level;
+        //data.level = _experienceSystem.Level;
 
         return data;
     }
@@ -161,6 +161,6 @@ public class Enemy : MonoBehaviour, IPushiable, ISaveable
     {
         transform.position = data.position;
         //_statsSystem.CurrentHealth = data.health;
-        _experienceSystem.Level = data.level;
+        //_experienceSystem.Level = data.level;
     }
 }

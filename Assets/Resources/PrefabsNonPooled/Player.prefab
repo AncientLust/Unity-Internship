@@ -1462,7 +1462,6 @@ GameObject:
   - component: {fileID: 8636505104562662029}
   - component: {fileID: 8636505104562662028}
   - component: {fileID: 1575444740352014160}
-  - component: {fileID: 8636505104562662025}
   - component: {fileID: 8636505104562662026}
   - component: {fileID: 2759440190656251412}
   - component: {fileID: 1649395706724002238}
@@ -1493,7 +1492,7 @@ Transform:
   - {fileID: 8636505104125027677}
   - {fileID: 8636505103288246873}
   m_Father: {fileID: 0}
-  m_RootOrder: 8
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!95 &8636505104562662029
 Animator:
@@ -1544,19 +1543,6 @@ MonoBehaviour:
   _healthBar: {fileID: 654333292181770868}
   _baseHealth: 100
   _baseHealthRegen: 5
---- !u!114 &8636505104562662025
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8636505104562662019}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a552cf3b34f97814c88adc64569dddec, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _levelUp: {fileID: 2979307905759564710}
 --- !u!114 &8636505104562662026
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2681,10 +2667,5 @@ PrefabInstance:
 --- !u!4 &1780673715113299535 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8029142899459995171, guid: 97c43495f80a3244fad1301dfafbe252, type: 3}
-  m_PrefabInstance: {fileID: 8636505104911808620}
-  m_PrefabAsset: {fileID: 0}
---- !u!198 &2979307905759564710 stripped
-ParticleSystem:
-  m_CorrespondingSourceObject: {fileID: 6810471105834413002, guid: 97c43495f80a3244fad1301dfafbe252, type: 3}
   m_PrefabInstance: {fileID: 8636505104911808620}
   m_PrefabAsset: {fileID: 0}

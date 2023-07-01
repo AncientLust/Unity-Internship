@@ -1,84 +1,38 @@
 using UnityEngine;
 
-public class ExperienceSystem : MonoBehaviour
+public abstract class ExperienceSystem : MonoBehaviour
 {
-    [SerializeField] private ParticleSystem _levelUp;
 
-    private int _level = 1;
-    private float _experience = 0;
-    private float _nextLevelExperienceStartValue = 50;
-    private float _nextLevelExperience;
-    private float _nextLevelMultiplier = 1.2f;
-    private StatsSystem _statSystem;
-    private Player _player;
+    protected int _level = 1;
+    protected float _experience = 0;
+    protected float _nextLevelExperienceStartValue = 50;
+    protected float _nextLevelExperience;
+    protected float _nextLevelMultiplier = 1.2f;
+    protected StatsSystem _statSystem;
+    protected Player _player;
+    protected ParticleSystem _levelUp;
 
-    public delegate void OnLevelChangedHandler(int level);
-    public delegate void OnExperienceChangedHandler(float levelPercent);
-
-    public event OnLevelChangedHandler OnLevelChanged;
-    public event OnExperienceChangedHandler OnExperienceChanged;
-
-    public int Level { 
-        get 
-        {
-            return _level;
-        }  
-        set 
-        {
-            _experience = 0;
-            _level = value > 1 ? value : 1;
-            _statSystem.SetLevelStats(_level);
-            _nextLevelExperience = _nextLevelExperienceStartValue * Mathf.Pow(_nextLevelMultiplier, _level);
-            UpdateExperienceOnHUD();
-        } 
-    }
-
-    public float Experience => _experience;
+    abstract public int GetLevel();
+    abstract public void SetLevel(int level);
+    abstract public void AddExperience(float experience);
 
     private void Awake()
     {
         CacheComponents();
     }
 
-    private void Start()
-    {
-        _nextLevelExperience = _nextLevelExperienceStartValue * _nextLevelMultiplier;
-        UpdateExperienceOnHUD();
-    }
-
     private void CacheComponents()
     {
         _statSystem = gameObject.GetComponent<StatsSystem>();
-        _player = GetComponent<Player>();
+        _levelUp = transform.Find("Effects/LevelUp").GetComponent<ParticleSystem>();
     }
 
-    public void AddExperience(float experience)
-    {
-        _experience += experience;
-
-        if (_experience >= _nextLevelExperience)
-        {
-            LevelUp();
-        }
-
-        UpdateExperienceOnHUD();
-    }
-
-    private void LevelUp()
+    protected void LevelUp()
     {
         _level++;
         _experience = _experience - _nextLevelExperience;
         _nextLevelExperience = _nextLevelExperienceStartValue * Mathf.Pow(_nextLevelMultiplier, _level);
         _levelUp.Play();
         _statSystem.SetLevelStats(_level);
-    }
-
-    private void UpdateExperienceOnHUD()
-    {
-        if (_player != null)
-        {
-            OnLevelChanged.Invoke(_level);
-            OnExperienceChanged.Invoke(_experience / _nextLevelExperience);
-        }
     }
 }

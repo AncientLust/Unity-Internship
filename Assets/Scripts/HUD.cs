@@ -9,15 +9,14 @@ public class HUD : MonoBehaviour
     [SerializeField] private StatsMultipliersUI _statsMultipliersUI;
 
     private Player _player;
-    //private Weapon[] _playerWeapons;
-    private ExperienceSystem _experienceSystem;
+    private PlayerExperienceSystem _playerExperienceSystem;
     private StatsSystem _statsSystem;
     private WeaponSystem _weaponSystem;
 
     private void Awake()
     {
-        _player = FindObjectOfType<Player>(); // Must be passed via constructor
-        _experienceSystem = _player.GetComponent<ExperienceSystem>();
+        _player = FindObjectOfType<Player>(); // Must be injected via constructor
+        _playerExperienceSystem = _player.GetComponent<PlayerExperienceSystem>();
         _statsSystem = _player.GetComponent<StatsSystem>();
         _weaponSystem = _player.GetComponent<WeaponSystem>();
     }
@@ -26,18 +25,18 @@ public class HUD : MonoBehaviour
     {
         _weaponSystem.onWeaponChanged += SetWeaponInfo;
         _weaponSystem.onAmmoChanged += SetAmmoInfo;
-        _experienceSystem.OnLevelChanged += UpdateLevelInfo;
-        _experienceSystem.OnExperienceChanged += UpdateExperienceInfo;
-        _statsSystem.onStatsChanged += UpdateStatsInfo;
+        _playerExperienceSystem.OnLevelChanged += UpdateLevelInfo;
+        _playerExperienceSystem.OnExperienceChanged += UpdateExperienceProgress;
+        _statsSystem.onStatsChanged += UpdateStats;
     }
 
     private void OnDisable()
     {
         _weaponSystem.onWeaponChanged -= SetWeaponInfo;
         _weaponSystem.onAmmoChanged -= SetAmmoInfo;
-        _experienceSystem.OnLevelChanged -= UpdateLevelInfo;
-        _experienceSystem.OnExperienceChanged -= UpdateExperienceInfo;
-        _statsSystem.onStatsChanged -= UpdateStatsInfo;
+        _playerExperienceSystem.OnLevelChanged -= UpdateLevelInfo;
+        _playerExperienceSystem.OnExperienceChanged -= UpdateExperienceProgress;
+        _statsSystem.onStatsChanged -= UpdateStats;
     }
 
     private void SetWeaponInfo(string weapon)
@@ -59,13 +58,13 @@ public class HUD : MonoBehaviour
         _experienceUI.level.text = level.ToString();
     }
 
-    private void UpdateExperienceInfo(float levelPercent)
+    private void UpdateExperienceProgress(float levelPercent)
     {
         _experienceUI.progress.text = ((int)(levelPercent * 100)).ToString() + " %";
         _experienceUI.progressBar.SetFill(levelPercent);
     }
 
-    private void UpdateStatsInfo(StatsMultipliers multipliers)
+    private void UpdateStats(StatsMultipliers multipliers)
     {
         _statsMultipliersUI.damage.text = multipliers.damage.ToString("F1");
         _statsMultipliersUI.reload.text = multipliers.reload.ToString("F1");

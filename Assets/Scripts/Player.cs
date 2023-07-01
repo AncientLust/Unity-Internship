@@ -140,8 +140,8 @@ public class Player : MonoBehaviour, ISaveable
         EntityData data = new EntityData();
         
         data.position = transform.position;
-        data.level = _experienceSystem.Level;
-        data.experience = _experienceSystem.Experience;
+        //data.level = _experienceSystem.Level;
+        //data.experience = _experienceSystem.Experience;
         //data.health = _statsSystem.CurrentHealth;
         //data.equippedWeaponIndex = _equippedWeaponIndex;
         //data.ammo = _currentWeapon.CurrentAmmo;
@@ -151,8 +151,8 @@ public class Player : MonoBehaviour, ISaveable
     public void LoadState(EntityData data)
     {
         transform.position = data.position;
-        _experienceSystem.Level = data.level;
-        _experienceSystem.AddExperience(data.experience);
+        //_experienceSystem.Level = data.level;
+        //_experienceSystem.AddExperience(data.experience);
         //EquipWeapon(data.equippedWeaponIndex);
         //_statsSystem.CurrentHealth = data.health;
         //_currentWeapon.CurrentAmmo = data.ammo;
