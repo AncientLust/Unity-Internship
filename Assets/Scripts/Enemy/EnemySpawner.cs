@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class EnemySpawner : Singleton<EnemySpawner>
 {
-    [SerializeField] private Transform _playerTransform;
+    [SerializeField] private GameObject _player;
 
     private ObjectPool _objectPool;
 
@@ -56,8 +56,7 @@ public class EnemySpawner : Singleton<EnemySpawner>
                 GameObject enemy = ObjectPool.Instance.Get(_enemy);
                 if (enemy != null)
                 { 
-                    enemy.GetComponent<Enemy>().SetTarget(_playerTransform);
-                    enemy.GetComponent<Enemy>().Init();
+                    enemy.GetComponent<Enemy>().Init(_player.transform, _player.GetComponent<ExperienceSystem>());
                     enemy.GetComponent<HealthSystem>().ResetHealth();
                     enemy.transform.position = GetEnemySpawnPosition();
                 }
@@ -72,6 +71,6 @@ public class EnemySpawner : Singleton<EnemySpawner>
         var radius = Random.Range(_minRadius, _maxRadius);
         var spawnVector = new Vector3(radius * Mathf.Cos(theta), 0, radius * Mathf.Sin(theta));
 
-        return spawnVector + _playerTransform.position;
+        return spawnVector + _player.transform.position;
     }
 }

@@ -2,11 +2,11 @@ using UnityEngine;
 
 public class Player : MonoBehaviour, ISaveable
 {
-    private Rigidbody _rigidbody;
-    private StatsSystem _statsSystem;
+    //private Rigidbody _rigidbody;
+    //private StatsSystem _statsSystem;
     private HealthSystem _healthSystem;
     private ExperienceSystem _experienceSystem;
-    private Vector3 _movement;
+    //private Vector3 _movement;
     //private Camera _camera;
 
     public delegate void OnScrollUpHandler();
@@ -19,7 +19,7 @@ public class Player : MonoBehaviour, ISaveable
     public event OnLeftMouseClickedHandler onLeftMouseClicked;
     public event OnReloadPressedHandler onReloadPressed;
 
-    private void Start()
+    private void Awake()
     {
         CacheComponents();
     }
@@ -34,11 +34,21 @@ public class Player : MonoBehaviour, ISaveable
     //    ActPhisicallyIfGameRunning();
     //}
 
+    private void OnEnable()
+    {
+        _healthSystem.OnDie += Die;
+    }
+
+    private void OnDisable()
+    {
+        _healthSystem.OnDie += Die;
+    }
+
     private void CacheComponents()
     {
         //_camera = Camera.main;
-        _rigidbody = GetComponent<Rigidbody>();
-        _statsSystem = GetComponent<StatsSystem>();
+        //_rigidbody = GetComponent<Rigidbody>();
+        //_statsSystem = GetComponent<StatsSystem>();
         _healthSystem = GetComponent<HealthSystem>();
         _experienceSystem = GetComponent<ExperienceSystem>();
     }
@@ -49,6 +59,11 @@ public class Player : MonoBehaviour, ISaveable
         {
             InputHandler();
         }
+    }
+
+    private void Die()
+    {
+        GameManager.Instance.GameOver();
     }
 
     //private void ActPhisicallyIfGameRunning()

@@ -32,6 +32,7 @@ public class ExperienceSystem : MonoBehaviour
             UpdateExperienceOnHUD();
         } 
     }
+
     public float Experience => _experience;
 
     private void Awake()
@@ -60,7 +61,6 @@ public class ExperienceSystem : MonoBehaviour
             LevelUp();
         }
 
-        //OnExperienceChanged.Invoke(_experience / _nextLevelExperience);
         UpdateExperienceOnHUD();
     }
 
@@ -77,11 +77,6 @@ public class ExperienceSystem : MonoBehaviour
     {
         if (_player != null)
         {
-            //OnLevelChanged.Invoke(_level);
-            //OnExperienceChanged.Invoke(_experience / _nextLevelExperience);
-            //_levelText.text = _level.ToString();
-            //_levelPercentText.text = ((int)(_experience / _nextLevelExperience * 100)).ToString() + " %";
-            //_experienceBar.SetFill(_experience / _nextLevelExperience);
             OnLevelChanged.Invoke(_level);
             OnExperienceChanged.Invoke(_experience / _nextLevelExperience);
         }

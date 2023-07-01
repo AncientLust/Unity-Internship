@@ -126,7 +126,7 @@ public class SaveLoadSystem : MonoBehaviour
             var enemy = ObjectPool.Instance.Get(_enemy);
             if (enemy != null)
             {
-                enemy.GetComponent<Enemy>().Init();
+                enemy.GetComponent<Enemy>().Reset();
                 enemy.GetComponent<ISaveable>().LoadState(enemyData);
             }
         }

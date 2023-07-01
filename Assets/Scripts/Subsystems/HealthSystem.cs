@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class HealthSystem : MonoBehaviour, IDamageable
@@ -9,13 +10,14 @@ public class HealthSystem : MonoBehaviour, IDamageable
     [SerializeField] private float _baseHealthRegen;
 
     private StatsSystem _statsSystem;
-    private IDamageable _damageable;
 
     private float _maxHealth;
     private float _health;
     private float _regenPerSecond;
     private bool _isDead;
-    
+
+    public event Action OnDie;
+
     private void Awake()
     {
         CacheComponents();
@@ -46,8 +48,7 @@ public class HealthSystem : MonoBehaviour, IDamageable
 
     private void CacheComponents()
     {
-        _statsSystem = GetComponent<StatsSystem>();
-        _damageable = GetComponent<IDamageable>();
+        _statsSystem = GetComponent<StatsSystem>(); // Must be injected
     }
 
     public void TakeDamage(float damage)
@@ -64,22 +65,23 @@ public class HealthSystem : MonoBehaviour, IDamageable
         if (_health <= 0)
         {
             _isDead = true;
-            Die();
+            OnDie.Invoke();
         }
     }
 
-    private void Die()
-    {
-        // This definitely must be refactored
-        if (gameObject.CompareTag(Tags.Player.ToString()))
-        {
-            GameManager.Instance.GameOver();
-        }
-        else
-        {
-            ObjectPool.Instance.Return(gameObject);
-        }
-    }
+    //private void Die()
+    //{
+    //    // This definitely must be refactored
+    //    if (gameObject.CompareTag(Tags.Player.ToString()))
+    //    {
+    //        GameManager.Instance.GameOver();
+    //    }
+    //    else
+    //    {
+    //        //_playerExperienceSystem.AddExperience(_killExperience * _experienceSystem.Level);
+    //        ObjectPool.Instance.Return(gameObject);
+    //    }
+    //}
 
     private void PlayBloodEffect()
     {

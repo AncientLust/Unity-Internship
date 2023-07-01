@@ -1,16 +1,24 @@
 using UnityEngine;
 
-public class Enemy : MonoBehaviour, IDamageable, IPushiable, ISaveable
+public class Enemy : MonoBehaviour, IPushiable, ISaveable
 {
     private float _stopDistance = 0.35f;
     private float _damagePerSecond = 10;
     private float _levelsPerMinute = 3;
     private int _killExperience = 10;
-    private Transform _target;
     private Rigidbody _rigidbody;
     private HealthSystem _healthSystem;
     private StatsSystem _statsSystem;
     private ExperienceSystem _experienceSystem;
+    
+    private Transform _target; // Must be injected
+    private ExperienceSystem _playerExperienceSystem; // Must be injected
+
+    public void Init(Transform target, ExperienceSystem playerExperienceSystem)
+    {
+        _target = target;
+        _playerExperienceSystem = playerExperienceSystem;
+    }
 
     private void Awake()
     {
@@ -22,33 +30,24 @@ public class Enemy : MonoBehaviour, IDamageable, IPushiable, ISaveable
         SetLevelBasedOnGameDuration();
     }
 
-    private void Update()
-    {
-        ActIfGameRunning();
-    }
-
     private void FixedUpdate()
     {
         ActPhisicallyIfGameRunning();
     }
 
-    public void Init()
+    private void OnEnable()
     {
-        //ResetHealth();
-        SetLevelBasedOnGameDuration();
+        _healthSystem.OnDie += Die;
+    }
+
+    private void OnDisable()
+    {
+        _healthSystem.OnDie -= Die;
     }
 
     private bool ShouldAct()
     {
         return GameManager.Instance.IsStarted && !GameManager.Instance.IsPaused;
-    }
-
-    private void ActIfGameRunning()
-    {
-        if (ShouldAct())
-        {
-            _healthSystem.Regenerate();
-        }
     }
 
     private void ActPhisicallyIfGameRunning()
@@ -63,6 +62,11 @@ public class Enemy : MonoBehaviour, IDamageable, IPushiable, ISaveable
         }
     }
 
+    public void Reset()
+    {
+        SetLevelBasedOnGameDuration();
+    }
+
     private void SetLevelBasedOnGameDuration()
     {
         var minutesSceneLoaded = Time.timeSinceLevelLoad / 60.0f;
@@ -70,9 +74,9 @@ public class Enemy : MonoBehaviour, IDamageable, IPushiable, ISaveable
         _experienceSystem.Level = enemyLevel;
     }
 
-    public void Die()
+    private void Die()
     {
-        _target.GetComponent<ExperienceSystem>().AddExperience(_killExperience * _experienceSystem.Level);
+        _playerExperienceSystem.AddExperience(_killExperience * _experienceSystem.Level);
         ObjectPool.Instance.Return(gameObject);
     }
 
@@ -80,13 +84,8 @@ public class Enemy : MonoBehaviour, IDamageable, IPushiable, ISaveable
     {
         _rigidbody = GetComponent<Rigidbody>();
         _statsSystem = GetComponent<StatsSystem>();
-        _healthSystem = GetComponent<HealthSystem>();
         _experienceSystem = GetComponent<ExperienceSystem>();
-    }
-
-    public void TakeDamage(float damage)
-    {
-        _healthSystem.TakeDamage(damage);
+        _healthSystem = GetComponent<HealthSystem>();
     }
 
     public void Push(Vector3 force)
