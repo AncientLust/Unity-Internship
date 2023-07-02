@@ -1,20 +1,20 @@
 using System;
 using UnityEngine;
 
-public class HealthSystem : MonoBehaviour, IDamageable
+public class PlayerHealthSystem : MonoBehaviour, IDamageable
 {
-    [SerializeField] private ParticleSystem _bloodSplat;
-    [SerializeField] protected HealthBar _healthBar;
+    private float _baseHealth = 100;
+    private float _baseHealthRegen = 5;
 
-    [SerializeField] private float _baseHealth;
-    [SerializeField] private float _baseHealthRegen;
-
-    private StatsSystem _statsSystem;
+    private PlayerStatsSystem _statsSystem; // Must be injected
 
     private float _maxHealth;
     private float _health;
     private float _regenPerSecond;
     private bool _isDead;
+
+    private ParticleSystem _bloodSplat;
+    protected HealthBar _healthBar;
 
     public event Action OnDie;
 
@@ -27,7 +27,7 @@ public class HealthSystem : MonoBehaviour, IDamageable
     private void Start()
     {
         _maxHealth = _baseHealth;
-        _health = _maxHealth;
+        _health = _baseHealth;
         _regenPerSecond = _baseHealthRegen;
     }
 
@@ -48,7 +48,9 @@ public class HealthSystem : MonoBehaviour, IDamageable
 
     private void CacheComponents()
     {
-        _statsSystem = GetComponent<StatsSystem>(); // Must be injected
+        _statsSystem = GetComponent<PlayerStatsSystem>();
+        _bloodSplat = transform.Find("Effects/BloodSplat").GetComponent<ParticleSystem>();
+        _healthBar = transform.Find("Canvas/HealthBar").GetComponent<HealthBar>();
     }
 
     public void TakeDamage(float damage)
@@ -69,20 +71,6 @@ public class HealthSystem : MonoBehaviour, IDamageable
         }
     }
 
-    //private void Die()
-    //{
-    //    // This definitely must be refactored
-    //    if (gameObject.CompareTag(Tags.Player.ToString()))
-    //    {
-    //        GameManager.Instance.GameOver();
-    //    }
-    //    else
-    //    {
-    //        //_playerExperienceSystem.AddExperience(_killExperience * _experienceSystem.Level);
-    //        ObjectPool.Instance.Return(gameObject);
-    //    }
-    //}
-
     private void PlayBloodEffect()
     {
         if (!_bloodSplat.isPlaying) // Ask SettingsSystem if enabled
@@ -101,7 +89,7 @@ public class HealthSystem : MonoBehaviour, IDamageable
             _health += _regenPerSecond * Time.deltaTime;
             _health = Mathf.Clamp(_health, 0, _maxHealth);
             _healthBar.SetFill(_health / _maxHealth);
-            
+
             HideHealthIfHealthy();
         }
     }
@@ -111,10 +99,17 @@ public class HealthSystem : MonoBehaviour, IDamageable
         _healthBar.gameObject.SetActive(_health != _maxHealth);
     }
 
-    private void ApplyLevelUpMultipliers(StatsMultipliers stats)
+    private void ApplyLevelUpMultipliers(PlayerStatsMultipliers stats)
     {
-        _maxHealth = _baseHealth * stats.maxHealth;
+        _health = _maxHealth = _baseHealth * stats.maxHealth;
         _regenPerSecond = _baseHealthRegen * stats.maxHealth;
+        RestoreHealth();
+    }
+
+    private void RestoreHealth()
+    {
+        _health = _maxHealth;
+        _healthBar.SetFill(1);
     }
 
     public void ResetHealth()

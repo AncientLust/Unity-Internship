@@ -2,12 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class WeaponSystem : MonoBehaviour
+public class PlayerWeaponSystem : MonoBehaviour
 {
     [SerializeField] private List<Weapon> _weapons = new List<Weapon>();
 
     private Player _player;
-    private StatsSystem _statsSystem;
+    private PlayerStatsSystem _statsSystem;
     private Weapon _currentWeapon;
     private int _equippedWeaponIndex;
 
@@ -48,10 +48,10 @@ public class WeaponSystem : MonoBehaviour
     private void CacheComponents()
     {
         _player = FindObjectOfType<Player>(); // Must be passed via constructor
-        _statsSystem = _player.GetComponent<StatsSystem>();
+        _statsSystem = _player.GetComponent<PlayerStatsSystem>();
     }
 
-    private void SetLevelUpMultipliers(StatsMultipliers multipliers)
+    private void SetLevelUpMultipliers(PlayerStatsMultipliers multipliers)
     {
         foreach (var weapon in _weapons)
         {

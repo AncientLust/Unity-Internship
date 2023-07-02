@@ -10,33 +10,33 @@ public class HUD : MonoBehaviour
 
     private Player _player;
     private PlayerExperienceSystem _playerExperienceSystem;
-    private StatsSystem _statsSystem;
-    private WeaponSystem _weaponSystem;
+    private PlayerStatsSystem _playerStatsSystem;
+    private PlayerWeaponSystem _playerWeaponSystem;
 
     private void Awake()
     {
         _player = FindObjectOfType<Player>(); // Must be injected via constructor
         _playerExperienceSystem = _player.GetComponent<PlayerExperienceSystem>();
-        _statsSystem = _player.GetComponent<StatsSystem>();
-        _weaponSystem = _player.GetComponent<WeaponSystem>();
+        _playerStatsSystem = _player.GetComponent<PlayerStatsSystem>();
+        _playerWeaponSystem = _player.GetComponent<PlayerWeaponSystem>();
     }
 
     private void OnEnable()
     {
-        _weaponSystem.onWeaponChanged += SetWeaponInfo;
-        _weaponSystem.onAmmoChanged += SetAmmoInfo;
+        _playerWeaponSystem.onWeaponChanged += SetWeaponInfo;
+        _playerWeaponSystem.onAmmoChanged += SetAmmoInfo;
         _playerExperienceSystem.OnLevelChanged += UpdateLevelInfo;
         _playerExperienceSystem.OnExperienceChanged += UpdateExperienceProgress;
-        _statsSystem.onStatsChanged += UpdateStats;
+        _playerStatsSystem.onStatsChanged += UpdateStats;
     }
 
     private void OnDisable()
     {
-        _weaponSystem.onWeaponChanged -= SetWeaponInfo;
-        _weaponSystem.onAmmoChanged -= SetAmmoInfo;
+        _playerWeaponSystem.onWeaponChanged -= SetWeaponInfo;
+        _playerWeaponSystem.onAmmoChanged -= SetAmmoInfo;
         _playerExperienceSystem.OnLevelChanged -= UpdateLevelInfo;
         _playerExperienceSystem.OnExperienceChanged -= UpdateExperienceProgress;
-        _statsSystem.onStatsChanged -= UpdateStats;
+        _playerStatsSystem.onStatsChanged -= UpdateStats;
     }
 
     private void SetWeaponInfo(string weapon)
@@ -64,7 +64,7 @@ public class HUD : MonoBehaviour
         _experienceUI.progressBar.SetFill(levelPercent);
     }
 
-    private void UpdateStats(StatsMultipliers multipliers)
+    private void UpdateStats(PlayerStatsMultipliers multipliers)
     {
         _statsMultipliersUI.damage.text = multipliers.damage.ToString("F1");
         _statsMultipliersUI.reload.text = multipliers.reload.ToString("F1");

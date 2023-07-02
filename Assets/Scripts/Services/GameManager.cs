@@ -21,7 +21,7 @@ public class GameManager : Singleton<GameManager>
     public void StartGame()
     {
         IsStarted = true;
-        EnemySpawner.Instance.enabled = true;
+        //EnemySpawner.Instance.enabled = true;
         //GameplayUI.Instance.SetScreen(_gameplay);
     }
 

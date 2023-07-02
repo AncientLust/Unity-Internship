@@ -1,12 +1,25 @@
 using UnityEngine;
 
-public class PlayerExperienceSystem : ExperienceSystem
+public class PlayerExperienceSystem : MonoBehaviour
 {
+    protected int _level = 1;
+    protected ParticleSystem _levelUp;
+
+    private float _experience = 0;
+    private float _nextLevelExperienceStartValue = 50;
+    private float _nextLevelExperience;
+    private float _nextLevelMultiplier = 1.2f;
+
     public delegate void OnLevelChangedHandler(int level);
     public delegate void OnExperienceChangedHandler(float levelPercent);
 
     public event OnLevelChangedHandler OnLevelChanged;
     public event OnExperienceChangedHandler OnExperienceChanged;
+
+    private void Awake()
+    {
+        CacheComponents();
+    }
 
     private void Start()
     {
@@ -16,7 +29,12 @@ public class PlayerExperienceSystem : ExperienceSystem
         OnExperienceChanged.Invoke(_experience / _nextLevelExperience);
     }
 
-    override public void AddExperience(float experience)
+    private void CacheComponents()
+    {
+        _levelUp = transform.Find("Effects/LevelUp").GetComponent<ParticleSystem>(); // Get rid of the string
+    }
+
+    public void AddExperience(float experience)
     {
         _experience += experience;
 
@@ -28,16 +46,24 @@ public class PlayerExperienceSystem : ExperienceSystem
         OnExperienceChanged.Invoke(_experience / _nextLevelExperience);
     }
 
-    override public int GetLevel()
+    protected void LevelUp()
+    {
+        _level++;
+        _experience = _experience - _nextLevelExperience;
+        _nextLevelExperience = _nextLevelExperienceStartValue * Mathf.Pow(_nextLevelMultiplier, _level);
+        _levelUp.Play();
+        OnLevelChanged.Invoke(_level);
+    }
+
+    public int GetLevel()
     {
         return _level;
     }
 
-    override public void SetLevel(int level)
+    public void SetLevel(int level)
     {
         _experience = 0;
         _level = level > 1 ? level : 1;
-        _statSystem.SetLevelStats(_level);
         _nextLevelExperience = _nextLevelExperienceStartValue * Mathf.Pow(_nextLevelMultiplier, _level);
         OnLevelChanged.Invoke(_level);
     }

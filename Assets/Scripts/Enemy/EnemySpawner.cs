@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-public class EnemySpawner : Singleton<EnemySpawner>
+public class EnemySpawner : MonoBehaviour
 {
     [SerializeField] private GameObject _player;
 
@@ -56,8 +56,8 @@ public class EnemySpawner : Singleton<EnemySpawner>
                 GameObject enemy = ObjectPool.Instance.Get(_enemy);
                 if (enemy != null)
                 { 
-                    enemy.GetComponent<Enemy>().Init(_player.transform, _player.GetComponent<ExperienceSystem>());
-                    enemy.GetComponent<HealthSystem>().ResetHealth();
+                    enemy.GetComponent<Enemy>().Init(_player.transform, _player.GetComponent<PlayerExperienceSystem>());
+                    enemy.GetComponent<EnemyHealthSystem>().ResetHealth();
                     enemy.transform.position = GetEnemySpawnPosition();
                 }
             }

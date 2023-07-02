@@ -13,7 +13,7 @@ public class ObjectFactory
         {
             _prefabDict[prefab.name] = prefab;
         }
-    }
+    }   
 
     public GameObject Instantiate(string name)
     {

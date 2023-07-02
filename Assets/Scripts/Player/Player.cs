@@ -4,8 +4,8 @@ public class Player : MonoBehaviour, ISaveable
 {
     //private Rigidbody _rigidbody;
     //private StatsSystem _statsSystem;
-    private HealthSystem _healthSystem;
-    private ExperienceSystem _experienceSystem;
+    private PlayerHealthSystem _healthSystem;
+    //private ExperienceSystem _experienceSystem;
     //private Vector3 _movement;
     //private Camera _camera;
 
@@ -49,8 +49,8 @@ public class Player : MonoBehaviour, ISaveable
         //_camera = Camera.main;
         //_rigidbody = GetComponent<Rigidbody>();
         //_statsSystem = GetComponent<StatsSystem>();
-        _healthSystem = GetComponent<HealthSystem>();
-        _experienceSystem = GetComponent<ExperienceSystem>();
+        _healthSystem = GetComponent<PlayerHealthSystem>();
+        //_experienceSystem = GetComponent<ExperienceSystem>();
     }
 
     private void ActIfGameRunning()

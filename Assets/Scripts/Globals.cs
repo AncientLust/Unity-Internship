@@ -23,11 +23,19 @@ public enum Tags
     Projectile
 }
 
-public struct StatsMultipliers
+public struct PlayerStatsMultipliers
 {
     public float damage;
     public float ammo;
     public float reload;
+    public float maxHealth;
+    public float healthRegen;
+    public float moveSpeed;
+}
+
+public struct EnemyStatsMultipliers
+{
+    public float damage;
     public float maxHealth;
     public float healthRegen;
     public float moveSpeed;

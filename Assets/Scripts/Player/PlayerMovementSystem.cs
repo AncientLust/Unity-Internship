@@ -1,11 +1,11 @@
 using UnityEngine;
 
-public class MovementSystem : MonoBehaviour
+public class PlayerMovementSystem : MonoBehaviour
 {
     [SerializeField] private float _baseMoveSpeed;
     private float _moveSpeed;
     private bool _mustMove = true;
-    private StatsSystem _statsSystem;
+    private PlayerStatsSystem _statsSystem;
     private Rigidbody _rigidbody;
     private Vector3 _moveVector;
 
@@ -37,7 +37,7 @@ public class MovementSystem : MonoBehaviour
     private void CacheComponents()
     {
         _rigidbody = GetComponent<Rigidbody>();
-        _statsSystem = GetComponent<StatsSystem>();
+        _statsSystem = GetComponent<PlayerStatsSystem>();
     }
 
     private void MoveIfNecessary()
@@ -77,7 +77,7 @@ public class MovementSystem : MonoBehaviour
         _rigidbody.angularVelocity = Vector3.zero;
     }
 
-    private void ApplyLevelUpMultipliers(StatsMultipliers multipliers)
+    private void ApplyLevelUpMultipliers(PlayerStatsMultipliers multipliers)
     {
         _moveSpeed = _baseMoveSpeed * multipliers.moveSpeed;
     }
