@@ -6,8 +6,9 @@ public class PlayerMovementSystem : MonoBehaviour
     private float _moveSpeed;
     private bool _mustMove = true;
     private PlayerStatsSystem _statsSystem;
+    private PlayerInputSystem _inputSystem;
     private Rigidbody _rigidbody;
-    private Vector3 _moveVector;
+    private Vector3 _moveDirection;
 
     private void Awake()
     {
@@ -22,6 +23,7 @@ public class PlayerMovementSystem : MonoBehaviour
     private void OnEnable()
     {
         _statsSystem.onStatsChanged += ApplyLevelUpMultipliers;
+        _inputSystem.onDirectionAxisPressed += SetMoveDirection;
     }
 
     private void OnDisable()
@@ -38,6 +40,7 @@ public class PlayerMovementSystem : MonoBehaviour
     {
         _rigidbody = GetComponent<Rigidbody>();
         _statsSystem = GetComponent<PlayerStatsSystem>();
+        _inputSystem = GetComponent<PlayerInputSystem>();
     }
 
     private void MoveIfNecessary()
@@ -53,12 +56,19 @@ public class PlayerMovementSystem : MonoBehaviour
         }
     }
 
+    private void SetMoveDirection(Vector3 direction)
+    {
+        _moveDirection = direction;
+    }
+
     private void Move()
     {
-        _moveVector.x = Input.GetAxisRaw("Horizontal");
-        _moveVector.z = Input.GetAxisRaw("Vertical");
-        _moveVector.Normalize();
-        _rigidbody.MovePosition(_rigidbody.position + _moveVector * _moveSpeed * Time.deltaTime);
+        if (_mustMove)
+        {
+            _moveDirection.Normalize();
+            _rigidbody.MovePosition(_rigidbody.position + _moveDirection * _moveSpeed * Time.deltaTime);
+            _moveDirection = Vector3.zero;
+        }
     }
 
     private void Rotate()

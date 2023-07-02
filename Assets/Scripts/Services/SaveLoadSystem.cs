@@ -91,7 +91,7 @@ public class SaveLoadSystem : MonoBehaviour
             {
                 saveData.playerData = saveable.CaptureState();
             }
-            else if (saveable is Enemy)
+            else if (saveable is EnemyFacade)
             {
                 saveData.enemiesData.Add(saveable.CaptureState());
             }
@@ -112,7 +112,7 @@ public class SaveLoadSystem : MonoBehaviour
 
     private void DropAllEnemies()
     {
-        foreach (Enemy enemy in FindObjectsOfType<Enemy>())
+        foreach (EnemyFacade enemy in FindObjectsOfType<EnemyFacade>())
         {
             ObjectPool.Instance.Return(enemy.gameObject);
         }
@@ -125,7 +125,7 @@ public class SaveLoadSystem : MonoBehaviour
             var enemy = ObjectPool.Instance.Get(PooledObject.Enemy);
             if (enemy != null)
             {
-                enemy.GetComponent<Enemy>().Reset();
+                enemy.GetComponent<EnemyFacade>().Reset();
                 enemy.GetComponent<ISaveable>().LoadState(enemyData);
             }
         }

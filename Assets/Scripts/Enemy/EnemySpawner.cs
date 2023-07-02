@@ -55,7 +55,7 @@ public class EnemySpawner : MonoBehaviour
                 GameObject enemy = ObjectPool.Instance.Get(PooledObject.Enemy);
                 if (enemy != null)
                 { 
-                    enemy.GetComponent<Enemy>().Init(_player.transform, _player.GetComponent<PlayerExperienceSystem>());
+                    enemy.GetComponent<EnemyFacade>().Init(_player.transform, _player.GetComponent<PlayerExperienceSystem>());
                     enemy.GetComponent<EnemyHealthSystem>().ResetHealth();
                     enemy.transform.position = GetEnemySpawnPosition();
                 }

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Enemy : MonoBehaviour, ISaveable
+public class EnemyFacade : MonoBehaviour, ISaveable
 {
     private float _levelsPerMinute = 3;
     private int _killExperience = 10;
@@ -41,6 +41,13 @@ public class Enemy : MonoBehaviour, ISaveable
         SetLevelBasedOnGameDuration();
     }
 
+    private void CacheComponents()
+    {
+        _experienceSystem = GetComponent<EnemyExperienceSystem>();
+        _healthSystem = GetComponent<EnemyHealthSystem>();
+        _enemyMovementSystem = GetComponent<EnemyMovementSystem>();
+    }
+
     private void SetLevelBasedOnGameDuration()
     {
         var minutesSceneLoaded = Time.timeSinceLevelLoad / 60.0f;
@@ -54,12 +61,7 @@ public class Enemy : MonoBehaviour, ISaveable
         ObjectPool.Instance.Return(gameObject);
     }
 
-    private void CacheComponents()
-    {
-        _experienceSystem = GetComponent<EnemyExperienceSystem>();
-        _healthSystem = GetComponent<EnemyHealthSystem>();
-        _enemyMovementSystem = GetComponent<EnemyMovementSystem>();
-    }
+
 
     public EntityData CaptureState()
     {

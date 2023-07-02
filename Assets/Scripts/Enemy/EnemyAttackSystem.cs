@@ -30,7 +30,7 @@ public class EnemyAttackSystem : MonoBehaviour
     private void OnCollisionStay(Collision collision)
     {
         var damagable = collision.gameObject.GetComponent<IDamageable>();
-        var isAnotherEnemy = collision.gameObject.GetComponent<Enemy>();
+        var isAnotherEnemy = collision.gameObject.GetComponent<EnemyFacade>();
 
         if (damagable != null && !isAnotherEnemy)
         {

@@ -20,11 +20,11 @@ public class EnemyHealthSystem : MonoBehaviour, IDamageable
     private void Awake()
     {
         CacheComponents();
-        _isDead = false;
     }
 
     private void Start()
     {
+        _isDead = false;
         _maxHealth = _baseHealth;
         _health = _maxHealth;
         _regenPerSecond = _baseHealthRegen;
