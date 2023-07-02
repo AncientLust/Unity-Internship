@@ -27,7 +27,6 @@ public class SaveLoadSystem : MonoBehaviour
 {
     private string path;
     private string fileName = "/save.data";
-    private const string _enemy = "Enemy";
 
     private void Start()
     {
@@ -123,7 +122,7 @@ public class SaveLoadSystem : MonoBehaviour
     {
         foreach (EntityData enemyData in enemiesData)
         {
-            var enemy = ObjectPool.Instance.Get(_enemy);
+            var enemy = ObjectPool.Instance.Get(PooledObject.Enemy);
             if (enemy != null)
             {
                 enemy.GetComponent<Enemy>().Reset();

@@ -8,16 +8,18 @@ public class Weapon : MonoBehaviour
     [SerializeField] private float _reloadTime;
     [SerializeField] private int _clipCapacity;
     [SerializeField] private float _pushPower;
+    [SerializeField] private WeaponType _type;
 
     private bool _inDowntime = true;
     private Transform _shootPoint;
-    private const string _projectile = "Projectile";
 
     public float DamageMultiplier { private get; set; } = 1;
     public float AmmoMultiplier { private get; set; } = 1;
     public float ReloadMultiplier { private get; set; } = 1;
     public bool InReloading { get; private set; } = false;
-    public int Ammo { set; get; }
+    public int Ammo { get; private set; }
+
+    public WeaponType Type { get { return _type; } }
 
     private void Awake()
     {
@@ -36,7 +38,7 @@ public class Weapon : MonoBehaviour
         {
             if (Ammo > 0)
             {
-                GameObject projectile = ObjectPool.Instance.Get(_projectile);
+                GameObject projectile = ObjectPool.Instance.Get(PooledObject.Projectile);
                 if (projectile != null)
                 {
                     projectile.GetComponent<Projectile>().Damage = _damage * DamageMultiplier;

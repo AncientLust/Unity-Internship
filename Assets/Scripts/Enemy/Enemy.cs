@@ -44,7 +44,7 @@ public class Enemy : MonoBehaviour, ISaveable
     private void SetLevelBasedOnGameDuration()
     {
         var minutesSceneLoaded = Time.timeSinceLevelLoad / 60.0f;
-        var enemyLevel = (int)(minutesSceneLoaded * _levelsPerMinute);
+        var enemyLevel = (int)Mathf.Ceil(minutesSceneLoaded * _levelsPerMinute);
         _experienceSystem.SetLevel(enemyLevel);
     }
 

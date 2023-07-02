@@ -9,7 +9,7 @@ public class PlayerFacade : MonoBehaviour, ISaveable
     private PlayerStatsSystem _statsSystem; // Must be injected
 
     public event Action<int> onAmmoChanged; 
-    public event Action<string> onWeaponChanged;
+    public event Action<WeaponType> onWeaponChanged;
     public event Action<float> onExperienceProgressChanged;
     public event Action<int> onLevelChanged;
     public event Action<PlayerStatsMultipliers> onStatsChanged;

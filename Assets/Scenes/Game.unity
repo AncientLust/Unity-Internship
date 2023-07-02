@@ -3807,7 +3807,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1fb6a0c9aff61c747a645845254210d1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  smoothSpeed: 5
   _playerTarget: {fileID: 1539669898}
 --- !u!1 &976095592
 GameObject:
@@ -4478,10 +4477,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 833552bc7a537b34e987fa01f3b63a4d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _weapons:
-  - {fileID: 1319526820}
-  - {fileID: 667124713}
-  - {fileID: 1683028789}
   _screens:
   - {fileID: 1992247295}
   - {fileID: 211626275}

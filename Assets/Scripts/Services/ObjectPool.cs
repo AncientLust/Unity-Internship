@@ -1,22 +1,23 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class ObjectPool
 {
     public static ObjectPool Instance { get; } = new ObjectPool();
-    private readonly Dictionary<string, Queue<GameObject>> pool;
+    private readonly Dictionary<PooledObject, Queue<GameObject>> pool;
 
     private ObjectFactory _objectFactory;
 
     public ObjectPool()
     {
-        pool = new Dictionary<string, Queue<GameObject>>();
+        pool = new Dictionary<PooledObject, Queue<GameObject>>();
         _objectFactory = new ObjectFactory();
     }
 
-    public GameObject Get(string name)
+    public GameObject Get(PooledObject objType)
     {
-        if (pool.TryGetValue(name, out var objects) && objects.Count > 0)
+        if (pool.TryGetValue(objType, out var objects) && objects.Count > 0)
         {
             var obj = objects.Dequeue();
             obj.SetActive(true);
@@ -24,22 +25,26 @@ public class ObjectPool
         }
         else
         {
-            var obj = _objectFactory.Instantiate(name);
+            var obj = _objectFactory.Instantiate(objType.ToString());
             return obj;
         }
     }
 
     public void Return(GameObject obj)
     {
-        // Use enums instead of strings
-        string name = obj.name.Replace("(Clone)", "").Trim();
-
-        if (!pool.ContainsKey(name))
+        if (Enum.TryParse(obj.tag, out PooledObject objType))
         {
-            pool[name] = new Queue<GameObject>();
-        }
+            if (!pool.ContainsKey(objType))
+            {
+                pool[objType] = new Queue<GameObject>();
+            }
 
-        obj.SetActive(false);
-        pool[name].Enqueue(obj);
+            obj.SetActive(false);
+            pool[objType].Enqueue(obj);
+        }
+        else
+        {
+            Debug.LogError("Invalid object type: " + obj.tag);
+        }
     }
 }

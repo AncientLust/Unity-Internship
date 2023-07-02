@@ -2,9 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class UIRoot : MonoBehaviour
-{
-    [SerializeField] Image[] _weapons; 
-    
+{  
     [SerializeField] GameObject[] _screens;
 
     public void SetUI(string name)

@@ -211,6 +211,7 @@ MonoBehaviour:
   _reloadTime: 2
   _clipCapacity: 30
   _pushPower: 2
+  _type: 1
 --- !u!1 &1563589280250594
 GameObject:
   m_ObjectHideFlags: 0

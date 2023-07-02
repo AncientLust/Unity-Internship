@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class EnemyExperienceSystem : MonoBehaviour
 {
-    protected int _level = 0;
+    protected int _level = 1;
     protected ParticleSystem _levelUp;
 
     public Action<int> OnLevelChanged;

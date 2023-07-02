@@ -3,6 +3,7 @@ using UnityEngine;
 public class PlayerStatsSystem : MonoBehaviour
 {
     private PlayerExperienceSystem _experienceSystem;
+    private PlayerStatsMultipliers _multipliers;
 
     private struct _levelUpGrowth
     {
@@ -13,8 +14,6 @@ public class PlayerStatsSystem : MonoBehaviour
         public const float healthRegen = .05f;
         public const float moveSpeed = .01f;
     }
-
-    private PlayerStatsMultipliers _multipliers;
 
     public delegate void OnStatsChangedHandler(PlayerStatsMultipliers statsMultipliers);
     public event OnStatsChangedHandler onStatsChanged;

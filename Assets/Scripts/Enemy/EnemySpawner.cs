@@ -15,7 +15,6 @@ public class EnemySpawner : MonoBehaviour
     private float _maxEnemySpawnTime = 2;
     private int _minEnemiesToSpawn = 1;
     private int _maxEnemiesToSpawn = 3;
-    private const string _enemy = "Enemy";
     
     //public void Init(ObjectPool objectPool)
     //{
@@ -53,7 +52,7 @@ public class EnemySpawner : MonoBehaviour
         {
             if (_objectPool != null)
             {
-                GameObject enemy = ObjectPool.Instance.Get(_enemy);
+                GameObject enemy = ObjectPool.Instance.Get(PooledObject.Enemy);
                 if (enemy != null)
                 { 
                     enemy.GetComponent<Enemy>().Init(_player.transform, _player.GetComponent<PlayerExperienceSystem>());

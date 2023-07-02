@@ -16,11 +16,18 @@ public enum UITypes
     Settings
 }
 
-public enum Tags
+public enum PooledObject
 {
     Player,
     Enemy,
     Projectile
+}
+
+public enum WeaponType
+{
+    Pistol,
+    MachineGun,
+    Sniper
 }
 
 public struct PlayerStatsMultipliers

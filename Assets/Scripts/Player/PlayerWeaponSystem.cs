@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -11,11 +12,8 @@ public class PlayerWeaponSystem : MonoBehaviour
     private Weapon _currentWeapon;
     private int _equippedWeaponIndex;
 
-    public delegate void WeaponChangedHandler(string weapon);
-    public delegate void AmmoChangedHandler(int ammo);
-
-    public event WeaponChangedHandler onWeaponChanged;
-    public event AmmoChangedHandler onAmmoChanged;
+    public Action<WeaponType> onWeaponChanged;
+    public Action<int> onAmmoChanged;
 
     private void Awake()
     {
@@ -120,7 +118,7 @@ public class PlayerWeaponSystem : MonoBehaviour
             _weapons[i].gameObject.SetActive(false);
         }
 
-        onWeaponChanged.Invoke(_currentWeapon.gameObject.name);
+        onWeaponChanged.Invoke(_currentWeapon.Type);
         onAmmoChanged.Invoke(_currentWeapon.Ammo);
     }
 }

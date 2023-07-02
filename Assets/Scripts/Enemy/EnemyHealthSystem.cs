@@ -47,7 +47,7 @@ public class EnemyHealthSystem : MonoBehaviour, IDamageable
 
     private void CacheComponents()
     {
-        _statsSystem = GetComponent<EnemyStatsSystem>(); // Must be injected
+        _statsSystem = GetComponent<EnemyStatsSystem>();
         _bloodSplat = transform.Find("Effects/BloodSplat").GetComponent<ParticleSystem>();
         _healthBar = transform.Find("Canvas/HealthBar").GetComponent<HealthBar>();
     }

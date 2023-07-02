@@ -16,15 +16,6 @@ public class EnemyStatsSystem : MonoBehaviour
 
     public event Action<EnemyStatsMultipliers> onStatsChanged;
 
-    private void SetLevelStats(int level)
-    {
-        _multipliers.damage = 1 + _levelUpGrowth.damage * level;
-        _multipliers.maxHealth = 1 + _levelUpGrowth.maxHealth * level;
-        _multipliers.healthRegen = 1 + _levelUpGrowth.healthRegen * level;
-        _multipliers.moveSpeed = 1 + _levelUpGrowth.moveSpeed * level;
-        onStatsChanged.Invoke(_multipliers);
-    }
-
     private void Awake()
     {
         _experienceSystem = GetComponent<EnemyExperienceSystem>();
@@ -38,5 +29,16 @@ public class EnemyStatsSystem : MonoBehaviour
     private void OnDisable()
     {
         _experienceSystem.OnLevelChanged -= SetLevelStats;
+    }
+
+    private void SetLevelStats(int level)
+    {
+        level--; // Enemy level starts with 1, so when he reaches level 2, 1x growth will be given.
+
+        _multipliers.damage = 1 + _levelUpGrowth.damage * level;
+        _multipliers.maxHealth = 1 + _levelUpGrowth.maxHealth * level;
+        _multipliers.healthRegen = 1 + _levelUpGrowth.healthRegen * level;
+        _multipliers.moveSpeed = 1 + _levelUpGrowth.moveSpeed * level;
+        onStatsChanged.Invoke(_multipliers);
     }
 }

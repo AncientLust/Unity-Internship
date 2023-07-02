@@ -17,37 +17,37 @@ public class HUD : MonoBehaviour
 
     private void OnEnable()
     {
-        _player.onWeaponChanged += SetWeaponInfo;
-        _player.onAmmoChanged += SetAmmoInfo;
-        _player.onLevelChanged += UpdateLevelInfo;
+        _player.onWeaponChanged += UpdateEquippedWeapon;
+        _player.onAmmoChanged += UpdateAmmo;
+        _player.onLevelChanged += UpdatePlayerLevel;
         _player.onExperienceProgressChanged += UpdateExperienceProgress;
         _player.onStatsChanged += UpdateStats;
     }
 
     private void OnDisable()
     {
-        _player.onWeaponChanged -= SetWeaponInfo;
-        _player.onAmmoChanged -= SetAmmoInfo;
-        _player.onLevelChanged -= UpdateLevelInfo;
+        _player.onWeaponChanged -= UpdateEquippedWeapon;
+        _player.onAmmoChanged -= UpdateAmmo;
+        _player.onLevelChanged -= UpdatePlayerLevel;
         _player.onExperienceProgressChanged -= UpdateExperienceProgress;
         _player.onStatsChanged -= UpdateStats;
     }
 
-    private void SetWeaponInfo(string weapon)
+    private void UpdateEquippedWeapon(WeaponType weapon)
     {
         for (int i = 0; i < _weaponUI.sprites.Length; i++)
         {
-            var state = _weaponUI.sprites[i].name == weapon;
+            var state = _weaponUI.sprites[i].name == weapon.ToString();
             _weaponUI.sprites[i].gameObject.SetActive(state);
         }
     }
 
-    private void SetAmmoInfo(int ammo)
+    private void UpdateAmmo(int ammo)
     {
         _weaponUI.ammo.SetText($"999 / {ammo}");
     }
 
-    private void UpdateLevelInfo(int level)
+    private void UpdatePlayerLevel(int level)
     {
         _experienceUI.level.text = level.ToString();
     }
