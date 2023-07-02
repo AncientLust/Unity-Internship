@@ -2,31 +2,11 @@ using UnityEngine;
 
 public class Player : MonoBehaviour, ISaveable
 {
-    //private Rigidbody _rigidbody;
-    //private StatsSystem _statsSystem;
     private PlayerHealthSystem _healthSystem;
-    //private ExperienceSystem _experienceSystem;
-    //private Vector3 _movement;
-    //private Camera _camera;
-
-    public delegate void OnScrollUpHandler();
-    public delegate void OnScrollDownHandler();
-    public delegate void OnLeftMouseClickedHandler();
-    public delegate void OnReloadPressedHandler();
-
-    public event OnScrollUpHandler onScrollUp;
-    public event OnScrollDownHandler onScrollDown;
-    public event OnLeftMouseClickedHandler onLeftMouseClicked;
-    public event OnReloadPressedHandler onReloadPressed;
 
     private void Awake()
     {
         CacheComponents();
-    }
-
-    private void Update()
-    {
-        ActIfGameRunning();
     }
 
     //private void FixedUpdate()
@@ -53,13 +33,7 @@ public class Player : MonoBehaviour, ISaveable
         //_experienceSystem = GetComponent<ExperienceSystem>();
     }
 
-    private void ActIfGameRunning()
-    {
-        if (ShouldAct())
-        {
-            InputHandler();
-        }
-    }
+
 
     private void Die()
     {
@@ -79,10 +53,7 @@ public class Player : MonoBehaviour, ISaveable
     //    }
     //}
 
-    private bool ShouldAct()
-    {
-        return GameManager.Instance.IsStarted && !GameManager.Instance.IsPaused;
-    }
+
 
     //private void MovePlayer()
     //{
@@ -107,28 +78,7 @@ public class Player : MonoBehaviour, ISaveable
     //    _rigidbody.angularVelocity = Vector3.zero;
     //}
 
-    private void InputHandler()
-    {
-        if (Input.GetMouseButton(0))
-        {
-            onLeftMouseClicked.Invoke();
-        }
 
-        if (Input.GetKeyDown(KeyCode.R))
-        {
-            onReloadPressed.Invoke();
-        }
-
-        if (Input.mouseScrollDelta.y > 0)
-        {
-            onScrollDown.Invoke();
-        }
-        
-        if (Input.mouseScrollDelta.y < 0)
-        {
-            onScrollUp.Invoke();
-        }
-    }
 
     //public void TakeDamage(float damage)
     //{

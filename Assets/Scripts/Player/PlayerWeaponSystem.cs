@@ -6,8 +6,8 @@ public class PlayerWeaponSystem : MonoBehaviour
 {
     [SerializeField] private List<Weapon> _weapons = new List<Weapon>();
 
-    private Player _player;
-    private PlayerStatsSystem _statsSystem;
+    private PlayerInputSystem _playerInputSystem; // Must be injected
+    private PlayerStatsSystem _statsSystem; // Must be injected
     private Weapon _currentWeapon;
     private int _equippedWeaponIndex;
 
@@ -29,26 +29,26 @@ public class PlayerWeaponSystem : MonoBehaviour
 
     private void OnEnable()
     {
-        _player.onScrollUp += EquipNextWeapon;
-        _player.onScrollDown += EquipPreviousWeapon;
-        _player.onLeftMouseClicked += ShootHandler;
-        _player.onReloadPressed += ReloadHandler;
+        _playerInputSystem.onScrollUp += EquipNextWeapon;
+        _playerInputSystem.onScrollDown += EquipPreviousWeapon;
+        _playerInputSystem.onLeftMouseClicked += ShootHandler;
+        _playerInputSystem.onReloadPressed += ReloadHandler;
         _statsSystem.onStatsChanged += SetLevelUpMultipliers;
     }
 
     private void OnDisable()
     {
-        _player.onScrollUp -= EquipNextWeapon;
-        _player.onScrollDown -= EquipPreviousWeapon;
-        _player.onLeftMouseClicked -= ShootHandler;
-        _player.onReloadPressed -= ReloadHandler;
+        _playerInputSystem.onScrollUp -= EquipNextWeapon;
+        _playerInputSystem.onScrollDown -= EquipPreviousWeapon;
+        _playerInputSystem.onLeftMouseClicked -= ShootHandler;
+        _playerInputSystem.onReloadPressed -= ReloadHandler;
         _statsSystem.onStatsChanged -= SetLevelUpMultipliers;
     }
 
     private void CacheComponents()
     {
-        _player = FindObjectOfType<Player>(); // Must be passed via constructor
-        _statsSystem = _player.GetComponent<PlayerStatsSystem>();
+        _playerInputSystem = GetComponent<PlayerInputSystem>();
+        _statsSystem = GetComponent<PlayerStatsSystem>();
     }
 
     private void SetLevelUpMultipliers(PlayerStatsMultipliers multipliers)

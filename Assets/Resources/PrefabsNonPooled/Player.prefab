@@ -1461,6 +1461,7 @@ GameObject:
   - component: {fileID: 8636505104562662030}
   - component: {fileID: 8636505104562662029}
   - component: {fileID: 8636505104562662028}
+  - component: {fileID: 5389479919448539509}
   - component: {fileID: 646906822822025943}
   - component: {fileID: 1639622364017195870}
   - component: {fileID: 7378999244264269616}
@@ -1528,6 +1529,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6b55aa9903e4b4c4dba4d0f74914e3f7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &5389479919448539509
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8636505104562662019}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f717040a175f9a3489069bf02efd310e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &646906822822025943
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1540,10 +1553,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c87d2c4c6d47e6f4e87aed151afafd30, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _bloodSplat: {fileID: 0}
-  _healthBar: {fileID: 0}
-  _baseHealth: 0
-  _baseHealthRegen: 0
 --- !u!114 &1639622364017195870
 MonoBehaviour:
   m_ObjectHideFlags: 0
