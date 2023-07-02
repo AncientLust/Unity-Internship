@@ -113,8 +113,6 @@ public class PlayerWeaponSystem : MonoBehaviour
             if (i == _equippedWeaponIndex)
             {
                 _currentWeapon = _weapons[i];
-                //_currentWeapon.DamageMultiplier = _statsSystem.DamageMultiplier;
-                //_currentWeapon.AmmoMultiplier = _statsSystem.AmmoMultiplier;
                 _currentWeapon.gameObject.SetActive(true);
                 continue;
             }

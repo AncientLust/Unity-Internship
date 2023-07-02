@@ -1,17 +1,12 @@
+using System;
 using UnityEngine;
 
 public class PlayerInputSystem : MonoBehaviour
 {
-    public delegate void OnScrollUpHandler();
-    public delegate void OnScrollDownHandler();
-    public delegate void OnLeftMouseClickedHandler();
-    public delegate void OnReloadPressedHandler();
-
-    public event OnScrollUpHandler onScrollUp;
-    public event OnScrollDownHandler onScrollDown;
-    public event OnLeftMouseClickedHandler onLeftMouseClicked;
-    public event OnReloadPressedHandler onReloadPressed;
-
+    public event Action onScrollUp;
+    public event Action onScrollDown;
+    public event Action onLeftMouseClicked;
+    public event Action onReloadPressed;
 
     private void Update()
     {

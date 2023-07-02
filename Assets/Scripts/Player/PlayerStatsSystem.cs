@@ -26,12 +26,12 @@ public class PlayerStatsSystem : MonoBehaviour
 
     private void OnEnable()
     {
-        _experienceSystem.OnLevelChanged += SetLevelStats;
+        _experienceSystem.onLevelChanged += SetLevelStats;
     }
 
     private void OnDisable()
     {
-        _experienceSystem.OnLevelChanged -= SetLevelStats;
+        _experienceSystem.onLevelChanged -= SetLevelStats;
     }
 
     private void SetLevelStats(int level)

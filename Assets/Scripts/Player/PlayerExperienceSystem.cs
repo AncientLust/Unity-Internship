@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class PlayerExperienceSystem : MonoBehaviour
@@ -10,11 +11,8 @@ public class PlayerExperienceSystem : MonoBehaviour
     private float _nextLevelExperience;
     private float _nextLevelMultiplier = 1.2f;
 
-    public delegate void OnLevelChangedHandler(int level);
-    public delegate void OnExperienceChangedHandler(float levelPercent);
-
-    public event OnLevelChangedHandler OnLevelChanged;
-    public event OnExperienceChangedHandler OnExperienceChanged;
+    public event Action<int> onLevelChanged;
+    public event Action<float> onExperienceProgressChanged;
 
     private void Awake()
     {
@@ -25,8 +23,8 @@ public class PlayerExperienceSystem : MonoBehaviour
     {
         _nextLevelExperience = _nextLevelExperienceStartValue * _nextLevelMultiplier;
 
-        OnLevelChanged.Invoke(_level);
-        OnExperienceChanged.Invoke(_experience / _nextLevelExperience);
+        onLevelChanged.Invoke(_level);
+        onExperienceProgressChanged.Invoke(_experience / _nextLevelExperience);
     }
 
     private void CacheComponents()
@@ -43,7 +41,7 @@ public class PlayerExperienceSystem : MonoBehaviour
             LevelUp();
         }
 
-        OnExperienceChanged.Invoke(_experience / _nextLevelExperience);
+        onExperienceProgressChanged.Invoke(_experience / _nextLevelExperience);
     }
 
     protected void LevelUp()
@@ -52,7 +50,7 @@ public class PlayerExperienceSystem : MonoBehaviour
         _experience = _experience - _nextLevelExperience;
         _nextLevelExperience = _nextLevelExperienceStartValue * Mathf.Pow(_nextLevelMultiplier, _level);
         _levelUp.Play();
-        OnLevelChanged.Invoke(_level);
+        onLevelChanged.Invoke(_level);
     }
 
     public int GetLevel()
@@ -65,6 +63,6 @@ public class PlayerExperienceSystem : MonoBehaviour
         _experience = 0;
         _level = level > 1 ? level : 1;
         _nextLevelExperience = _nextLevelExperienceStartValue * Mathf.Pow(_nextLevelMultiplier, _level);
-        OnLevelChanged.Invoke(_level);
+        onLevelChanged.Invoke(_level);
     }
 }

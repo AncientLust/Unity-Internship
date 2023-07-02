@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class EnemyStatsSystem : MonoBehaviour
@@ -13,8 +14,7 @@ public class EnemyStatsSystem : MonoBehaviour
         public const float moveSpeed = .01f;
     }
 
-    public delegate void OnStatsChangedHandler(EnemyStatsMultipliers statsMultipliers);
-    public event OnStatsChangedHandler onStatsChanged;
+    public event Action<EnemyStatsMultipliers> onStatsChanged;
 
     private void SetLevelStats(int level)
     {

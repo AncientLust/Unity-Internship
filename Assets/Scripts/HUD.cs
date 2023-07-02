@@ -8,35 +8,29 @@ public class HUD : MonoBehaviour
     [SerializeField] private ExperienceUI _experienceUI;
     [SerializeField] private StatsMultipliersUI _statsMultipliersUI;
 
-    private Player _player;
-    private PlayerExperienceSystem _playerExperienceSystem;
-    private PlayerStatsSystem _playerStatsSystem;
-    private PlayerWeaponSystem _playerWeaponSystem;
+    private PlayerFacade _player;
 
     private void Awake()
     {
-        _player = FindObjectOfType<Player>(); // Must be injected via constructor
-        _playerExperienceSystem = _player.GetComponent<PlayerExperienceSystem>();
-        _playerStatsSystem = _player.GetComponent<PlayerStatsSystem>();
-        _playerWeaponSystem = _player.GetComponent<PlayerWeaponSystem>();
+        _player = FindObjectOfType<PlayerFacade>(); // Must be injected via constructor
     }
 
     private void OnEnable()
     {
-        _playerWeaponSystem.onWeaponChanged += SetWeaponInfo;
-        _playerWeaponSystem.onAmmoChanged += SetAmmoInfo;
-        _playerExperienceSystem.OnLevelChanged += UpdateLevelInfo;
-        _playerExperienceSystem.OnExperienceChanged += UpdateExperienceProgress;
-        _playerStatsSystem.onStatsChanged += UpdateStats;
+        _player.onWeaponChanged += SetWeaponInfo;
+        _player.onAmmoChanged += SetAmmoInfo;
+        _player.onLevelChanged += UpdateLevelInfo;
+        _player.onExperienceProgressChanged += UpdateExperienceProgress;
+        _player.onStatsChanged += UpdateStats;
     }
 
     private void OnDisable()
     {
-        _playerWeaponSystem.onWeaponChanged -= SetWeaponInfo;
-        _playerWeaponSystem.onAmmoChanged -= SetAmmoInfo;
-        _playerExperienceSystem.OnLevelChanged -= UpdateLevelInfo;
-        _playerExperienceSystem.OnExperienceChanged -= UpdateExperienceProgress;
-        _playerStatsSystem.onStatsChanged -= UpdateStats;
+        _player.onWeaponChanged -= SetWeaponInfo;
+        _player.onAmmoChanged -= SetAmmoInfo;
+        _player.onLevelChanged -= UpdateLevelInfo;
+        _player.onExperienceProgressChanged -= UpdateExperienceProgress;
+        _player.onStatsChanged -= UpdateStats;
     }
 
     private void SetWeaponInfo(string weapon)
@@ -58,10 +52,10 @@ public class HUD : MonoBehaviour
         _experienceUI.level.text = level.ToString();
     }
 
-    private void UpdateExperienceProgress(float levelPercent)
+    private void UpdateExperienceProgress(float levelProgress)
     {
-        _experienceUI.progress.text = ((int)(levelPercent * 100)).ToString() + " %";
-        _experienceUI.progressBar.SetFill(levelPercent);
+        _experienceUI.progress.text = ((int)(levelProgress * 100)).ToString() + " %";
+        _experienceUI.progressBar.SetFill(levelProgress);
     }
 
     private void UpdateStats(PlayerStatsMultipliers multipliers)

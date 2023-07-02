@@ -88,7 +88,7 @@ public class SaveLoadSystem : MonoBehaviour
 
         foreach (ISaveable saveable in FindObjectsOfType<MonoBehaviour>().OfType<ISaveable>())
         {
-            if (saveable is Player)
+            if (saveable is PlayerFacade)
             {
                 saveData.playerData = saveable.CaptureState();
             }
@@ -103,7 +103,7 @@ public class SaveLoadSystem : MonoBehaviour
 
     private void SetupPlayerState(EntityData playerData)
     {
-        var player = FindObjectOfType<Player>();
+        var player = FindObjectOfType<PlayerFacade>();
         var saveable = player.gameObject.GetComponent<ISaveable>();
         if (saveable != null)
         {
