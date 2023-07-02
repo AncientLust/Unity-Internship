@@ -1,13 +1,4 @@
-public readonly struct UINames
-{
-    public const string Menu = "Menu";
-    public const string Game = "Game";
-    public const string GameOver = "GameOver";
-    public const string Pause = "Pause";
-    public const string Settings = "Settings";
-}
-
-public enum UITypes 
+public enum UIName
 {
     Menu,
     Game,

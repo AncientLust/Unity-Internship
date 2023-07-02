@@ -4,11 +4,6 @@ using UnityEngine.SceneManagement;
 public class GameManager : Singleton<GameManager>
 {
     [SerializeField] private GameObject _player;
-    
-    private const string _gameplay = "Gameplay";
-    private const string _pause = "Pause";
-    private const string _gameOver = "GameOver";
-    private const string _mainMenu = "MainMenu";
 
     public bool IsPaused { get; private set; }
     public bool IsStarted { get; private set; }
@@ -44,7 +39,7 @@ public class GameManager : Singleton<GameManager>
 
     public void MainMenu()
     {
-        SceneManager.LoadScene(_mainMenu);
+        //SceneManager.LoadScene(_mainMenu);
     }
 
     public void GameOver()

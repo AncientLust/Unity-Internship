@@ -1,6 +1,7 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using System;
 
 public class HUD : MonoBehaviour
 {
@@ -68,14 +69,14 @@ public class HUD : MonoBehaviour
         _statsMultipliersUI.moveSpeed.text = multipliers.moveSpeed.ToString("F1");
     }
 
-    [System.Serializable]
+    [Serializable]
     private struct WeaponUI
     {
         public Image[] sprites;
         public TextMeshProUGUI ammo;
     }
 
-    [System.Serializable]
+    [Serializable]
     private struct ExperienceUI
     {
         public TextMeshProUGUI level;
@@ -83,7 +84,7 @@ public class HUD : MonoBehaviour
         public ExperienceBar progressBar;
     }
 
-    [System.Serializable]
+    [Serializable]
     private struct StatsMultipliersUI
     {
         public TextMeshProUGUI damage;
