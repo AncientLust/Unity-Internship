@@ -1,10 +1,12 @@
 using UnityEngine;
+using Structs;
 
 public class EnemyMovementSystem : MonoBehaviour, IPushiable
 {
     private float _stopDistance = 0.35f;
     private float _baseMoveSpeed = 6f;
     private float _moveSpeed;
+    private bool _mustMove = true;
     
     private Rigidbody _rigidbody;
     private Transform _target; // Must be injected
@@ -43,7 +45,7 @@ public class EnemyMovementSystem : MonoBehaviour, IPushiable
 
     private void ActPhisicallyIfGameRunning()
     {
-        if (ShouldAct())
+        if (_mustMove)
         {
             MoveIfPlayerAlive();
         }
@@ -66,10 +68,11 @@ public class EnemyMovementSystem : MonoBehaviour, IPushiable
         }
     }
 
-    private bool ShouldAct()
-    {
-        return GameManager.Instance.IsStarted && !GameManager.Instance.IsPaused;
-    }
+    //private bool ShouldAct()
+    //{
+    //    //return GameManager.Instance.IsStarted && !GameManager.Instance.IsPaused;
+    //    return true;
+    //}
 
     private void MoveToPlayer()
     {
@@ -89,7 +92,7 @@ public class EnemyMovementSystem : MonoBehaviour, IPushiable
         _rigidbody.MoveRotation(targetRotation);
     }
 
-    private void ApplyLevelUpMultipliers(EnemyStatsMultipliers multipliers)
+    private void ApplyLevelUpMultipliers(SEnemyStatsMultipliers multipliers)
     {
         _moveSpeed = _baseMoveSpeed * multipliers.moveSpeed;
     }

@@ -1,23 +1,24 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using Enums;
 
 public class ObjectPool
 {
     public static ObjectPool Instance { get; } = new ObjectPool();
-    private readonly Dictionary<PooledObject, Queue<GameObject>> pool;
+    private readonly Dictionary<EResource, Queue<GameObject>> pool;
 
     private ObjectFactory _objectFactory;
 
     public ObjectPool()
     {
-        pool = new Dictionary<PooledObject, Queue<GameObject>>();
+        pool = new Dictionary<EResource, Queue<GameObject>>();
         _objectFactory = new ObjectFactory();
     }
 
-    public GameObject Get(PooledObject objType)
+    public GameObject Get(EResource resource)
     {
-        if (pool.TryGetValue(objType, out var objects) && objects.Count > 0)
+        if (pool.TryGetValue(resource, out var objects) && objects.Count > 0)
         {
             var obj = objects.Dequeue();
             obj.SetActive(true);
@@ -25,22 +26,22 @@ public class ObjectPool
         }
         else
         {
-            var obj = _objectFactory.Instantiate(objType.ToString());
+            var obj = _objectFactory.Instantiate(resource);
             return obj;
         }
     }
 
     public void Return(GameObject obj)
     {
-        if (Enum.TryParse(obj.tag, out PooledObject objType))
+        if (Enum.TryParse(obj.tag, out EResource resource))
         {
-            if (!pool.ContainsKey(objType))
+            if (!pool.ContainsKey(resource))
             {
-                pool[objType] = new Queue<GameObject>();
+                pool[resource] = new Queue<GameObject>();
             }
 
             obj.SetActive(false);
-            pool[objType].Enqueue(obj);
+            pool[resource].Enqueue(obj);
         }
         else
         {

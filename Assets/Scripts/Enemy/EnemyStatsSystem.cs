@@ -1,10 +1,11 @@
 using System;
 using UnityEngine;
+using Structs;
 
 public class EnemyStatsSystem : MonoBehaviour
 {
     private EnemyExperienceSystem _experienceSystem; // Must be injected
-    private EnemyStatsMultipliers _multipliers;
+    private SEnemyStatsMultipliers _multipliers;
     
     private struct _levelUpGrowth
     {
@@ -14,7 +15,7 @@ public class EnemyStatsSystem : MonoBehaviour
         public const float moveSpeed = .01f;
     }
 
-    public event Action<EnemyStatsMultipliers> onStatsChanged;
+    public event Action<SEnemyStatsMultipliers> onStatsChanged;
 
     private void Awake()
     {

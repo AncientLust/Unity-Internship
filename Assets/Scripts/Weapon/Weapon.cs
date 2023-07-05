@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using Enums;
 
 public class Weapon : MonoBehaviour
 {
@@ -8,7 +9,7 @@ public class Weapon : MonoBehaviour
     [SerializeField] private float _reloadTime;
     [SerializeField] private int _clipCapacity;
     [SerializeField] private float _pushPower;
-    [SerializeField] private WeaponType _type;
+    [SerializeField] private EWeaponType _type;
 
     private bool _inDowntime = true;
     private Transform _shootPoint;
@@ -19,7 +20,7 @@ public class Weapon : MonoBehaviour
     public bool InReloading { get; private set; } = false;
     public int Ammo { get; private set; }
 
-    public WeaponType Type { get { return _type; } }
+    public EWeaponType Type { get { return _type; } }
 
     private void Awake()
     {
@@ -38,7 +39,7 @@ public class Weapon : MonoBehaviour
         {
             if (Ammo > 0)
             {
-                GameObject projectile = ObjectPool.Instance.Get(PooledObject.Projectile);
+                GameObject projectile = ObjectPool.Instance.Get(EResource.Projectile);
                 if (projectile != null)
                 {
                     projectile.GetComponent<Projectile>().Damage = _damage * DamageMultiplier;

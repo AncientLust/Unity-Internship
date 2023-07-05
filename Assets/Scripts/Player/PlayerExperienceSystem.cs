@@ -16,15 +16,12 @@ public class PlayerExperienceSystem : MonoBehaviour
 
     private void Awake()
     {
-        CacheComponents();
+        CacheComponents(); // Must be replaced by something, since can be created separate from the player
     }
 
     private void Start()
     {
         _nextLevelExperience = _nextLevelExperienceStartValue * _nextLevelMultiplier;
-
-        onLevelChanged.Invoke(_level);
-        onExperienceProgressChanged.Invoke(_experience / _nextLevelExperience);
     }
 
     private void CacheComponents()

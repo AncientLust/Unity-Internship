@@ -1,8 +1,9 @@
 using UnityEngine;
+using Structs;
 
 public class EnemyAttackSystem : MonoBehaviour
 {
-    private float _baseDamage = 10;
+    private float _baseDamage = 15;
     private float _damage;
 
     private EnemyStatsSystem _enemyStatsSystem; // Must be injected
@@ -38,7 +39,7 @@ public class EnemyAttackSystem : MonoBehaviour
         }
     }
 
-    private void ApplyLevelUpMultipliers(EnemyStatsMultipliers multipliers)
+    private void ApplyLevelUpMultipliers(SEnemyStatsMultipliers multipliers)
     {
         _damage = _baseDamage * multipliers.damage;
     }

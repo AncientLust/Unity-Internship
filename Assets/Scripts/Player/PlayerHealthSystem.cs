@@ -1,22 +1,27 @@
 using System;
 using UnityEngine;
+using Structs;
 
 public class PlayerHealthSystem : MonoBehaviour, IDamageable
 {
     private float _baseHealth = 100;
     private float _baseHealthRegen = 5;
-
-    private PlayerStatsSystem _statsSystem; // Must be injected
-
     private float _maxHealth;
     private float _health;
     private float _regenPerSecond;
     private bool _isDead;
 
+    private PlayerStatsSystem _statsSystem; // Must be injected
     private ParticleSystem _bloodSplat;
-    protected HealthBar _healthBar;
+    private HealthBar _healthBar;
 
     public event Action OnDie;
+
+    public void Init(PlayerStatsSystem statsSystem)
+    {
+        _statsSystem = statsSystem;
+        SubscribeEvents();
+    }
 
     private void Awake()
     {
@@ -31,11 +36,6 @@ public class PlayerHealthSystem : MonoBehaviour, IDamageable
         _regenPerSecond = _baseHealthRegen;
     }
 
-    private void OnEnable()
-    {
-        _statsSystem.onStatsChanged += ApplyLevelUpMultipliers;
-    }
-
     private void Update()
     {
         Regenerate();
@@ -43,12 +43,22 @@ public class PlayerHealthSystem : MonoBehaviour, IDamageable
 
     private void OnDisable()
     {
+        UnsubscribeEvents();
+    }
+
+    private void SubscribeEvents()
+    {
+        _statsSystem.onStatsChanged += ApplyLevelUpMultipliers;
+    }
+
+    private void UnsubscribeEvents()
+    {
         _statsSystem.onStatsChanged -= ApplyLevelUpMultipliers;
     }
 
     private void CacheComponents()
     {
-        _statsSystem = GetComponent<PlayerStatsSystem>();
+        //_statsSystem = GetComponent<PlayerStatsSystem>();
         _bloodSplat = transform.Find("Effects/BloodSplat").GetComponent<ParticleSystem>();
         _healthBar = transform.Find("Canvas/HealthBar").GetComponent<HealthBar>();
     }
@@ -99,7 +109,7 @@ public class PlayerHealthSystem : MonoBehaviour, IDamageable
         _healthBar.gameObject.SetActive(_health != _maxHealth);
     }
 
-    private void ApplyLevelUpMultipliers(PlayerStatsMultipliers stats)
+    private void ApplyLevelUpMultipliers(SPlayerStatsMultipliers stats)
     {
         _health = _maxHealth = _baseHealth * stats.maxHealth;
         _regenPerSecond = _baseHealthRegen * stats.maxHealth;

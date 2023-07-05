@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using Structs;
 
 public class EnemyHealthSystem : MonoBehaviour, IDamageable
 {
@@ -98,7 +99,7 @@ public class EnemyHealthSystem : MonoBehaviour, IDamageable
         _healthBar.gameObject.SetActive(_health != _maxHealth);
     }
 
-    private void ApplyLevelUpMultipliers(EnemyStatsMultipliers stats)
+    private void ApplyLevelUpMultipliers(SEnemyStatsMultipliers stats)
     {
         _maxHealth = _baseHealth * stats.maxHealth;
         _regenPerSecond = _baseHealthRegen * stats.maxHealth;

@@ -35,11 +35,6 @@ public class HealthBar : MonoBehaviour
 
     private void AnimateBar()
     {
-        if (!gameObject.activeInHierarchy || GameManager.Instance.IsPaused)
-        {
-            return;
-        }
-
         var uvRect = _barRawImage.uvRect;
         uvRect.x -= .2f * Time.deltaTime;
         _barRawImage.uvRect = uvRect;

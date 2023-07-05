@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
 using UnityEngine;
+using Enums;
 
 [Serializable]
 public class EntityData
@@ -102,12 +103,12 @@ public class SaveLoadSystem : MonoBehaviour
 
     private void SetupPlayerState(EntityData playerData)
     {
-        var player = FindObjectOfType<PlayerFacade>();
-        var saveable = player.gameObject.GetComponent<ISaveable>();
-        if (saveable != null)
-        {
-            saveable.LoadState(playerData);
-        }
+        //var player = FindObjectOfType<PlayerFacade>();
+        //var saveable = player.gameObject.GetComponent<ISaveable>();
+        //if (saveable != null)
+        //{
+        //    saveable.LoadState(playerData);
+        //}
     }
 
     private void DropAllEnemies()
@@ -122,7 +123,7 @@ public class SaveLoadSystem : MonoBehaviour
     {
         foreach (EntityData enemyData in enemiesData)
         {
-            var enemy = ObjectPool.Instance.Get(PooledObject.Enemy);
+            var enemy = ObjectPool.Instance.Get(EResource.Enemy);
             if (enemy != null)
             {
                 enemy.GetComponent<EnemyFacade>().Reset();

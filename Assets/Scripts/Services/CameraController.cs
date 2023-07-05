@@ -2,13 +2,13 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
-    [SerializeField] private Transform _playerTarget;
+    private Transform _playerTarget;
     private float smoothSpeed = 5f;
-    private Vector3 _startOffset;
+    private Vector3 _startOffset = new Vector3(0, 10, 0);
 
-    private void Start()
+    public void Init(Transform playerTarget)
     {
-        _startOffset  = transform.position;
+        _playerTarget = playerTarget;
     }
 
     private void FixedUpdate()
@@ -18,7 +18,10 @@ public class CameraController : MonoBehaviour
 
     private void FollowPlayer()
     {
-        var targetPosition = _playerTarget.position + _startOffset;
-        transform.position = Vector3.Lerp(transform.position, targetPosition, smoothSpeed * Time.fixedDeltaTime);
+        if (_playerTarget != null)
+        {
+            var targetPosition = _playerTarget.position + _startOffset;
+            transform.position = Vector3.Lerp(transform.position, targetPosition, smoothSpeed * Time.fixedDeltaTime);
+        }
     }
 }

@@ -1,18 +1,23 @@
 using UnityEngine;
+using Structs;
 
 public class PlayerMovementSystem : MonoBehaviour
 {
     private float _baseMoveSpeed = 5;
     private float _moveSpeed;
     private bool _mustMove = true;
+    private Vector3 _moveDirection;
     private PlayerStatsSystem _statsSystem;
     private PlayerInputSystem _inputSystem;
     private Rigidbody _rigidbody;
-    private Vector3 _moveDirection;
 
-    private void Awake()
+    public void Init(PlayerStatsSystem statsSystem, PlayerInputSystem inputSystem, Rigidbody rigidbody)
     {
-        CacheComponents();
+        _statsSystem = statsSystem;
+        _inputSystem = inputSystem;
+        _rigidbody = rigidbody;
+
+        SubscribeEvents();
     }
 
     private void Start()
@@ -20,15 +25,21 @@ public class PlayerMovementSystem : MonoBehaviour
         _moveSpeed = _baseMoveSpeed;
     }
 
-    private void OnEnable()
+    private void OnDisable()
+    {
+        UnsubscribeEvents();
+    }
+
+    private void SubscribeEvents()
     {
         _statsSystem.onStatsChanged += ApplyLevelUpMultipliers;
         _inputSystem.onDirectionAxisPressed += SetMoveDirection;
     }
 
-    private void OnDisable()
+    private void UnsubscribeEvents()
     {
         _statsSystem.onStatsChanged -= ApplyLevelUpMultipliers;
+        _inputSystem.onDirectionAxisPressed -= SetMoveDirection;
     }
 
     private void FixedUpdate()
@@ -36,12 +47,12 @@ public class PlayerMovementSystem : MonoBehaviour
         MoveIfNecessary();
     }
 
-    private void CacheComponents()
-    {
-        _rigidbody = GetComponent<Rigidbody>();
-        _statsSystem = GetComponent<PlayerStatsSystem>();
-        _inputSystem = GetComponent<PlayerInputSystem>();
-    }
+    //private void CacheComponents()
+    //{
+    //    _rigidbody = GetComponent<Rigidbody>();
+    //    _statsSystem = GetComponent<PlayerStatsSystem>();
+    //    _inputSystem = GetComponent<PlayerInputSystem>();
+    //}
 
     private void MoveIfNecessary()
     {
@@ -87,7 +98,7 @@ public class PlayerMovementSystem : MonoBehaviour
         _rigidbody.angularVelocity = Vector3.zero;
     }
 
-    private void ApplyLevelUpMultipliers(PlayerStatsMultipliers multipliers)
+    private void ApplyLevelUpMultipliers(SPlayerStatsMultipliers multipliers)
     {
         _moveSpeed = _baseMoveSpeed * multipliers.moveSpeed;
     }

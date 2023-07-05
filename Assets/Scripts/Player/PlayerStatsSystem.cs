@@ -1,9 +1,11 @@
+using System;
 using UnityEngine;
+using Structs;
 
 public class PlayerStatsSystem : MonoBehaviour
 {
     private PlayerExperienceSystem _experienceSystem;
-    private PlayerStatsMultipliers _multipliers;
+    private SPlayerStatsMultipliers _multipliers;
 
     private struct _levelUpGrowth
     {
@@ -15,20 +17,25 @@ public class PlayerStatsSystem : MonoBehaviour
         public const float moveSpeed = .01f;
     }
 
-    public delegate void OnStatsChangedHandler(PlayerStatsMultipliers statsMultipliers);
-    public event OnStatsChangedHandler onStatsChanged;
+    public event Action<SPlayerStatsMultipliers> onStatsChanged;
 
-    private void Awake()
+    public void Init(PlayerExperienceSystem experienceSystem)
     {
-        _experienceSystem = GetComponent<PlayerExperienceSystem>();
+        _experienceSystem = experienceSystem;
+        SubscribeEvents();
     }
 
-    private void OnEnable()
+    private void OnDisable()
+    {
+        UnsubscribeEvents();
+    }
+
+    private void SubscribeEvents()
     {
         _experienceSystem.onLevelChanged += SetLevelStats;
     }
 
-    private void OnDisable()
+    private void UnsubscribeEvents()
     {
         _experienceSystem.onLevelChanged -= SetLevelStats;
     }

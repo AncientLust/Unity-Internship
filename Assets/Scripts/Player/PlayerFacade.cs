@@ -1,5 +1,7 @@
-using System;
+﻿using System;
 using UnityEngine;
+using Structs;
+using Enums;
 
 public class PlayerFacade : MonoBehaviour, ISaveable
 {
@@ -9,27 +11,41 @@ public class PlayerFacade : MonoBehaviour, ISaveable
     private PlayerStatsSystem _statsSystem; // Must be injected
 
     public event Action<int> onAmmoChanged; 
-    public event Action<WeaponType> onWeaponChanged;
+    public event Action<EWeaponType> onWeaponChanged;
     public event Action<float> onExperienceProgressChanged;
     public event Action<int> onLevelChanged;
-    public event Action<PlayerStatsMultipliers> onStatsChanged;
+    public event Action<SPlayerStatsMultipliers> onStatsChanged;
 
-    private void Awake()
+    public void Init(
+        PlayerExperienceSystem experienceSystem, 
+        PlayerStatsSystem statsSystem,
+        PlayerWeaponSystem weaponSystem, 
+        PlayerHealthSystem healthSystem) 
     {
-        CacheComponents();
-    }
+        _experienceSystem = experienceSystem;
+        _statsSystem = statsSystem;
+        _weaponSystem = weaponSystem;
+        _healthSystem = healthSystem;
 
-    private void OnEnable()
-    {
-        _healthSystem.OnDie += Die;
-        _weaponSystem.onAmmoChanged += ammo => onAmmoChanged.Invoke(ammo);
-        _weaponSystem.onWeaponChanged += weaponName => onWeaponChanged.Invoke(weaponName);
-        _experienceSystem.onExperienceProgressChanged += progress => onExperienceProgressChanged.Invoke(progress);
-        _experienceSystem.onLevelChanged += level => onLevelChanged(level);
-        _statsSystem.onStatsChanged += statsMultipliers => onStatsChanged.Invoke(statsMultipliers);
+        SubscribeEvents();
     }
 
     private void OnDisable()
+    {
+        UnsubscribeEvents();
+    }
+
+    private void SubscribeEvents()
+    {
+        _healthSystem.OnDie += Die;
+        _weaponSystem.onAmmoChanged += ammo => onAmmoChanged?.Invoke(ammo);
+        _weaponSystem.onWeaponChanged += weaponName => onWeaponChanged?.Invoke(weaponName);
+        _experienceSystem.onExperienceProgressChanged += progress => onExperienceProgressChanged.Invoke(progress);
+        _experienceSystem.onLevelChanged += level => onLevelChanged?.Invoke(level);
+        _statsSystem.onStatsChanged += statsMultipliers => onStatsChanged.Invoke(statsMultipliers);
+    }
+
+    private void UnsubscribeEvents()
     {
         _healthSystem.OnDie -= Die;
         _weaponSystem.onAmmoChanged -= ammo => onAmmoChanged.Invoke(ammo);
@@ -39,24 +55,24 @@ public class PlayerFacade : MonoBehaviour, ISaveable
         _statsSystem.onStatsChanged -= statsMultipliers => onStatsChanged.Invoke(statsMultipliers);
     }
 
-    private void CacheComponents()
-    {
-        _healthSystem = GetComponent<PlayerHealthSystem>();
-        _weaponSystem = GetComponent<PlayerWeaponSystem>();
-        _experienceSystem = GetComponent<PlayerExperienceSystem>();
-        _statsSystem = GetComponent<PlayerStatsSystem>();
-    }
+    //private void CacheComponents()
+    //{
+    //    _healthSystem = GetComponent<PlayerHealthSystem>();
+    //    _weaponSystem = GetComponent<PlayerWeaponSystem>();
+    //    _experienceSystem = GetComponent<PlayerExperienceSystem>();
+    //    _statsSystem = GetComponent<PlayerStatsSystem>();
+    //}
 
     private void Die()
     {
-        GameManager.Instance.GameOver();
+        //GameManager.Instance.GameOver();
     }
 
     public EntityData CaptureState()
     {
         EntityData data = new EntityData();
         
-        data.position = transform.position;
+        //data.position = transform.position;
         //data.level = _experienceSystem.Level;
         //data.experience = _experienceSystem.Experience;
         //data.health = _statsSystem.CurrentHealth;
@@ -67,7 +83,7 @@ public class PlayerFacade : MonoBehaviour, ISaveable
 
     public void LoadState(EntityData data)
     {
-        transform.position = data.position;
+        //transform.position = data.position;
         //_experienceSystem.Level = data.level;
         //_experienceSystem.AddExperience(data.experience);
         //EquipWeapon(data.equippedWeaponIndex);

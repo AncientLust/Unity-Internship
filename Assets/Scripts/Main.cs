@@ -1,20 +1,19 @@
 using UnityEngine;
+using Enums;
 
 public class Main : MonoBehaviour
 {
-    private SceneController _sceneController;
-
-    private void Awake()
-    {
-        
-    }
-
     void Start()
-    {
-        DontDestroyOnLoad(gameObject);
-        Debug.Log("Congrats, now you have an entry point!");
+    {        
+        var objectFactory = new ObjectFactory();
         
-        _sceneController = new SceneController();
-        _sceneController.LoadMenu();
+        var eventSystem = objectFactory.InstantiateUndestroyable(EResource.EventSystem); // New gameobject + addComponent
+        var cameraController = objectFactory.InstantiateUndestroyable(EResource.MainCamera).GetComponent<CameraController>(); 
+        var uiRoot = objectFactory.InstantiateUndestroyable(EResource.UIRoot).GetComponent<UIRoot>();
+        var hud = uiRoot.GetComponentInChildren<HUD>(true);
+
+        var sceneSwitcher = new SceneSwitcher(uiRoot);
+        var sceneLoader = new SceneObjectLoader(objectFactory, hud, sceneSwitcher, cameraController);
+        var gameManager = new GameManager(uiRoot, sceneLoader, sceneSwitcher);
     }
 }

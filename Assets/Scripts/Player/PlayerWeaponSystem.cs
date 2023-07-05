@@ -2,18 +2,26 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Enums;
+using Structs;
 
 public class PlayerWeaponSystem : MonoBehaviour
 {
-    [SerializeField] private List<Weapon> _weapons = new List<Weapon>();
-
     private PlayerInputSystem _playerInputSystem; // Must be injected
     private PlayerStatsSystem _statsSystem; // Must be injected
+    private List<Weapon> _weapons = new List<Weapon>();
     private Weapon _currentWeapon;
     private int _equippedWeaponIndex;
 
-    public Action<WeaponType> onWeaponChanged;
+    public Action<EWeaponType> onWeaponChanged;
     public Action<int> onAmmoChanged;
+
+    public void Init(PlayerInputSystem playerInputSystem, PlayerStatsSystem playerStatsSystem)
+    {
+        _playerInputSystem = playerInputSystem;
+        _statsSystem = playerStatsSystem;
+        SubscribeEvents();
+    }
 
     private void Awake()
     {
@@ -22,10 +30,23 @@ public class PlayerWeaponSystem : MonoBehaviour
 
     private void Start()
     {
-        EquipWeapon(0);
+        SortWeapons();
+        EquipWeapon(0); 
     }
 
-    private void OnEnable()
+    private void OnDisable()
+    {
+        UnsubscribeEvents();
+    }
+
+    private void CacheComponents()
+    {
+        _weapons = new List<Weapon>(GetComponentsInChildren<Weapon>(true));
+        //_playerInputSystem = GetComponent<PlayerInputSystem>();
+        //_statsSystem = GetComponent<PlayerStatsSystem>();
+    }
+
+    private void SubscribeEvents()
     {
         _playerInputSystem.onScrollUp += EquipNextWeapon;
         _playerInputSystem.onScrollDown += EquipPreviousWeapon;
@@ -34,7 +55,7 @@ public class PlayerWeaponSystem : MonoBehaviour
         _statsSystem.onStatsChanged += SetLevelUpMultipliers;
     }
 
-    private void OnDisable()
+    private void UnsubscribeEvents()
     {
         _playerInputSystem.onScrollUp -= EquipNextWeapon;
         _playerInputSystem.onScrollDown -= EquipPreviousWeapon;
@@ -43,13 +64,7 @@ public class PlayerWeaponSystem : MonoBehaviour
         _statsSystem.onStatsChanged -= SetLevelUpMultipliers;
     }
 
-    private void CacheComponents()
-    {
-        _playerInputSystem = GetComponent<PlayerInputSystem>();
-        _statsSystem = GetComponent<PlayerStatsSystem>();
-    }
-
-    private void SetLevelUpMultipliers(PlayerStatsMultipliers multipliers)
+    private void SetLevelUpMultipliers(SPlayerStatsMultipliers multipliers)
     {
         foreach (var weapon in _weapons)
         {
@@ -100,6 +115,11 @@ public class PlayerWeaponSystem : MonoBehaviour
     private void EquipPreviousWeapon()
     {
         EquipWeapon(_equippedWeaponIndex == 0 ? _weapons.Count - 1 : --_equippedWeaponIndex);
+    }
+
+    private void SortWeapons()
+    {
+        _weapons.Sort((weapon1, weapon2) => weapon1.Type.CompareTo(weapon2.Type));
     }
 
     private void EquipWeapon(int weaponIndex)

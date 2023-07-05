@@ -1,10 +1,10 @@
 using System.Collections;
 using UnityEngine;
+using Enums;
 
 public class EnemySpawner : MonoBehaviour
 {
-    [SerializeField] private GameObject _player;
-
+    private GameObject _player;
     private ObjectPool _objectPool;
 
     private bool _spawn = true;
@@ -20,6 +20,11 @@ public class EnemySpawner : MonoBehaviour
     //{
     //    _objectPool = objectPool;
     //}
+
+    public void Init(GameObject player)
+    {
+        _player = player;
+    }
 
     private void Start()
     {
@@ -37,10 +42,7 @@ public class EnemySpawner : MonoBehaviour
     {
         while (_spawn)
         {
-            if (GameManager.Instance.IsStarted && !GameManager.Instance.IsPaused)
-            {
-                SpawnEnemy(Random.Range(_minEnemiesToSpawn, _maxEnemiesToSpawn));
-            }
+            SpawnEnemy(Random.Range(_minEnemiesToSpawn, _maxEnemiesToSpawn));
 
             yield return new WaitForSeconds(Random.Range(_minEnemySpawnTime, _maxEnemySpawnTime));
         }
@@ -52,10 +54,10 @@ public class EnemySpawner : MonoBehaviour
         {
             if (_objectPool != null)
             {
-                GameObject enemy = ObjectPool.Instance.Get(PooledObject.Enemy);
+                GameObject enemy = ObjectPool.Instance.Get(EResource.Enemy);
                 if (enemy != null)
                 { 
-                    enemy.GetComponent<EnemyFacade>().Init(_player.transform, _player.GetComponent<PlayerExperienceSystem>());
+                    enemy.GetComponent<EnemyFacade>().Init(_player.transform, _player.GetComponent<PlayerExperienceSystem>()); // Must be refactored
                     enemy.GetComponent<EnemyHealthSystem>().ResetHealth();
                     enemy.transform.position = GetEnemySpawnPosition();
                 }

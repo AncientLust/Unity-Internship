@@ -15,11 +15,6 @@ public class Projectile : MonoBehaviour
 
     private void Update()
     {
-        if (!GameManager.Instance.IsStarted || GameManager.Instance.IsPaused)
-        {
-            return;
-        }
-
         MoveForward();
         ReturnToPoolOnceOutOfSight();
     }

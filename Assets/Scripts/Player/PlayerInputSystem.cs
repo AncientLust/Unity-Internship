@@ -18,15 +18,7 @@ public class PlayerInputSystem : MonoBehaviour
 
     private void ReadInputIfGameRunning()
     {
-        if (ShouldAct())
-        {
-            InputHandler();
-        }
-    }
-
-    private bool ShouldAct()
-    {
-        return GameManager.Instance.IsStarted && !GameManager.Instance.IsPaused;
+        InputHandler();
     }
 
     private void InputHandler()

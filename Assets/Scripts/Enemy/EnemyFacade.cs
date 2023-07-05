@@ -61,8 +61,6 @@ public class EnemyFacade : MonoBehaviour, ISaveable
         ObjectPool.Instance.Return(gameObject);
     }
 
-
-
     public EntityData CaptureState()
     {
         EntityData data = new EntityData();

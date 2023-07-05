@@ -2,6 +2,8 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using System;
+using Enums;
+using Structs;
 
 public class HUD : MonoBehaviour
 {
@@ -9,32 +11,38 @@ public class HUD : MonoBehaviour
     [SerializeField] private ExperienceUI _experienceUI;
     [SerializeField] private StatsMultipliersUI _statsMultipliersUI;
 
-    private PlayerFacade _player;
+    private PlayerFacade _playerFacade;
 
-    private void Awake()
+    public void Init(PlayerFacade playerFacade)
     {
-        _player = FindObjectOfType<PlayerFacade>(); // Must be injected via constructor
-    }
-
-    private void OnEnable()
-    {
-        _player.onWeaponChanged += UpdateEquippedWeapon;
-        _player.onAmmoChanged += UpdateAmmo;
-        _player.onLevelChanged += UpdatePlayerLevel;
-        _player.onExperienceProgressChanged += UpdateExperienceProgress;
-        _player.onStatsChanged += UpdateStats;
+        _playerFacade = playerFacade;
+        SubscribeEvents();
     }
 
     private void OnDisable()
     {
-        _player.onWeaponChanged -= UpdateEquippedWeapon;
-        _player.onAmmoChanged -= UpdateAmmo;
-        _player.onLevelChanged -= UpdatePlayerLevel;
-        _player.onExperienceProgressChanged -= UpdateExperienceProgress;
-        _player.onStatsChanged -= UpdateStats;
+        UnsubscribeEvents();
     }
 
-    private void UpdateEquippedWeapon(WeaponType weapon)
+    private void SubscribeEvents()
+    {
+        _playerFacade.onWeaponChanged += UpdateEquippedWeapon;
+        _playerFacade.onAmmoChanged += UpdateAmmo;
+        _playerFacade.onLevelChanged += UpdatePlayerLevel;
+        _playerFacade.onExperienceProgressChanged += UpdateExperienceProgress;
+        _playerFacade.onStatsChanged += UpdateStats;
+    }
+
+    private void UnsubscribeEvents()
+    {
+        _playerFacade.onWeaponChanged -= UpdateEquippedWeapon;
+        _playerFacade.onAmmoChanged -= UpdateAmmo;
+        _playerFacade.onLevelChanged -= UpdatePlayerLevel;
+        _playerFacade.onExperienceProgressChanged -= UpdateExperienceProgress;
+        _playerFacade.onStatsChanged -= UpdateStats;
+    }
+
+    private void UpdateEquippedWeapon(EWeaponType weapon)
     {
         for (int i = 0; i < _weaponUI.sprites.Length; i++)
         {
@@ -59,7 +67,7 @@ public class HUD : MonoBehaviour
         _experienceUI.progressBar.SetFill(levelProgress);
     }
 
-    private void UpdateStats(PlayerStatsMultipliers multipliers)
+    private void UpdateStats(SPlayerStatsMultipliers multipliers)
     {
         _statsMultipliersUI.damage.text = multipliers.damage.ToString("F1");
         _statsMultipliersUI.reload.text = multipliers.reload.ToString("F1");
