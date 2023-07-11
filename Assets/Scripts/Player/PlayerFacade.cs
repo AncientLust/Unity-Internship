@@ -5,12 +5,16 @@ using Enums;
 
 public class PlayerFacade : MonoBehaviour, ISaveable
 {
-    private PlayerHealthSystem _healthSystem; // Must be injected
-    private PlayerWeaponSystem _weaponSystem; // Must be injected
-    private PlayerExperienceSystem _experienceSystem; // Must be injected
-    private PlayerStatsSystem _statsSystem; // Must be injected
+    private PlayerHealthSystem _healthSystem;
+    private PlayerWeaponSystem _weaponSystem;
+    private PlayerStatsSystem _statsSystem;
+    private PlayerExperienceSystem _experienceSystem;
+    private IInputSystem _inputSystem;
 
-    public event Action<int> onAmmoChanged; 
+    public IExperienceSystem ExperienceSystem => _experienceSystem;
+    public IInputSystem InputSystem => _inputSystem;
+
+    public event Action<int> onAmmoChanged;
     public event Action<EWeaponType> onWeaponChanged;
     public event Action<float> onExperienceProgressChanged;
     public event Action<int> onLevelChanged;
@@ -20,22 +24,24 @@ public class PlayerFacade : MonoBehaviour, ISaveable
         PlayerExperienceSystem experienceSystem, 
         PlayerStatsSystem statsSystem,
         PlayerWeaponSystem weaponSystem, 
-        PlayerHealthSystem healthSystem) 
+        PlayerHealthSystem healthSystem,
+        PlayerInputSystem inputSystem) 
     {
         _experienceSystem = experienceSystem;
         _statsSystem = statsSystem;
         _weaponSystem = weaponSystem;
         _healthSystem = healthSystem;
+        _inputSystem = inputSystem;
 
-        SubscribeEvents();
+        Subscribe();
     }
 
     private void OnDisable()
     {
-        UnsubscribeEvents();
+        Unsubscribe();
     }
 
-    private void SubscribeEvents()
+    private void Subscribe()
     {
         _healthSystem.OnDie += Die;
         _weaponSystem.onAmmoChanged += ammo => onAmmoChanged?.Invoke(ammo);
@@ -45,7 +51,7 @@ public class PlayerFacade : MonoBehaviour, ISaveable
         _statsSystem.onStatsChanged += statsMultipliers => onStatsChanged.Invoke(statsMultipliers);
     }
 
-    private void UnsubscribeEvents()
+    private void Unsubscribe()
     {
         _healthSystem.OnDie -= Die;
         _weaponSystem.onAmmoChanged -= ammo => onAmmoChanged.Invoke(ammo);
@@ -54,14 +60,6 @@ public class PlayerFacade : MonoBehaviour, ISaveable
         _experienceSystem.onLevelChanged -= level => onLevelChanged(level);
         _statsSystem.onStatsChanged -= statsMultipliers => onStatsChanged.Invoke(statsMultipliers);
     }
-
-    //private void CacheComponents()
-    //{
-    //    _healthSystem = GetComponent<PlayerHealthSystem>();
-    //    _weaponSystem = GetComponent<PlayerWeaponSystem>();
-    //    _experienceSystem = GetComponent<PlayerExperienceSystem>();
-    //    _statsSystem = GetComponent<PlayerStatsSystem>();
-    //}
 
     private void Die()
     {

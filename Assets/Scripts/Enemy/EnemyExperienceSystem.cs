@@ -1,10 +1,9 @@
 using System;
 using UnityEngine;
 
-public class EnemyExperienceSystem : MonoBehaviour
+public class EnemyLevelSystem : MonoBehaviour
 {
-    protected int _level = 1;
-    protected ParticleSystem _levelUp;
+    private int _level = 1;
 
     public Action<int> OnLevelChanged;
 

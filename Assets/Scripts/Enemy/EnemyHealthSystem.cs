@@ -18,9 +18,16 @@ public class EnemyHealthSystem : MonoBehaviour, IDamageable
 
     public event Action OnDie;
 
-    private void Awake()
+    public void Init(EnemyStatsSystem statsSystem)
     {
-        CacheComponents();
+        _statsSystem = statsSystem;
+        _statsSystem.onStatsChanged += ApplyLevelUpMultipliers;
+        CacheComponents(); // Must be refactored
+    }
+
+    private void OnDisable()
+    {
+        _statsSystem.onStatsChanged -= ApplyLevelUpMultipliers;
     }
 
     private void Start()
@@ -36,19 +43,8 @@ public class EnemyHealthSystem : MonoBehaviour, IDamageable
         Regenerate();
     }
 
-    private void OnEnable()
-    {
-        _statsSystem.onStatsChanged += ApplyLevelUpMultipliers;
-    }
-
-    private void OnDisable()
-    {
-        _statsSystem.onStatsChanged -= ApplyLevelUpMultipliers;
-    }
-
     private void CacheComponents()
     {
-        _statsSystem = GetComponent<EnemyStatsSystem>();
         _bloodSplat = transform.Find("Effects/BloodSplat").GetComponent<ParticleSystem>();
         _healthBar = transform.Find("Canvas/HealthBar").GetComponent<HealthBar>();
     }

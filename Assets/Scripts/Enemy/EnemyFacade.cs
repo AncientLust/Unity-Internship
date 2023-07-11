@@ -6,28 +6,20 @@ public class EnemyFacade : MonoBehaviour, ISaveable
     private int _killExperience = 10;
 
     private EnemyHealthSystem _healthSystem; // Must be injected
-    private EnemyExperienceSystem _experienceSystem; // Must be injected
-    private EnemyMovementSystem _enemyMovementSystem; // Must be injected
-    private PlayerExperienceSystem _playerExperienceSystem; // Must be injected
+    private EnemyLevelSystem _levelSystem; // Must be injected
+    private EnemyMovementSystem _movementSystem; // Must be injected
+    private IExperienceSystem _playerExperienceSystem; // Must be injected
 
-    public void Init(Transform target, PlayerExperienceSystem playerExperienceSystem)
+    public void Init(
+        EnemyLevelSystem levelSystem, 
+        EnemyHealthSystem healthSystem, 
+        EnemyMovementSystem movementSystem
+    )
     {
-        _enemyMovementSystem.SetTarget(target);
-        _playerExperienceSystem = playerExperienceSystem;
-    }
+        _levelSystem = levelSystem;
+        _healthSystem = healthSystem;
+        _movementSystem = movementSystem;
 
-    private void Awake()
-    {
-        CacheComponents();
-    }
-
-    private void Start()
-    {
-        SetLevelBasedOnGameDuration();
-    }
-
-    private void OnEnable()
-    {
         _healthSystem.OnDie += Die;
     }
 
@@ -36,28 +28,36 @@ public class EnemyFacade : MonoBehaviour, ISaveable
         _healthSystem.OnDie -= Die;
     }
 
-    public void Reset()
+    public void Init2(
+        Transform target, // Get rid of this, use interface
+        IExperienceSystem playerExperienceSystem // Get rid of this use interface
+    )
+    {
+        _movementSystem.SetTarget(target);
+        _playerExperienceSystem = playerExperienceSystem;
+        _healthSystem.OnDie += Die;
+    }
+
+    private void Start()
     {
         SetLevelBasedOnGameDuration();
     }
 
-    private void CacheComponents()
+    public void Reset()
     {
-        _experienceSystem = GetComponent<EnemyExperienceSystem>();
-        _healthSystem = GetComponent<EnemyHealthSystem>();
-        _enemyMovementSystem = GetComponent<EnemyMovementSystem>();
+        SetLevelBasedOnGameDuration();
     }
 
     private void SetLevelBasedOnGameDuration()
     {
         var minutesSceneLoaded = Time.timeSinceLevelLoad / 60.0f;
         var enemyLevel = (int)Mathf.Ceil(minutesSceneLoaded * _levelsPerMinute);
-        _experienceSystem.SetLevel(enemyLevel);
+        _levelSystem.SetLevel(enemyLevel);
     }
 
     private void Die()
     {
-        _playerExperienceSystem.AddExperience(_killExperience * _experienceSystem.GetLevel());
+        _playerExperienceSystem.AddExperience(_killExperience * _levelSystem.GetLevel());
         ObjectPool.Instance.Return(gameObject);
     }
 

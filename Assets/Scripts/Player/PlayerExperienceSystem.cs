@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-public class PlayerExperienceSystem : MonoBehaviour
+public class PlayerExperienceSystem : MonoBehaviour, IExperienceSystem
 {
     protected int _level = 1;
     protected ParticleSystem _levelUp;
@@ -16,7 +16,7 @@ public class PlayerExperienceSystem : MonoBehaviour
 
     private void Awake()
     {
-        CacheComponents(); // Must be replaced by something, since can be created separate from the player
+        CacheComponents(); // Must be replaced by something, since can be created separately from the player
     }
 
     private void Start()
@@ -27,6 +27,15 @@ public class PlayerExperienceSystem : MonoBehaviour
     private void CacheComponents()
     {
         _levelUp = transform.Find("Effects/LevelUp").GetComponent<ParticleSystem>(); // Get rid of the string
+    }
+
+    protected void LevelUp()
+    {
+        _level++;
+        _experience = _experience - _nextLevelExperience;
+        _nextLevelExperience = _nextLevelExperienceStartValue * Mathf.Pow(_nextLevelMultiplier, _level);
+        _levelUp.Play();
+        onLevelChanged.Invoke(_level);
     }
 
     public void AddExperience(float experience)
@@ -41,25 +50,16 @@ public class PlayerExperienceSystem : MonoBehaviour
         onExperienceProgressChanged.Invoke(_experience / _nextLevelExperience);
     }
 
-    protected void LevelUp()
-    {
-        _level++;
-        _experience = _experience - _nextLevelExperience;
-        _nextLevelExperience = _nextLevelExperienceStartValue * Mathf.Pow(_nextLevelMultiplier, _level);
-        _levelUp.Play();
-        onLevelChanged.Invoke(_level);
-    }
-
     public int GetLevel()
     {
         return _level;
     }
 
-    public void SetLevel(int level)
-    {
-        _experience = 0;
-        _level = level > 1 ? level : 1;
-        _nextLevelExperience = _nextLevelExperienceStartValue * Mathf.Pow(_nextLevelMultiplier, _level);
-        onLevelChanged.Invoke(_level);
-    }
+    //public void SetLevel(int level)
+    //{
+    //    _experience = 0;
+    //    _level = level > 1 ? level : 1;
+    //    _nextLevelExperience = _nextLevelExperienceStartValue * Mathf.Pow(_nextLevelMultiplier, _level);
+    //    onLevelChanged.Invoke(_level);
+    //}
 }

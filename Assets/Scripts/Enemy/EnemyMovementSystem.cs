@@ -12,18 +12,11 @@ public class EnemyMovementSystem : MonoBehaviour, IPushiable
     private Transform _target; // Must be injected
     private EnemyStatsSystem _statsSystem; // Must be injected
 
-    private void Awake()
+    public void Init(Rigidbody rigidbody, EnemyStatsSystem enemyStatsSystem)
     {
-        CacheComponents();
-    }
+        _rigidbody = rigidbody;
+        _statsSystem = enemyStatsSystem;
 
-    private void Start()
-    {
-        _moveSpeed = _baseMoveSpeed;
-    }
-
-    private void OnEnable()
-    {
         _statsSystem.onStatsChanged += ApplyLevelUpMultipliers;
     }
 
@@ -32,15 +25,16 @@ public class EnemyMovementSystem : MonoBehaviour, IPushiable
         _statsSystem.onStatsChanged -= ApplyLevelUpMultipliers;
     }
 
+    private void Start()
+    {
+        _moveSpeed = _baseMoveSpeed;
+    }
+
+
+
     private void FixedUpdate()
     {
         ActPhisicallyIfGameRunning();
-    }
-
-    private void CacheComponents()
-    {
-        _rigidbody = GetComponent<Rigidbody>();
-        _statsSystem = GetComponent<EnemyStatsSystem>();
     }
 
     private void ActPhisicallyIfGameRunning()
@@ -57,15 +51,16 @@ public class EnemyMovementSystem : MonoBehaviour, IPushiable
 
     private void MoveIfPlayerAlive()
     {
-        if (_target.gameObject.activeInHierarchy)
+        //if (_target.gameObject.activeInHierarchy)
+        if (true)
         {
             MoveToPlayer();
             RotateToPlayer();
         }
-        else
-        {
-            _rigidbody.angularVelocity = Vector3.zero;
-        }
+        //else
+        //{
+        //    _rigidbody.angularVelocity = Vector3.zero;
+        //}
     }
 
     //private bool ShouldAct()

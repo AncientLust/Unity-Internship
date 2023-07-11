@@ -1,52 +1,78 @@
-using System;
 using UnityEngine;
+using Enums;
+using UnityEngine.SceneManagement;
 
 public class GameManager
 {
     private UIRoot _uiRoot;
-    private SceneSwitcher _sceneController;
-    private SceneObjectLoader _sceneObjectLoader;
+    private SceneLoader _sceneLoader;
+    private SceneObjectBuilder _sceneObjectLoader;
+    private EnemySpawner _enemySpawner;
+    private PlayerFacade _playerFacade;
 
-    //public Action onGameStarted;
-    //public bool IsPaused { get; private set; }
-    //public bool IsStarted { get; private set; }
-
-    public GameManager(UIRoot uiRoot, SceneObjectLoader sceneObjectLoader, SceneSwitcher sceneController)
+    public void Init(UIRoot uiRoot, 
+        SceneObjectBuilder sceneObjectLoader, 
+        SceneLoader sceneLoader, 
+        EnemySpawner enemySpawner, 
+        PlayerFacade playerFacade)
     {
         _uiRoot = uiRoot;
         _sceneObjectLoader = sceneObjectLoader;
-        _sceneController = sceneController;
+        _sceneLoader = sceneLoader;
+        _enemySpawner = enemySpawner;
+        _playerFacade = playerFacade;
 
-        SubscribeEvents();
+        Subscribe();
+    }
+
+    public void SetEnemySpawner(EnemySpawner enemySpawner)
+    {
+        _enemySpawner = enemySpawner;
     }
 
     ~GameManager()
     {
-        UnsubscribeEvents();
+        Unsubscribe();
     }
 
-    private void SubscribeEvents()
+    private void Subscribe()
     {
-        _sceneObjectLoader.onSceneObjectsLoaded += (scene) => StartGame();
+        _sceneObjectLoader.onSceneObjectsBuild += (scene) => SceneLoadHandler(scene);
+        _uiRoot.onStartPressed += PrepareGame;
         _uiRoot.onLoadPressed += LoadGame;
         _uiRoot.onQuitPressed += QuitGame;
     }
 
-    private void UnsubscribeEvents()
+    private void Unsubscribe()
     {
-        _sceneObjectLoader.onSceneObjectsLoaded -= (scene) => StartGame();
+        _sceneObjectLoader.onSceneObjectsBuild -= (scene) => StartGame();
+        _uiRoot.onStartPressed -= PrepareGame;
         _uiRoot.onLoadPressed -= LoadGame;
         _uiRoot.onQuitPressed -= QuitGame;
     }
 
+    private void SceneLoadHandler(EScene scene)
+    {
+        switch (scene)
+        {
+            case EScene.GameSession:
+                StartGame();
+                break;
+        }
+    }
+
+    private void PrepareGame()
+    {
+        _sceneLoader.LoadScene(EScene.Environment, LoadSceneMode.Additive);
+        _sceneLoader.LoadScene(EScene.GameSession, LoadSceneMode.Additive);
+    }
+
     private void StartGame()
     {
-        //_sceneController.LoadScene(Enums.Scene.Game);
-        //_sceneLoader.LoadGameElements();
+        _uiRoot.SetUI(EUI.HUD);
+        _enemySpawner.StartSpawn();
+        _playerFacade.InputSystem.IsActive = true;
         Debug.Log("Game started");
-        //IsStarted = true;
-        //EnemySpawner.Instance.enabled = true;
-        //GameplayUI.Instance.SetScreen(_gameplay);
     }
 
     private void PauseGame()

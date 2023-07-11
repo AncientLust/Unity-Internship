@@ -4,7 +4,7 @@ using Structs;
 
 public class EnemyStatsSystem : MonoBehaviour
 {
-    private EnemyExperienceSystem _experienceSystem; // Must be injected
+    private EnemyLevelSystem _levelSystem; // Must be injected
     private SEnemyStatsMultipliers _multipliers;
     
     private struct _levelUpGrowth
@@ -17,19 +17,15 @@ public class EnemyStatsSystem : MonoBehaviour
 
     public event Action<SEnemyStatsMultipliers> onStatsChanged;
 
-    private void Awake()
+    public void Init(EnemyLevelSystem levelsystem)
     {
-        _experienceSystem = GetComponent<EnemyExperienceSystem>();
-    }
-
-    private void OnEnable()
-    {
-        _experienceSystem.OnLevelChanged += SetLevelStats;
+        _levelSystem = levelsystem;
+        _levelSystem.OnLevelChanged += SetLevelStats;
     }
 
     private void OnDisable()
     {
-        _experienceSystem.OnLevelChanged -= SetLevelStats;
+        _levelSystem.OnLevelChanged -= SetLevelStats;
     }
 
     private void SetLevelStats(int level)

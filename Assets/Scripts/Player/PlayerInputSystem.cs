@@ -1,8 +1,10 @@
 using System;
 using UnityEngine;
 
-public class PlayerInputSystem : MonoBehaviour
+public class PlayerInputSystem : MonoBehaviour, IInputSystem
 {
+    public bool IsActive { get; set; } = false;
+
     public event Action onScrollUp;
     public event Action onScrollDown;
     public event Action onLeftMouseClicked;
@@ -18,7 +20,10 @@ public class PlayerInputSystem : MonoBehaviour
 
     private void ReadInputIfGameRunning()
     {
-        InputHandler();
+        if (IsActive)
+        {
+            InputHandler();
+        }
     }
 
     private void InputHandler()
