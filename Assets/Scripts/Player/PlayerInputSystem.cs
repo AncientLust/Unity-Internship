@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-public class PlayerInputSystem : MonoBehaviour, IInputSystem
+public class PlayerInputSystem : MonoBehaviour
 {
     public bool IsActive { get; set; } = false;
 

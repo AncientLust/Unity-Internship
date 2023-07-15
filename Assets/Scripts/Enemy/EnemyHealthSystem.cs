@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 using Structs;
 
-public class EnemyHealthSystem : MonoBehaviour, IDamageable
+public class EnemyHealthSystem : MonoBehaviour, IDamageable, IDisposable, IHealable
 {
     private float _baseHealth = 100;
     private float _baseHealthRegen = 10;
@@ -12,30 +12,46 @@ public class EnemyHealthSystem : MonoBehaviour, IDamageable
     private float _regenPerSecond;
     private bool _isDead;
 
-    private EnemyStatsSystem _statsSystem; // Must be injected
+    private EnemyStatsSystem _statsSystem;
     private ParticleSystem _bloodSplat;
     private HealthBar _healthBar;
 
-    public event Action OnDie;
+    public event Action<GameObject> OnDispose;
 
     public void Init(EnemyStatsSystem statsSystem)
     {
         _statsSystem = statsSystem;
-        _statsSystem.onStatsChanged += ApplyLevelUpMultipliers;
-        CacheComponents(); // Must be refactored
-    }
-
-    private void OnDisable()
-    {
-        _statsSystem.onStatsChanged -= ApplyLevelUpMultipliers;
+        Subscribe();
+        CacheComponents(); // Must be refactored via ParticleSystemClass
     }
 
     private void Start()
     {
         _isDead = false;
+        _health = _baseHealth;
         _maxHealth = _baseHealth;
-        _health = _maxHealth;
         _regenPerSecond = _baseHealthRegen;
+        _healthBar.SetFill(1);
+    }
+
+    private void OnEnable()
+    {
+        Subscribe();
+    }
+
+    private void OnDisable()
+    {
+        Unsubscribe();
+    }
+
+    private void Subscribe()
+    {
+        if (_statsSystem != null) _statsSystem.onStatsChanged += ApplyLevelUpMultipliers;
+    }
+
+    private void Unsubscribe()
+    {
+        if (_statsSystem != null) _statsSystem.onStatsChanged -= ApplyLevelUpMultipliers;
     }
 
     private void Update()
@@ -63,7 +79,7 @@ public class EnemyHealthSystem : MonoBehaviour, IDamageable
         if (_health <= 0)
         {
             _isDead = true;
-            OnDie.Invoke();
+            OnDispose.Invoke(gameObject);
         }
     }
 
@@ -101,7 +117,7 @@ public class EnemyHealthSystem : MonoBehaviour, IDamageable
         _regenPerSecond = _baseHealthRegen * stats.maxHealth;
     }
 
-    public void ResetHealth()
+    public void RestoreHealth()
     {
         _isDead = false;
         _health = _baseHealth;

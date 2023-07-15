@@ -15,7 +15,7 @@ public class PlayerHealthSystem : MonoBehaviour, IDamageable
     private ParticleSystem _bloodSplat;
     private HealthBar _healthBar;
 
-    public event Action OnDie;
+    //public event Action OnDie;
 
     public void Init(PlayerStatsSystem statsSystem)
     {
@@ -77,7 +77,7 @@ public class PlayerHealthSystem : MonoBehaviour, IDamageable
         if (_health <= 0)
         {
             _isDead = true;
-            OnDie.Invoke();
+            //OnDie.Invoke();
         }
     }
 

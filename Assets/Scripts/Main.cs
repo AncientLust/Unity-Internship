@@ -5,10 +5,11 @@ using UnityEngine.EventSystems;
 public class Main : MonoBehaviour
 {
     private ObjectFactory _objectFactory;
+    private ObjectPool _objectPool;
     private StandaloneInputModule _eventSystem;
     private Transform _playerTransform;
     private Player _player;
-    private PlayerFacade _playerFacade;
+    private PlayerSubsystems _playerSubsystems;
     private CameraController _cameraController;
     private UIRoot _uiRoot;
     private HUD _hud;
@@ -16,7 +17,7 @@ public class Main : MonoBehaviour
     private SceneLoader _sceneLoader;
     private SceneObjectBuilder _sceneObjectBuilder;
     private GameManager _gameManager;
-    private IExperienceSystem _playerExperienceSystem;
+    private IExperienceTaker _playerExperienceSystem;
 
     void Awake()
     {
@@ -27,6 +28,7 @@ public class Main : MonoBehaviour
     private void CreateObjects()
     {
         _objectFactory = new ObjectFactory();
+        _objectPool = new ObjectPool();
         _eventSystem = new GameObject("EventSystem").AddComponent<StandaloneInputModule>();
         _cameraController = _objectFactory.Instantiate(EResource.MainCamera).GetComponent<CameraController>();
         _uiRoot = _objectFactory.Instantiate(EResource.UIRoot).GetComponent<UIRoot>();
@@ -34,9 +36,9 @@ public class Main : MonoBehaviour
         _enemySpawner = _objectFactory.Instantiate(EResource.EnemySpawner).GetComponent<EnemySpawner>();
     
         _player = _objectFactory.Instantiate(EResource.Player).GetComponent<Player>();
-        _playerFacade = _player.gameObject.GetComponent<PlayerFacade>();
-        _playerTransform = _player.transform;
-        _playerExperienceSystem = _playerFacade.ExperienceSystem;
+        _playerSubsystems = _player.GetComponent<PlayerSubsystems>();
+        _playerTransform = _player.GetComponent<ITargetable>().Transform;
+        _playerExperienceSystem = _player.GetComponent<IExperienceTaker>();
 
         _sceneLoader = new SceneLoader();
         _sceneObjectBuilder = new SceneObjectBuilder();
@@ -45,10 +47,10 @@ public class Main : MonoBehaviour
 
     private void LinkObjects()
     {
-        _hud.Init(_playerFacade);
-        _cameraController.Init(_playerTransform);
-        _enemySpawner.Init(_playerTransform, _playerExperienceSystem);
+        _hud.Init(_playerSubsystems);
         _sceneObjectBuilder.Init(_objectFactory);
-        _gameManager.Init(_uiRoot, _sceneObjectBuilder, _sceneLoader, _enemySpawner, _playerFacade);
+        _cameraController.Init(_playerTransform);
+        _enemySpawner.Init(_playerTransform, _playerExperienceSystem, _objectPool);
+        _gameManager.Init(_uiRoot, _sceneObjectBuilder, _sceneLoader, _enemySpawner, _playerSubsystems);
     }
 }

@@ -2,25 +2,25 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
-    // Start is called before the first frame update
     void Awake()
     {
         var rigidBody = gameObject.GetComponent<Rigidbody>();
-        var levelSystem = gameObject.AddComponent<EnemyLevelSystem>();
+        var experienceSystem = gameObject.AddComponent<EnemyExperienceSystem>();
         var statsSystem = gameObject.AddComponent<EnemyStatsSystem>();
-
+        var attackSystem = gameObject.AddComponent<EnemyAttackSystem>();
         var movementSystem = gameObject.AddComponent<EnemyMovementSystem>();
         var healthSystem = gameObject.AddComponent<EnemyHealthSystem>();
-        var facade = gameObject.AddComponent<EnemyFacade>();
+        //var enemySubsystems = gameObject.AddComponent<EnemySubsystems>();
 
-        statsSystem.Init(levelSystem);
+        statsSystem.Init(experienceSystem);
         movementSystem.Init(rigidBody, statsSystem);
         healthSystem.Init(statsSystem);
+        attackSystem.Init(statsSystem);
 
-        facade.Init(
-            levelSystem,
-            healthSystem,
-            movementSystem
-        );
+        //enemySubsystems.Init(
+        //    experienceSystem,
+        //    healthSystem,
+        //    movementSystem
+        //);
     }
 }

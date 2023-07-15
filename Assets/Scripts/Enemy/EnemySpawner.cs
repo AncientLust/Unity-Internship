@@ -4,8 +4,8 @@ using Enums;
 
 public class EnemySpawner : MonoBehaviour
 {
-    private Transform _playerTransform;
-    private IExperienceSystem _playerExperienceSystem;
+    private Transform _target;
+    private IExperienceTaker _experienceTaker;
     private ObjectPool _objectPool;
 
     //private bool _spawn = true;
@@ -13,21 +13,17 @@ public class EnemySpawner : MonoBehaviour
     private float _maxRadius = 20f;
     private float _spawnRaduis = 360f;
     private float _minEnemySpawnTime = 1;
-    private float _maxEnemySpawnTime = 2;
+    private float _maxEnemySpawnTime = 3;
     private int _minEnemiesToSpawn = 1;
     private int _maxEnemiesToSpawn = 3;
     
     private Coroutine _spawnCoroutine;
 
-    //public void Init(ObjectPool objectPool)
-    //{
-    //    _objectPool = objectPool;
-    //}
-
-    public void Init(Transform playerTransform, IExperienceSystem playerExperienceSystem)
+    public void Init(Transform playerTransform, IExperienceTaker experienceTaker, ObjectPool objectPool)
     {
-        _playerTransform = playerTransform;
-        _playerExperienceSystem = playerExperienceSystem;
+        _target = playerTransform;
+        _experienceTaker = experienceTaker;
+        _objectPool = objectPool;
     }
 
     private void Start()
@@ -37,7 +33,6 @@ public class EnemySpawner : MonoBehaviour
 
     private void OnDestroy()
     {
-        //_spawn = false;
         StopAllCoroutines();
     }
 
@@ -65,17 +60,33 @@ public class EnemySpawner : MonoBehaviour
     {
         for (int i = 0; i < enemiesToSpawn; i++)
         {
-            if (_objectPool != null)
+            var enemy = _objectPool.Get(EResource.Enemy);
+            if (enemy != null)
             {
-                GameObject enemy = ObjectPool.Instance.Get(EResource.Enemy);
-                if (enemy != null)
-                { 
-                    enemy.GetComponent<EnemyFacade>().Init2(_playerTransform, _playerExperienceSystem); // Must be refactored
-                    enemy.GetComponent<EnemyHealthSystem>().ResetHealth();
-                    enemy.transform.position = GetEnemySpawnPosition();
-                }
+                enemy.GetComponent<ITargetHolder>().SetTarget(_target);
+                enemy.GetComponent<IPositionable>().SetPosition(GetEnemySpawnPosition());
+                enemy.GetComponent<IHealable>().RestoreHealth();
+                enemy.GetComponent<IDisposable>().OnDispose += DisposeEnemyHandler;
             }
         }
+    }
+
+    private void DisposeEnemyHandler(GameObject enemy)
+    {
+        TransferExperience(enemy);
+        DisposeEnemy(enemy);
+    }
+
+    private void TransferExperience(GameObject enemy)
+    {
+        var killExperience = enemy.GetComponent<IExperienceMaker>().MakeExperience();
+        _experienceTaker.TakeExperience(killExperience);
+    }
+
+    private void DisposeEnemy(GameObject enemy)
+    {
+        enemy.GetComponent<IDisposable>().OnDispose -= DisposeEnemyHandler;
+        ObjectPool.Instance.Return(enemy);
     }
 
     private Vector3 GetEnemySpawnPosition()
@@ -85,6 +96,6 @@ public class EnemySpawner : MonoBehaviour
         var radius = Random.Range(_minRadius, _maxRadius);
         var spawnVector = new Vector3(radius * Mathf.Cos(theta), 0, radius * Mathf.Sin(theta));
 
-        return spawnVector + _playerTransform.position;
+        return spawnVector + _target.position;
     }
 }

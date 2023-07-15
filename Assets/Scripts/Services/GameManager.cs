@@ -8,19 +8,19 @@ public class GameManager
     private SceneLoader _sceneLoader;
     private SceneObjectBuilder _sceneObjectLoader;
     private EnemySpawner _enemySpawner;
-    private PlayerFacade _playerFacade;
+    private PlayerSubsystems _playerSubsystems;
 
     public void Init(UIRoot uiRoot, 
         SceneObjectBuilder sceneObjectLoader, 
         SceneLoader sceneLoader, 
         EnemySpawner enemySpawner, 
-        PlayerFacade playerFacade)
+        PlayerSubsystems playerFacade)
     {
         _uiRoot = uiRoot;
         _sceneObjectLoader = sceneObjectLoader;
         _sceneLoader = sceneLoader;
         _enemySpawner = enemySpawner;
-        _playerFacade = playerFacade;
+        _playerSubsystems = playerFacade;
 
         Subscribe();
     }
@@ -70,8 +70,8 @@ public class GameManager
     private void StartGame()
     {
         _uiRoot.SetUI(EUI.HUD);
+        _playerSubsystems.InputSystem.IsActive = true;
         _enemySpawner.StartSpawn();
-        _playerFacade.InputSystem.IsActive = true;
         Debug.Log("Game started");
     }
 

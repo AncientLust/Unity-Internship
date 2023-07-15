@@ -3,16 +3,15 @@ using UnityEngine;
 using Structs;
 using Enums;
 
-public class PlayerFacade : MonoBehaviour, ISaveable
+public class PlayerSubsystems : MonoBehaviour, ISaveable
 {
     private PlayerHealthSystem _healthSystem;
     private PlayerWeaponSystem _weaponSystem;
     private PlayerStatsSystem _statsSystem;
     private PlayerExperienceSystem _experienceSystem;
-    private IInputSystem _inputSystem;
+    private PlayerInputSystem _inputSystem;
 
-    public IExperienceSystem ExperienceSystem => _experienceSystem;
-    public IInputSystem InputSystem => _inputSystem;
+    public PlayerInputSystem InputSystem => _inputSystem;
 
     public event Action<int> onAmmoChanged;
     public event Action<EWeaponType> onWeaponChanged;
@@ -43,7 +42,7 @@ public class PlayerFacade : MonoBehaviour, ISaveable
 
     private void Subscribe()
     {
-        _healthSystem.OnDie += Die;
+        //_healthSystem.OnDie += Die;
         _weaponSystem.onAmmoChanged += ammo => onAmmoChanged?.Invoke(ammo);
         _weaponSystem.onWeaponChanged += weaponName => onWeaponChanged?.Invoke(weaponName);
         _experienceSystem.onExperienceProgressChanged += progress => onExperienceProgressChanged.Invoke(progress);
@@ -53,7 +52,7 @@ public class PlayerFacade : MonoBehaviour, ISaveable
 
     private void Unsubscribe()
     {
-        _healthSystem.OnDie -= Die;
+        //_healthSystem.OnDie -= Die;
         _weaponSystem.onAmmoChanged -= ammo => onAmmoChanged.Invoke(ammo);
         _weaponSystem.onWeaponChanged -= weaponName => onWeaponChanged.Invoke(weaponName);
         _experienceSystem.onExperienceProgressChanged -= progress => onExperienceProgressChanged.Invoke(progress);

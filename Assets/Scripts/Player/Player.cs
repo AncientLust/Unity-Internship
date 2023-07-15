@@ -11,7 +11,7 @@ public class Player : MonoBehaviour
         var weaponSystem = gameObject.AddComponent<PlayerWeaponSystem>();
         var movementSystem = gameObject.AddComponent<PlayerMovementSystem>();
         var healthSystem = gameObject.AddComponent<PlayerHealthSystem>();
-        var playerFacade = gameObject.AddComponent<PlayerFacade>();
+        var playerFacade = gameObject.AddComponent<PlayerSubsystems>();
 
         statsSystem.Init(experienceSystem);
         weaponSystem.Init(inputSystem, statsSystem);

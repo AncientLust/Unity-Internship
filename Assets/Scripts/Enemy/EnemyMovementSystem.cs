@@ -1,7 +1,7 @@
 using UnityEngine;
 using Structs;
 
-public class EnemyMovementSystem : MonoBehaviour, IPushiable
+public class EnemyMovementSystem : MonoBehaviour, IPushiable, ITargetHolder, IPositionable
 {
     private float _stopDistance = 0.35f;
     private float _baseMoveSpeed = 6f;
@@ -9,28 +9,38 @@ public class EnemyMovementSystem : MonoBehaviour, IPushiable
     private bool _mustMove = true;
     
     private Rigidbody _rigidbody;
-    private Transform _target; // Must be injected
-    private EnemyStatsSystem _statsSystem; // Must be injected
+    private EnemyStatsSystem _statsSystem;
+
+    private Transform _target; 
 
     public void Init(Rigidbody rigidbody, EnemyStatsSystem enemyStatsSystem)
     {
         _rigidbody = rigidbody;
         _statsSystem = enemyStatsSystem;
 
-        _statsSystem.onStatsChanged += ApplyLevelUpMultipliers;
+        _moveSpeed = _baseMoveSpeed;
+        Subscribe();
+    }
+
+    private void OnEnable()
+    {
+        Subscribe();
     }
 
     private void OnDisable()
     {
-        _statsSystem.onStatsChanged -= ApplyLevelUpMultipliers;
+        Unsubscribe();
     }
 
-    private void Start()
+    private void Subscribe()
     {
-        _moveSpeed = _baseMoveSpeed;
+        if (_statsSystem != null) _statsSystem.onStatsChanged += ApplyLevelUpMultipliers;
     }
 
-
+    private void Unsubscribe()
+    {
+        if (_statsSystem != null) _statsSystem.onStatsChanged -= ApplyLevelUpMultipliers;
+    }
 
     private void FixedUpdate()
     {
@@ -106,5 +116,10 @@ public class EnemyMovementSystem : MonoBehaviour, IPushiable
     public void SetTarget(Transform target)
     {
         _target = target;
+    }
+
+    public void SetPosition(Vector3 position)
+    {
+        transform.position = position;
     }
 }

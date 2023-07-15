@@ -69,7 +69,6 @@ public class Weapon : MonoBehaviour
 
     public void BeginReload()
     {
-        Debug.Log($"Reload ({_reloadTime}s)!");
         InReloading = true;
     }
 
@@ -77,7 +76,6 @@ public class Weapon : MonoBehaviour
     {
         InReloading = false;
         Ammo = (int)(_clipCapacity * AmmoMultiplier);
-        Debug.Log("Reloaded!");
     }
 
     public float GetReloadTime()

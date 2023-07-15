@@ -1,7 +1,7 @@
 using UnityEngine;
 using Structs;
 
-public class PlayerMovementSystem : MonoBehaviour
+public class PlayerMovementSystem : MonoBehaviour, ITargetable
 {
     private float _baseMoveSpeed = 5;
     private float _moveSpeed;
@@ -10,6 +10,8 @@ public class PlayerMovementSystem : MonoBehaviour
     private PlayerStatsSystem _statsSystem;
     private PlayerInputSystem _inputSystem;
     private Rigidbody _rigidbody;
+
+    public Transform Transform => transform;
 
     public void Init(PlayerStatsSystem statsSystem, PlayerInputSystem inputSystem, Rigidbody rigidbody)
     {

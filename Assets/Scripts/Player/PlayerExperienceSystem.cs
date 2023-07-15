@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-public class PlayerExperienceSystem : MonoBehaviour, IExperienceSystem
+public class PlayerExperienceSystem : MonoBehaviour, IExperienceTaker
 {
     protected int _level = 1;
     protected ParticleSystem _levelUp;
@@ -38,7 +38,7 @@ public class PlayerExperienceSystem : MonoBehaviour, IExperienceSystem
         onLevelChanged.Invoke(_level);
     }
 
-    public void AddExperience(float experience)
+    public void TakeExperience(float experience)
     {
         _experience += experience;
 

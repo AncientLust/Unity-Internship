@@ -10,7 +10,7 @@ public class HealthBar : MonoBehaviour
     private RectTransform _edgeRect;
     private RawImage _barRawImage;
 
-    private void Awake()
+    public void Awake()
     {
         CacheComponents();
     }

@@ -11,11 +11,11 @@ public class HUD : MonoBehaviour
     [SerializeField] private ExperienceUI _experienceUI;
     [SerializeField] private StatsMultipliersUI _statsMultipliersUI;
 
-    private PlayerFacade _playerFacade;
+    private PlayerSubsystems _playerSubsystems;
 
-    public void Init(PlayerFacade playerFacade)
+    public void Init(PlayerSubsystems playerFacade)
     {
-        _playerFacade = playerFacade;
+        _playerSubsystems = playerFacade;
         SubscribeEvents();
     }
 
@@ -26,20 +26,20 @@ public class HUD : MonoBehaviour
 
     private void SubscribeEvents()
     {
-        _playerFacade.onWeaponChanged += UpdateEquippedWeapon;
-        _playerFacade.onAmmoChanged += UpdateAmmo;
-        _playerFacade.onLevelChanged += UpdatePlayerLevel;
-        _playerFacade.onExperienceProgressChanged += UpdateExperienceProgress;
-        _playerFacade.onStatsChanged += UpdateStats;
+        _playerSubsystems.onWeaponChanged += UpdateEquippedWeapon;
+        _playerSubsystems.onAmmoChanged += UpdateAmmo;
+        _playerSubsystems.onLevelChanged += UpdatePlayerLevel;
+        _playerSubsystems.onExperienceProgressChanged += UpdateExperienceProgress;
+        _playerSubsystems.onStatsChanged += UpdateStats;
     }
 
     private void UnsubscribeEvents()
     {
-        _playerFacade.onWeaponChanged -= UpdateEquippedWeapon;
-        _playerFacade.onAmmoChanged -= UpdateAmmo;
-        _playerFacade.onLevelChanged -= UpdatePlayerLevel;
-        _playerFacade.onExperienceProgressChanged -= UpdateExperienceProgress;
-        _playerFacade.onStatsChanged -= UpdateStats;
+        _playerSubsystems.onWeaponChanged -= UpdateEquippedWeapon;
+        _playerSubsystems.onAmmoChanged -= UpdateAmmo;
+        _playerSubsystems.onLevelChanged -= UpdatePlayerLevel;
+        _playerSubsystems.onExperienceProgressChanged -= UpdateExperienceProgress;
+        _playerSubsystems.onStatsChanged -= UpdateStats;
     }
 
     private void UpdateEquippedWeapon(EWeaponType weapon)

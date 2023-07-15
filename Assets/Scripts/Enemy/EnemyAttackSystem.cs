@@ -5,35 +5,41 @@ public class EnemyAttackSystem : MonoBehaviour
 {
     private float _baseDamage = 15;
     private float _damage;
+    private EnemyStatsSystem _enemyStatsSystem;
 
-    private EnemyStatsSystem _enemyStatsSystem; // Must be injected
-
-    private void Awake()
+    public void Init(EnemyStatsSystem enemyStatsSystem)
     {
-        _enemyStatsSystem = GetComponent<EnemyStatsSystem>();
-    }
-
-    private void Start()
-    {
+        _enemyStatsSystem = enemyStatsSystem;
         _damage = _baseDamage;
+        Subscribe();
     }
 
     private void OnEnable()
     {
-        _enemyStatsSystem.onStatsChanged += ApplyLevelUpMultipliers;
+        Subscribe();
     }
 
     private void OnDisable()
     {
-        _enemyStatsSystem.onStatsChanged -= ApplyLevelUpMultipliers;
+        Unsubscribe();
+    }
+
+    private void Subscribe()
+    {
+        if (_enemyStatsSystem != null) _enemyStatsSystem.onStatsChanged += ApplyLevelUpMultipliers;
+    }
+
+    private void Unsubscribe() 
+    {
+        if (_enemyStatsSystem != null)  _enemyStatsSystem.onStatsChanged -= ApplyLevelUpMultipliers;
     }
 
     private void OnCollisionStay(Collision collision)
     {
         var damagable = collision.gameObject.GetComponent<IDamageable>();
-        var isAnotherEnemy = collision.gameObject.GetComponent<EnemyFacade>();
+        var isEnemy = collision.gameObject.GetComponent<Enemy>();
 
-        if (damagable != null && !isAnotherEnemy)
+        if (damagable != null && !isEnemy)
         {
             damagable.TakeDamage(_damage * Time.deltaTime);
         }

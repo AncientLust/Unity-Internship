@@ -88,11 +88,11 @@ public class SaveLoadSystem : MonoBehaviour
 
         foreach (ISaveable saveable in FindObjectsOfType<MonoBehaviour>().OfType<ISaveable>())
         {
-            if (saveable is PlayerFacade)
+            if (saveable is PlayerSubsystems)
             {
                 saveData.playerData = saveable.CaptureState();
             }
-            else if (saveable is EnemyFacade)
+            else if (saveable is EnemySubsystems)
             {
                 saveData.enemiesData.Add(saveable.CaptureState());
             }
@@ -113,7 +113,7 @@ public class SaveLoadSystem : MonoBehaviour
 
     private void DropAllEnemies()
     {
-        foreach (EnemyFacade enemy in FindObjectsOfType<EnemyFacade>())
+        foreach (EnemySubsystems enemy in FindObjectsOfType<EnemySubsystems>())
         {
             ObjectPool.Instance.Return(enemy.gameObject);
         }
@@ -126,7 +126,7 @@ public class SaveLoadSystem : MonoBehaviour
             var enemy = ObjectPool.Instance.Get(EResource.Enemy);
             if (enemy != null)
             {
-                enemy.GetComponent<EnemyFacade>().Reset();
+                //enemy.GetComponent<EnemySubsystems>().Reset();
                 enemy.GetComponent<ISaveable>().LoadState(enemyData);
             }
         }

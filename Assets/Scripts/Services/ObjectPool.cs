@@ -20,7 +20,7 @@ public class ObjectPool
     {
         if (pool.TryGetValue(resource, out var objects) && objects.Count > 0)
         {
-            var obj = objects.Dequeue();
+            var obj = objects.Dequeue();           
             obj.SetActive(true);
             return obj;
         }
@@ -40,7 +40,7 @@ public class ObjectPool
                 pool[resource] = new Queue<GameObject>();
             }
 
-            obj.SetActive(false);
+            obj.SetActive(false);               
             pool[resource].Enqueue(obj);
         }
         else

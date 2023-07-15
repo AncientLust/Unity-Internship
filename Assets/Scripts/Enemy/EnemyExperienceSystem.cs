@@ -1,20 +1,28 @@
 using System;
 using UnityEngine;
 
-public class EnemyLevelSystem : MonoBehaviour
+public class EnemyExperienceSystem : MonoBehaviour, IExperienceMaker
 {
     private int _level = 1;
+    private int _killExperience = 10;
+    private float _levelsPerMinute = 3;
 
     public Action<int> OnLevelChanged;
 
-    public int GetLevel()
+    public void ResetLevel()
     {
-        return _level;
+        SetLevelBasedOnGameDuration();
     }
 
-    public void SetLevel(int level)
+    private void SetLevelBasedOnGameDuration() // Must be refactored
     {
-        _level = level > 1 ? level : 1;
+        var minutesSceneLoaded = Time.timeSinceLevelLoad / 60.0f;
+        _level = (int)Mathf.Ceil(minutesSceneLoaded * _levelsPerMinute);
         OnLevelChanged.Invoke(_level);
+    }
+
+    public float MakeExperience()
+    {
+        return _level * _killExperience;
     }
 }
