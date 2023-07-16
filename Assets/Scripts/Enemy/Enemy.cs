@@ -10,17 +10,17 @@ public class Enemy : MonoBehaviour
         var attackSystem = gameObject.AddComponent<EnemyAttackSystem>();
         var movementSystem = gameObject.AddComponent<EnemyMovementSystem>();
         var healthSystem = gameObject.AddComponent<EnemyHealthSystem>();
-        //var enemySubsystems = gameObject.AddComponent<EnemySubsystems>();
+        var enemyFacade = gameObject.AddComponent<EnemyFacade>();
 
         statsSystem.Init(experienceSystem);
         movementSystem.Init(rigidBody, statsSystem);
         healthSystem.Init(statsSystem);
         attackSystem.Init(statsSystem);
 
-        //enemySubsystems.Init(
-        //    experienceSystem,
-        //    healthSystem,
-        //    movementSystem
-        //);
+        enemyFacade.Init(
+            experienceSystem,
+            healthSystem,
+            movementSystem
+        );
     }
 }

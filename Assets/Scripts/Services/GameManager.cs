@@ -5,22 +5,31 @@ using UnityEngine.SceneManagement;
 public class GameManager
 {
     private UIRoot _uiRoot;
-    private SceneLoader _sceneLoader;
+    private SceneController _sceneController;
     private SceneObjectBuilder _sceneObjectLoader;
     private EnemySpawner _enemySpawner;
-    private PlayerSubsystems _playerSubsystems;
+    private ObjectPool _objectPool;
+    private IPlayerFacade _iPlayerFacade;
+    private CameraController _cameraController;
+    private PauseManager _pauseManager;
 
     public void Init(UIRoot uiRoot, 
         SceneObjectBuilder sceneObjectLoader, 
-        SceneLoader sceneLoader, 
-        EnemySpawner enemySpawner, 
-        PlayerSubsystems playerFacade)
+        SceneController sceneController, 
+        EnemySpawner enemySpawner,
+        IPlayerFacade iPlayerFacade,
+        ObjectPool objectPool,
+        CameraController cameraController,
+        PauseManager pauseManager)
     {
         _uiRoot = uiRoot;
         _sceneObjectLoader = sceneObjectLoader;
-        _sceneLoader = sceneLoader;
+        _sceneController = sceneController;
         _enemySpawner = enemySpawner;
-        _playerSubsystems = playerFacade;
+        _iPlayerFacade = iPlayerFacade;
+        _objectPool = objectPool;
+        _cameraController = cameraController;
+        _pauseManager = pauseManager;
 
         Subscribe();
     }
@@ -41,6 +50,13 @@ public class GameManager
         _uiRoot.onStartPressed += PrepareGame;
         _uiRoot.onLoadPressed += LoadGame;
         _uiRoot.onQuitPressed += QuitGame;
+        _uiRoot.onPausePressed += PauseGame;
+        _uiRoot.onResumePressed += ResumeGame;
+        _uiRoot.onPauseMenuPressed += OpenMenu;
+        _uiRoot.onGameOverMenuPressed += OpenMenu;
+        _uiRoot.onPauseRestartPressed += RestartGame;
+        _uiRoot.onGameOverRestartPressed += RestartGame;
+        _iPlayerFacade.onDie += GameOver;
     }
 
     private void Unsubscribe()
@@ -49,6 +65,13 @@ public class GameManager
         _uiRoot.onStartPressed -= PrepareGame;
         _uiRoot.onLoadPressed -= LoadGame;
         _uiRoot.onQuitPressed -= QuitGame;
+        _uiRoot.onPausePressed -= PauseGame;
+        _uiRoot.onResumePressed -= ResumeGame;
+        _uiRoot.onPauseMenuPressed -= OpenMenu;
+        _uiRoot.onGameOverMenuPressed -= OpenMenu;
+        _uiRoot.onPauseRestartPressed -= RestartGame;
+        _uiRoot.onGameOverRestartPressed -= RestartGame;
+        _iPlayerFacade.onDie -= GameOver;
     }
 
     private void SceneLoadHandler(EScene scene)
@@ -57,29 +80,54 @@ public class GameManager
         {
             case EScene.GameSession:
                 StartGame();
-                break;
+                return;
         }
     }
 
     private void PrepareGame()
     {
-        _sceneLoader.LoadScene(EScene.Environment, LoadSceneMode.Additive);
-        _sceneLoader.LoadScene(EScene.GameSession, LoadSceneMode.Additive);
+        _sceneController.LoadScene(EScene.Environment, LoadSceneMode.Additive);
+        _sceneController.LoadScene(EScene.GameSession, LoadSceneMode.Additive);
     }
 
     private void StartGame()
     {
         _uiRoot.SetUI(EUI.HUD);
-        _playerSubsystems.InputSystem.IsActive = true;
+        _objectPool.Reset();
         _enemySpawner.StartSpawn();
+        _iPlayerFacade.EnableForGameSession();
+        _cameraController.MoveToPlayer();
+
         Debug.Log("Game started");
     }
 
     private void PauseGame()
     {
+        _iPlayerFacade.SetInputHandling(false);
+        _uiRoot.SetUI(EUI.Pause);
+        _pauseManager.PauseGame();
+
         Debug.Log("Game paused");
-        //GameplayUI.Instance.SetScreen(_pause);
-        //IsPaused = true;
+    }
+
+    private void ResumeGame()
+    {
+        _iPlayerFacade.SetInputHandling(true);
+        _uiRoot.SetUI(EUI.HUD);
+        _pauseManager.ResumeGame();
+        
+        Debug.Log("Game resumed");
+    }
+
+    private void OpenMenu()
+    {
+        _pauseManager.ResumeGame();
+        _enemySpawner.StopSpawn();
+        _uiRoot.SetUI(EUI.Menu);
+        _sceneController.UnloadScene(EScene.Environment);
+        _sceneController.UnloadScene(EScene.GameSession);
+        
+        Debug.Log("Menu opened");
     }
 
     private void LoadGame()
@@ -87,24 +135,27 @@ public class GameManager
         Debug.Log("Game loaded");
     }
 
-    private void ResumeGame()
-    {
-        Debug.Log("Game resumed");
-        //GameplayUI.Instance.SetScreen(_gameplay);
-        //IsPaused = false;
-    }
-
     private void RestartGame()
     {
+        _enemySpawner.StopSpawn();
+        _sceneController.CleanScene(EScene.GameSession);
+        _objectPool.Reset();
+        _iPlayerFacade.EnableForGameSession();
+        _enemySpawner.StartSpawn();
+        _uiRoot.SetUI(EUI.HUD);
+        _cameraController.MoveToPlayer();
+        _pauseManager.ResumeGame();
+
         Debug.Log("Game restarted");
-        //SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
     private void GameOver()
     {
+        _iPlayerFacade.DisableForGameSession();
+        _uiRoot.SetUI(EUI.GameOver);
+        _pauseManager.PauseGame();
+
         Debug.Log("Game over");
-        //GameplayUI.Instance.SetScreen(_gameOver);
-        //IsPaused = true;
     }
 
     private void QuitGame()

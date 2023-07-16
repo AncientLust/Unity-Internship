@@ -4,9 +4,17 @@ public class Projectile : MonoBehaviour
 {
     private float _speed = 30;
     private Renderer _renderer;
-    
-    public float Damage { get; set; } = 0;
-    public float PushPower { get; set; } = 0;
+    private ObjectPool _objectPool;
+
+    private float _damage = 0;
+    private float _pushPower = 0;
+
+    public void Init(ObjectPool objectPool, float damage, float pushPower)
+    {
+        _objectPool = objectPool;
+        _damage = damage;
+        _pushPower = pushPower;
+    }
 
     private void Start()
     {
@@ -28,7 +36,7 @@ public class Projectile : MonoBehaviour
     {
         if (!_renderer.isVisible)
         {
-            ObjectPool.Instance.Return(gameObject);
+            _objectPool.Return(gameObject);
         }
     }
 
@@ -43,7 +51,7 @@ public class Projectile : MonoBehaviour
         var damagable = collider.gameObject.GetComponent<IDamageable>();
         if (damagable != null)
         {
-            damagable.TakeDamage(Damage);
+            damagable.TakeDamage(_damage);
         }
     }
 
@@ -52,7 +60,7 @@ public class Projectile : MonoBehaviour
         var pushiable = collider.gameObject.GetComponent<IPushiable>();
         if (pushiable != null)
         {
-            pushiable.Push(transform.forward * PushPower);
+            pushiable.Push(transform.forward * _pushPower);
         }
     }
 }

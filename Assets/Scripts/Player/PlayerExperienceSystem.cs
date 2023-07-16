@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-public class PlayerExperienceSystem : MonoBehaviour, IExperienceTaker
+public class PlayerExperienceSystem : MonoBehaviour
 {
     protected int _level = 1;
     protected ParticleSystem _levelUp;
@@ -38,7 +38,7 @@ public class PlayerExperienceSystem : MonoBehaviour, IExperienceTaker
         onLevelChanged.Invoke(_level);
     }
 
-    public void TakeExperience(float experience)
+    public void AddExperience(float experience)
     {
         _experience += experience;
 
@@ -55,11 +55,12 @@ public class PlayerExperienceSystem : MonoBehaviour, IExperienceTaker
         return _level;
     }
 
-    //public void SetLevel(int level)
-    //{
-    //    _experience = 0;
-    //    _level = level > 1 ? level : 1;
-    //    _nextLevelExperience = _nextLevelExperienceStartValue * Mathf.Pow(_nextLevelMultiplier, _level);
-    //    onLevelChanged.Invoke(_level);
-    //}
+    public void SetLevel(int level)
+    {
+        _experience = 0;
+        _level = level > 1 ? level : 1;
+        _nextLevelExperience = _nextLevelExperienceStartValue * Mathf.Pow(_nextLevelMultiplier, _level);
+        onLevelChanged.Invoke(_level);
+        onExperienceProgressChanged.Invoke(0);
+    }
 }

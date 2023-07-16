@@ -11,6 +11,7 @@ public class Weapon : MonoBehaviour
     [SerializeField] private float _pushPower;
     [SerializeField] private EWeaponType _type;
 
+    private ObjectPool _objectPool;
     private bool _inDowntime = true;
     private Transform _shootPoint;
 
@@ -22,10 +23,15 @@ public class Weapon : MonoBehaviour
 
     public EWeaponType Type { get { return _type; } }
 
+    public void Init(ObjectPool objectPool)
+    {
+        _objectPool = objectPool;
+        Ammo = _clipCapacity;
+    }
+
     private void Awake()
     {
         _shootPoint = transform.Find("ShootPoint");
-        Ammo = _clipCapacity;
     }
 
     private void OnEnable()
@@ -39,24 +45,25 @@ public class Weapon : MonoBehaviour
         {
             if (Ammo > 0)
             {
-                GameObject projectile = ObjectPool.Instance.Get(EResource.Projectile);
-                if (projectile != null)
-                {
-                    projectile.GetComponent<Projectile>().Damage = _damage * DamageMultiplier;
-                    projectile.GetComponent<Projectile>().PushPower = _pushPower;
-                    projectile.transform.position = _shootPoint.position;
-                    projectile.transform.rotation = _shootPoint.rotation;
-                    projectile.SetActive(true);
-                }
-
-                Ammo--;
-                
+                SpawnProjectile();
                 StartCoroutine(ShootDowntime());
+                Ammo--;
             }
             else
             {
                 Debug.Log("Out of ammo! Press R to reload.");
             }
+        }
+    }
+
+    private void SpawnProjectile()
+    {
+        GameObject projectile = _objectPool.Get(EResource.Projectile);
+        if (projectile != null)
+        {
+            projectile.GetComponent<Projectile>().Init(_objectPool, _damage * DamageMultiplier, _pushPower);
+            projectile.transform.position = _shootPoint.position;
+            projectile.transform.rotation = _shootPoint.rotation;
         }
     }
 

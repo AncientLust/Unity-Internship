@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 using Structs;
 
-public class PlayerHealthSystem : MonoBehaviour, IDamageable
+public class PlayerHealthSystem : MonoBehaviour
 {
     private float _baseHealth = 100;
     private float _baseHealthRegen = 5;
@@ -11,11 +11,11 @@ public class PlayerHealthSystem : MonoBehaviour, IDamageable
     private float _regenPerSecond;
     private bool _isDead;
 
-    private PlayerStatsSystem _statsSystem; // Must be injected
+    private PlayerStatsSystem _statsSystem;
     private ParticleSystem _bloodSplat;
     private HealthBar _healthBar;
 
-    //public event Action OnDie;
+    public event Action onDie;
 
     public void Init(PlayerStatsSystem statsSystem)
     {
@@ -58,12 +58,11 @@ public class PlayerHealthSystem : MonoBehaviour, IDamageable
 
     private void CacheComponents()
     {
-        //_statsSystem = GetComponent<PlayerStatsSystem>();
         _bloodSplat = transform.Find("Effects/BloodSplat").GetComponent<ParticleSystem>();
         _healthBar = transform.Find("Canvas/HealthBar").GetComponent<HealthBar>();
     }
 
-    public void TakeDamage(float damage)
+    public void ReduceHealth(float damage)
     {
         _health -= damage;
         _healthBar.SetFill(_health / _maxHealth);
@@ -77,7 +76,7 @@ public class PlayerHealthSystem : MonoBehaviour, IDamageable
         if (_health <= 0)
         {
             _isDead = true;
-            //OnDie.Invoke();
+            onDie.Invoke();
         }
     }
 
@@ -126,6 +125,7 @@ public class PlayerHealthSystem : MonoBehaviour, IDamageable
     {
         _isDead = false;
         _health = _baseHealth;
+        _maxHealth = _baseHealth;
         _regenPerSecond = _baseHealthRegen;
         _healthBar.SetFill(1);
     }

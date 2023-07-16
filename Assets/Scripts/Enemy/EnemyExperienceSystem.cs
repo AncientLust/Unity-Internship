@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-public class EnemyExperienceSystem : MonoBehaviour, IExperienceMaker
+public class EnemyExperienceSystem : MonoBehaviour
 {
     private int _level = 1;
     private int _killExperience = 10;

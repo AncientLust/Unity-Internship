@@ -26,14 +26,9 @@ public class EnemySpawner : MonoBehaviour
         _objectPool = objectPool;
     }
 
-    private void Start()
-    {
-        _objectPool = new ObjectPool();
-    }
-
     private void OnDestroy()
     {
-        StopAllCoroutines();
+        StopCoroutine(_spawnCoroutine);
     }
 
     public void StartSpawn()
@@ -51,7 +46,6 @@ public class EnemySpawner : MonoBehaviour
         while (true)
         {
             SpawnEnemy(Random.Range(_minEnemiesToSpawn, _maxEnemiesToSpawn));
-
             yield return new WaitForSeconds(Random.Range(_minEnemySpawnTime, _maxEnemySpawnTime));
         }
     }
@@ -65,7 +59,7 @@ public class EnemySpawner : MonoBehaviour
             {
                 enemy.GetComponent<ITargetHolder>().SetTarget(_target);
                 enemy.GetComponent<IPositionable>().SetPosition(GetEnemySpawnPosition());
-                enemy.GetComponent<IHealable>().RestoreHealth();
+                enemy.GetComponent<IResetable>().ResetState();
                 enemy.GetComponent<IDisposable>().OnDispose += DisposeEnemyHandler;
             }
         }
@@ -86,7 +80,7 @@ public class EnemySpawner : MonoBehaviour
     private void DisposeEnemy(GameObject enemy)
     {
         enemy.GetComponent<IDisposable>().OnDispose -= DisposeEnemyHandler;
-        ObjectPool.Instance.Return(enemy);
+        _objectPool.Return(enemy);
     }
 
     private Vector3 GetEnemySpawnPosition()

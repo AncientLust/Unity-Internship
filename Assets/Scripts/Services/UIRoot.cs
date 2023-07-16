@@ -16,27 +16,47 @@ public class UIRoot : MonoBehaviour
     public event Action onStartPressed;
     public event Action onLoadPressed;
     public event Action onQuitPressed;
+    public event Action onPausePressed;
+    public event Action onResumePressed;
+    public event Action onPauseRestartPressed;
+    public event Action onPauseMenuPressed;
+    public event Action onGameOverRestartPressed;
+    public event Action onGameOverMenuPressed;
 
     private void OnEnable()
     {
         _menuButton.start.onClick.AddListener(() => onStartPressed.Invoke());
-        _menuButton.start.onClick.AddListener(() => SetUI(EUI.HUD));
         _menuButton.load.onClick.AddListener(() => onLoadPressed.Invoke());
         _menuButton.quit.onClick.AddListener(() => onQuitPressed.Invoke());
 
         _menuButton.settings.onClick.AddListener(() => SetUI(EUI.Settings));
         _settingButton.back.onClick.AddListener(() => SetUI(EUI.Menu));
+
+        _hudButton.pause.onClick.AddListener(() => onPausePressed.Invoke());
+        _pauseButton.resume.onClick.AddListener(() => onResumePressed.Invoke());
+        _pauseButton.restart.onClick.AddListener(() => onPauseRestartPressed.Invoke());
+        _pauseButton.menu.onClick.AddListener(() => onPauseMenuPressed.Invoke());
+
+        _gameOverButton.restart.onClick.AddListener(() => onGameOverRestartPressed.Invoke());
+        _gameOverButton.menu.onClick.AddListener(() => onGameOverMenuPressed.Invoke());
     }
 
     private void OnDisable()
     {
         _menuButton.start.onClick.RemoveListener(() => onStartPressed.Invoke());
-        _menuButton.start.onClick.RemoveListener(() => SetUI(EUI.HUD));
         _menuButton.load.onClick.RemoveListener(() => onLoadPressed.Invoke());
         _menuButton.quit.onClick.RemoveListener(() => onQuitPressed.Invoke());
 
         _menuButton.settings.onClick.RemoveListener(() => SetUI(EUI.Settings));
         _settingButton.back.onClick.RemoveListener(() => SetUI(EUI.Menu));
+
+        _hudButton.pause.onClick.RemoveListener(() => onPausePressed.Invoke());
+        _pauseButton.resume.onClick.RemoveListener(() => onResumePressed.Invoke());
+        _pauseButton.restart.onClick.RemoveListener(() => onPauseRestartPressed.Invoke());
+        _pauseButton.menu.onClick.RemoveListener(() => onPauseMenuPressed.Invoke());
+
+        _gameOverButton.restart.onClick.RemoveListener(() => onGameOverRestartPressed.Invoke());
+        _gameOverButton.menu.onClick.RemoveListener(() => onGameOverMenuPressed.Invoke());
     }
 
     public void SetUI(EUI name)

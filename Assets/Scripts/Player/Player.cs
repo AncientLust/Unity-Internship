@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    private void Awake()
+    public void Init(ObjectPool objectPool)
     {
         var rigidBody = gameObject.GetComponent<Rigidbody>();
         var experienceSystem = gameObject.AddComponent<PlayerExperienceSystem>();
@@ -11,10 +11,10 @@ public class Player : MonoBehaviour
         var weaponSystem = gameObject.AddComponent<PlayerWeaponSystem>();
         var movementSystem = gameObject.AddComponent<PlayerMovementSystem>();
         var healthSystem = gameObject.AddComponent<PlayerHealthSystem>();
-        var playerFacade = gameObject.AddComponent<PlayerSubsystems>();
+        var playerFacade = gameObject.AddComponent<PlayerFacade>();
 
         statsSystem.Init(experienceSystem);
-        weaponSystem.Init(inputSystem, statsSystem);
+        weaponSystem.Init(inputSystem, statsSystem, objectPool);
         movementSystem.Init(statsSystem, inputSystem, rigidBody);
         healthSystem.Init(statsSystem);
 
@@ -23,7 +23,8 @@ public class Player : MonoBehaviour
             statsSystem,
             weaponSystem,
             healthSystem,
-            inputSystem
+            inputSystem,
+            movementSystem
         );
     }
 }

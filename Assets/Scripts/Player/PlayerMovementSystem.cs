@@ -1,17 +1,16 @@
 using UnityEngine;
 using Structs;
 
-public class PlayerMovementSystem : MonoBehaviour, ITargetable
+public class PlayerMovementSystem : MonoBehaviour
 {
     private float _baseMoveSpeed = 5;
     private float _moveSpeed;
-    private bool _mustMove = true;
     private Vector3 _moveDirection;
     private PlayerStatsSystem _statsSystem;
     private PlayerInputSystem _inputSystem;
     private Rigidbody _rigidbody;
 
-    public Transform Transform => transform;
+    public bool IsActive { get; set; } = false;
 
     public void Init(PlayerStatsSystem statsSystem, PlayerInputSystem inputSystem, Rigidbody rigidbody)
     {
@@ -49,16 +48,9 @@ public class PlayerMovementSystem : MonoBehaviour, ITargetable
         MoveIfNecessary();
     }
 
-    //private void CacheComponents()
-    //{
-    //    _rigidbody = GetComponent<Rigidbody>();
-    //    _statsSystem = GetComponent<PlayerStatsSystem>();
-    //    _inputSystem = GetComponent<PlayerInputSystem>();
-    //}
-
     private void MoveIfNecessary()
     {
-        if (_mustMove)
+        if (IsActive)
         {
             Move();
             Rotate();
@@ -76,12 +68,9 @@ public class PlayerMovementSystem : MonoBehaviour, ITargetable
 
     private void Move()
     {
-        if (_mustMove)
-        {
-            _moveDirection.Normalize();
-            _rigidbody.MovePosition(_rigidbody.position + _moveDirection * _moveSpeed * Time.deltaTime);
-            _moveDirection = Vector3.zero;
-        }
+        _moveDirection.Normalize();
+        _rigidbody.MovePosition(_rigidbody.position + _moveDirection * _moveSpeed * Time.deltaTime);
+        _moveDirection = Vector3.zero;
     }
 
     private void Rotate()
@@ -103,5 +92,10 @@ public class PlayerMovementSystem : MonoBehaviour, ITargetable
     private void ApplyLevelUpMultipliers(SPlayerStatsMultipliers multipliers)
     {
         _moveSpeed = _baseMoveSpeed * multipliers.moveSpeed;
+    }
+
+    public void ResetPosition()
+    {
+        transform.position = Vector3.zero;
     }
 }

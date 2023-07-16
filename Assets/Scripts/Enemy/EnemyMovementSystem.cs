@@ -1,7 +1,7 @@
 using UnityEngine;
 using Structs;
 
-public class EnemyMovementSystem : MonoBehaviour, IPushiable, ITargetHolder, IPositionable
+public class EnemyMovementSystem : MonoBehaviour
 {
     private float _stopDistance = 0.35f;
     private float _baseMoveSpeed = 6f;

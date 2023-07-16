@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 using Structs;
 
-public class EnemyHealthSystem : MonoBehaviour, IDamageable, IDisposable, IHealable
+public class EnemyHealthSystem : MonoBehaviour
 {
     private float _baseHealth = 100;
     private float _baseHealthRegen = 10;
@@ -16,7 +16,7 @@ public class EnemyHealthSystem : MonoBehaviour, IDamageable, IDisposable, IHeala
     private ParticleSystem _bloodSplat;
     private HealthBar _healthBar;
 
-    public event Action<GameObject> OnDispose;
+    public event Action OnDie;
 
     public void Init(EnemyStatsSystem statsSystem)
     {
@@ -65,7 +65,7 @@ public class EnemyHealthSystem : MonoBehaviour, IDamageable, IDisposable, IHeala
         _healthBar = transform.Find("Canvas/HealthBar").GetComponent<HealthBar>();
     }
 
-    public void TakeDamage(float damage)
+    public void ReduceHealth(float damage)
     {
         _health -= damage;
         _healthBar.SetFill(_health / _maxHealth);
@@ -79,7 +79,7 @@ public class EnemyHealthSystem : MonoBehaviour, IDamageable, IDisposable, IHeala
         if (_health <= 0)
         {
             _isDead = true;
-            OnDispose.Invoke(gameObject);
+            OnDie.Invoke();
         }
     }
 
@@ -121,6 +121,7 @@ public class EnemyHealthSystem : MonoBehaviour, IDamageable, IDisposable, IHeala
     {
         _isDead = false;
         _health = _baseHealth;
+        _maxHealth = _baseHealth;
         _regenPerSecond = _baseHealthRegen;
         _healthBar.SetFill(1);
     }

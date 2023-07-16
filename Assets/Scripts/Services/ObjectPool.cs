@@ -5,9 +5,7 @@ using Enums;
 
 public class ObjectPool
 {
-    public static ObjectPool Instance { get; } = new ObjectPool();
-    private readonly Dictionary<EResource, Queue<GameObject>> pool;
-
+    private Dictionary<EResource, Queue<GameObject>> pool;
     private ObjectFactory _objectFactory;
 
     public ObjectPool()
@@ -47,5 +45,10 @@ public class ObjectPool
         {
             Debug.LogError("Invalid object type: " + obj.tag);
         }
+    }
+
+    public void Reset()
+    {
+        pool = new Dictionary<EResource, Queue<GameObject>>();
     }
 }

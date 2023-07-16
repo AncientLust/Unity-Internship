@@ -3,15 +3,14 @@ using UnityEngine;
 
 public class PlayerInputSystem : MonoBehaviour
 {
-    public bool IsActive { get; set; } = false;
-
     public event Action onScrollUp;
     public event Action onScrollDown;
     public event Action onLeftMouseClicked;
     public event Action onReloadPressed;
     public event Action<Vector3> onDirectionAxisPressed;
-
     private Vector3 _directionVetor;
+
+    public bool IsActive { get; set; } = false;
 
     private void Update()
     {

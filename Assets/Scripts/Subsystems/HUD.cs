@@ -11,11 +11,16 @@ public class HUD : MonoBehaviour
     [SerializeField] private ExperienceUI _experienceUI;
     [SerializeField] private StatsMultipliersUI _statsMultipliersUI;
 
-    private PlayerSubsystems _playerSubsystems;
+    private IHUDCompatible _iHUDCompatible;
 
-    public void Init(PlayerSubsystems playerFacade)
+    public void Init(IHUDCompatible iHUDCompatible)
     {
-        _playerSubsystems = playerFacade;
+        _iHUDCompatible = iHUDCompatible;
+        SubscribeEvents();
+    }
+
+    private void OnEnable()
+    {
         SubscribeEvents();
     }
 
@@ -26,20 +31,26 @@ public class HUD : MonoBehaviour
 
     private void SubscribeEvents()
     {
-        _playerSubsystems.onWeaponChanged += UpdateEquippedWeapon;
-        _playerSubsystems.onAmmoChanged += UpdateAmmo;
-        _playerSubsystems.onLevelChanged += UpdatePlayerLevel;
-        _playerSubsystems.onExperienceProgressChanged += UpdateExperienceProgress;
-        _playerSubsystems.onStatsChanged += UpdateStats;
+        if (_iHUDCompatible != null)
+        {
+            _iHUDCompatible.onWeaponChanged += UpdateEquippedWeapon;
+            _iHUDCompatible.onAmmoChanged += UpdateAmmo;
+            _iHUDCompatible.onLevelChanged += UpdatePlayerLevel;
+            _iHUDCompatible.onExperienceProgressChanged += UpdateExperienceProgress;
+            _iHUDCompatible.onStatsChanged += UpdateStats;
+        }
     }
 
     private void UnsubscribeEvents()
     {
-        _playerSubsystems.onWeaponChanged -= UpdateEquippedWeapon;
-        _playerSubsystems.onAmmoChanged -= UpdateAmmo;
-        _playerSubsystems.onLevelChanged -= UpdatePlayerLevel;
-        _playerSubsystems.onExperienceProgressChanged -= UpdateExperienceProgress;
-        _playerSubsystems.onStatsChanged -= UpdateStats;
+        if (_iHUDCompatible != null)
+        {
+            _iHUDCompatible.onWeaponChanged -= UpdateEquippedWeapon;
+            _iHUDCompatible.onAmmoChanged -= UpdateAmmo;
+            _iHUDCompatible.onLevelChanged -= UpdatePlayerLevel;
+            _iHUDCompatible.onExperienceProgressChanged -= UpdateExperienceProgress;
+            _iHUDCompatible.onStatsChanged -= UpdateStats;
+        }
     }
 
     private void UpdateEquippedWeapon(EWeaponType weapon)

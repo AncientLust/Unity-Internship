@@ -15,11 +15,13 @@ public class PlayerWeaponSystem : MonoBehaviour
 
     public Action<EWeaponType> onWeaponChanged;
     public Action<int> onAmmoChanged;
+    private ObjectPool _objectPool;
 
-    public void Init(PlayerInputSystem playerInputSystem, PlayerStatsSystem playerStatsSystem)
+    public void Init(PlayerInputSystem playerInputSystem, PlayerStatsSystem playerStatsSystem, ObjectPool objectPool)
     {
         _playerInputSystem = playerInputSystem;
         _statsSystem = playerStatsSystem;
+        _objectPool = objectPool;
         SubscribeEvents();
     }
 
@@ -30,8 +32,14 @@ public class PlayerWeaponSystem : MonoBehaviour
 
     private void Start()
     {
+        ResetWeapons();
+    }
+
+    public void ResetWeapons()
+    {
         SortWeapons();
-        EquipWeapon(0); 
+        InitWeapons();
+        EquipWeapon(0);
     }
 
     private void OnDisable()
@@ -42,8 +50,6 @@ public class PlayerWeaponSystem : MonoBehaviour
     private void CacheComponents()
     {
         _weapons = new List<Weapon>(GetComponentsInChildren<Weapon>(true));
-        //_playerInputSystem = GetComponent<PlayerInputSystem>();
-        //_statsSystem = GetComponent<PlayerStatsSystem>();
     }
 
     private void SubscribeEvents()
@@ -120,6 +126,14 @@ public class PlayerWeaponSystem : MonoBehaviour
     private void SortWeapons()
     {
         _weapons.Sort((weapon1, weapon2) => weapon1.Type.CompareTo(weapon2.Type));
+    }
+
+    private void InitWeapons()
+    {
+        foreach (var weapon in _weapons)
+        {
+            weapon.Init(_objectPool);
+        }
     }
 
     private void EquipWeapon(int weaponIndex)
