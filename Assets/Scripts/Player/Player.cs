@@ -11,12 +11,14 @@ public class Player : MonoBehaviour
         var weaponSystem = gameObject.AddComponent<PlayerWeaponSystem>();
         var movementSystem = gameObject.AddComponent<PlayerMovementSystem>();
         var healthSystem = gameObject.AddComponent<PlayerHealthSystem>();
+        var saveLoadSystem = gameObject.AddComponent<PlayerSaveLoadSystem>();
         var playerFacade = gameObject.AddComponent<PlayerFacade>();
 
         statsSystem.Init(experienceSystem);
         weaponSystem.Init(inputSystem, statsSystem, objectPool);
         movementSystem.Init(statsSystem, inputSystem, rigidBody);
         healthSystem.Init(statsSystem);
+        saveLoadSystem.Init(experienceSystem, healthSystem);
 
         playerFacade.Init(
             experienceSystem,
@@ -24,7 +26,8 @@ public class Player : MonoBehaviour
             weaponSystem,
             healthSystem,
             inputSystem,
-            movementSystem
+            movementSystem,
+            saveLoadSystem
         );
     }
 }

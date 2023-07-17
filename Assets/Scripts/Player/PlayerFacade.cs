@@ -12,6 +12,7 @@ public class PlayerFacade : MonoBehaviour,
     private PlayerExperienceSystem _experienceSystem;
     private PlayerInputSystem _inputSystem;
     private PlayerMovementSystem _movementSystem;
+    private PlayerSaveLoadSystem _saveLoadSystem;
 
     public event Action<int> onAmmoChanged;
     public event Action<EWeaponType> onWeaponChanged;
@@ -28,7 +29,8 @@ public class PlayerFacade : MonoBehaviour,
         PlayerWeaponSystem weaponSystem,
         PlayerHealthSystem healthSystem,
         PlayerInputSystem inputSystem,
-        PlayerMovementSystem movementSystem)
+        PlayerMovementSystem movementSystem,
+        PlayerSaveLoadSystem saveLoadSystem)
     {
         _experienceSystem = experienceSystem;
         _statsSystem = statsSystem;
@@ -36,6 +38,7 @@ public class PlayerFacade : MonoBehaviour,
         _healthSystem = healthSystem;
         _inputSystem = inputSystem;
         _movementSystem = movementSystem;
+        _saveLoadSystem = saveLoadSystem;
 
         Subscribe();
     }
@@ -96,28 +99,13 @@ public class PlayerFacade : MonoBehaviour,
         _inputSystem.IsActive = state;
     }
 
-    //public EntityData CaptureState()
-    //{
-    //    EntityData data = new EntityData();
+    public void SaveState()
+    {
+        _saveLoadSystem.Save();
+    }
 
-    //    //data.position = transform.position;
-    //    //data.level = _experienceSystem.Level;
-    //    //data.experience = _experienceSystem.Experience;
-    //    //data.health = _statsSystem.CurrentHealth;
-    //    //data.equippedWeaponIndex = _equippedWeaponIndex;
-    //    //data.ammo = _currentWeapon.CurrentAmmo;
-    //    return data;
-    //}
-
-    //public void LoadState(EntityData data)
-    //{
-    //    //transform.position = data.position;
-    //    //_experienceSystem.Level = data.level;
-    //    //_experienceSystem.AddExperience(data.experience);
-    //    //EquipWeapon(data.equippedWeaponIndex);
-    //    //_statsSystem.CurrentHealth = data.health;
-    //    //_currentWeapon.CurrentAmmo = data.ammo;
-    //}
-
-
+    public void LoadState()
+    {
+        _saveLoadSystem.Load();
+    }
 }

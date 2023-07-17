@@ -1,5 +1,7 @@
+using Structs;
+
 public interface ISaveable
 {
-    void SaveState();
-    void LoadState();
+    public SPlayerData SaveState();
+    public void LoadState(SPlayerData data);
 }

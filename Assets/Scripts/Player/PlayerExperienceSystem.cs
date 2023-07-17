@@ -50,11 +50,6 @@ public class PlayerExperienceSystem : MonoBehaviour
         onExperienceProgressChanged.Invoke(_experience / _nextLevelExperience);
     }
 
-    public int GetLevel()
-    {
-        return _level;
-    }
-
     public void SetLevel(int level)
     {
         _experience = 0;
@@ -62,5 +57,15 @@ public class PlayerExperienceSystem : MonoBehaviour
         _nextLevelExperience = _nextLevelExperienceStartValue * Mathf.Pow(_nextLevelMultiplier, _level);
         onLevelChanged.Invoke(_level);
         onExperienceProgressChanged.Invoke(0);
+    }
+
+    public int GetLevel()
+    {
+        return _level;
+    }
+
+    public float GetExperience() 
+    {
+        return _experience;
     }
 }

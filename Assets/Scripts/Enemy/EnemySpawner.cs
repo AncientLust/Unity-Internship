@@ -8,12 +8,11 @@ public class EnemySpawner : MonoBehaviour
     private IExperienceTaker _experienceTaker;
     private ObjectPool _objectPool;
 
-    //private bool _spawn = true;
     private float _minRadius = 10f;
     private float _maxRadius = 20f;
     private float _spawnRaduis = 360f;
     private float _minEnemySpawnTime = 1;
-    private float _maxEnemySpawnTime = 3;
+    private float _maxEnemySpawnTime = 2;
     private int _minEnemiesToSpawn = 1;
     private int _maxEnemiesToSpawn = 3;
     

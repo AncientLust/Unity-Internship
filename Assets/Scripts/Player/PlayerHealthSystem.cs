@@ -17,6 +17,8 @@ public class PlayerHealthSystem : MonoBehaviour
 
     public event Action onDie;
 
+    public float Health { get { return _health; } set { _health = value; } }
+
     public void Init(PlayerStatsSystem statsSystem)
     {
         _statsSystem = statsSystem;

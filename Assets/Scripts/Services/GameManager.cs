@@ -13,6 +13,8 @@ public class GameManager
     private CameraController _cameraController;
     private PauseManager _pauseManager;
 
+    private EGameSession _eGameSession;
+
     public void Init(UIRoot uiRoot, 
         SceneObjectBuilder sceneObjectLoader, 
         SceneController sceneController, 
@@ -47,31 +49,42 @@ public class GameManager
     private void Subscribe()
     {
         _sceneObjectLoader.onSceneObjectsBuild += (scene) => SceneLoadHandler(scene);
-        _uiRoot.onStartPressed += PrepareGame;
-        _uiRoot.onLoadPressed += LoadGame;
+        _uiRoot.onStartPressed += () => PrepareGame(EGameSession.New);
+        _uiRoot.onMenuLoadPressed += () => PrepareGame(EGameSession.Loaded);
+        _uiRoot.onPauseLoadPressed += LoadGameFromPause;
         _uiRoot.onQuitPressed += QuitGame;
         _uiRoot.onPausePressed += PauseGame;
         _uiRoot.onResumePressed += ResumeGame;
         _uiRoot.onPauseMenuPressed += OpenMenu;
         _uiRoot.onGameOverMenuPressed += OpenMenu;
         _uiRoot.onPauseRestartPressed += RestartGame;
+        _uiRoot.onPauseSavePressed += SaveGame;
         _uiRoot.onGameOverRestartPressed += RestartGame;
         _iPlayerFacade.onDie += GameOver;
     }
 
     private void Unsubscribe()
     {
-        _sceneObjectLoader.onSceneObjectsBuild -= (scene) => StartGame();
-        _uiRoot.onStartPressed -= PrepareGame;
-        _uiRoot.onLoadPressed -= LoadGame;
+        _sceneObjectLoader.onSceneObjectsBuild -= (scene) => SceneLoadHandler(scene);
+        _uiRoot.onStartPressed -= () => PrepareGame(EGameSession.New);
+        _uiRoot.onMenuLoadPressed -= () => PrepareGame(EGameSession.Loaded);
+        _uiRoot.onPauseLoadPressed -= LoadGameFromPause;
         _uiRoot.onQuitPressed -= QuitGame;
         _uiRoot.onPausePressed -= PauseGame;
         _uiRoot.onResumePressed -= ResumeGame;
         _uiRoot.onPauseMenuPressed -= OpenMenu;
         _uiRoot.onGameOverMenuPressed -= OpenMenu;
         _uiRoot.onPauseRestartPressed -= RestartGame;
+        _uiRoot.onPauseSavePressed -= SaveGame;
         _uiRoot.onGameOverRestartPressed -= RestartGame;
         _iPlayerFacade.onDie -= GameOver;
+    }
+
+    private void PrepareGame(EGameSession eGameSession)
+    {
+        _sceneController.LoadScene(EScene.Environment, LoadSceneMode.Additive);
+        _sceneController.LoadScene(EScene.GameSession, LoadSceneMode.Additive);
+        _eGameSession = eGameSession;
     }
 
     private void SceneLoadHandler(EScene scene)
@@ -79,15 +92,17 @@ public class GameManager
         switch (scene)
         {
             case EScene.GameSession:
-                StartGame();
+                if (_eGameSession == EGameSession.New)
+                {
+                    StartGame();
+                }
+
+                if (_eGameSession == EGameSession.Loaded)
+                {
+                    LoadGameFromMenu();
+                }
                 return;
         }
-    }
-
-    private void PrepareGame()
-    {
-        _sceneController.LoadScene(EScene.Environment, LoadSceneMode.Additive);
-        _sceneController.LoadScene(EScene.GameSession, LoadSceneMode.Additive);
     }
 
     private void StartGame()
@@ -130,9 +145,37 @@ public class GameManager
         Debug.Log("Menu opened");
     }
 
-    private void LoadGame()
+    private void LoadGameFromMenu()
     {
+        _uiRoot.SetUI(EUI.HUD);
+        _objectPool.Reset();
+        _enemySpawner.StartSpawn();
+        _iPlayerFacade.EnableForGameSession();
+        _iPlayerFacade.LoadState();
+        _cameraController.MoveToPlayer();
+
         Debug.Log("Game loaded");
+    }
+
+    private void LoadGameFromPause()
+    {
+        _enemySpawner.StopSpawn();
+        _sceneController.CleanScene(EScene.GameSession);
+        _objectPool.Reset();
+        _iPlayerFacade.EnableForGameSession();
+        _iPlayerFacade.LoadState();
+        _enemySpawner.StartSpawn();
+        _uiRoot.SetUI(EUI.HUD);
+        _cameraController.MoveToPlayer();
+        _pauseManager.ResumeGame();
+
+        Debug.Log("Game loaded");
+    }
+
+    private void SaveGame()
+    {
+        _iPlayerFacade.SaveState();
+        Debug.Log("Game saved");
     }
 
     private void RestartGame()
