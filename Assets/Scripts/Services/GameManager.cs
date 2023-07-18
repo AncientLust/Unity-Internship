@@ -112,8 +112,6 @@ public class GameManager
         _enemySpawner.StartSpawn();
         _iPlayerFacade.EnableForGameSession();
         _cameraController.MoveToPlayer();
-
-        Debug.Log("Game started");
     }
 
     private void PauseGame()
@@ -121,8 +119,6 @@ public class GameManager
         _iPlayerFacade.SetInputHandling(false);
         _uiRoot.SetUI(EUI.Pause);
         _pauseManager.PauseGame();
-
-        Debug.Log("Game paused");
     }
 
     private void ResumeGame()
@@ -130,8 +126,6 @@ public class GameManager
         _iPlayerFacade.SetInputHandling(true);
         _uiRoot.SetUI(EUI.HUD);
         _pauseManager.ResumeGame();
-        
-        Debug.Log("Game resumed");
     }
 
     private void OpenMenu()
@@ -141,8 +135,6 @@ public class GameManager
         _uiRoot.SetUI(EUI.Menu);
         _sceneController.UnloadScene(EScene.Environment);
         _sceneController.UnloadScene(EScene.GameSession);
-        
-        Debug.Log("Menu opened");
     }
 
     private void LoadGameFromMenu()
@@ -188,8 +180,6 @@ public class GameManager
         _uiRoot.SetUI(EUI.HUD);
         _cameraController.MoveToPlayer();
         _pauseManager.ResumeGame();
-
-        Debug.Log("Game restarted");
     }
 
     private void GameOver()
@@ -197,8 +187,6 @@ public class GameManager
         _iPlayerFacade.DisableForGameSession();
         _uiRoot.SetUI(EUI.GameOver);
         _pauseManager.PauseGame();
-
-        Debug.Log("Game over");
     }
 
     private void QuitGame()

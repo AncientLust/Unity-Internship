@@ -17,6 +17,7 @@ public class Player : MonoBehaviour
         var saveLoadSystem = gameObject.AddComponent<PlayerSaveLoadSystem>();
         var playerFacade = gameObject.AddComponent<PlayerFacade>();
         var skillSystem = gameObject.AddComponent<PlayerSkillSystem>();
+        var effectsSystem = gameObject.AddComponent<PlayerEffectsSystem>();
 
         var skills = new ISkill[] { bonusRegenerationSkill, bonusDamageSkill };
 
@@ -26,6 +27,7 @@ public class Player : MonoBehaviour
         healthSystem.Init(statsSystem, experienceSystem);
         saveLoadSystem.Init(experienceSystem, healthSystem);
         skillSystem.Init(inputSystem, skills);
+        effectsSystem.Init(healthSystem, experienceSystem, bonusRegenerationSkill, bonusDamageSkill);
 
         playerFacade.Init(
             experienceSystem,

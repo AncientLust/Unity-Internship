@@ -4,7 +4,6 @@ using UnityEngine;
 public class PlayerExperienceSystem : MonoBehaviour
 {
     protected int _level = 1;
-    protected ParticleSystem _levelUp;
 
     private float _experience = 0;
     private float _nextLevelExperienceStartValue = 50;
@@ -14,19 +13,9 @@ public class PlayerExperienceSystem : MonoBehaviour
     public event Action<int> onLevelChanged;
     public event Action<float> onExperienceProgressChanged;
 
-    private void Awake()
-    {
-        CacheComponents(); // Must be replaced by something, since can be created separately from the player
-    }
-
     private void Start()
     {
         _nextLevelExperience = _nextLevelExperienceStartValue * _nextLevelMultiplier;
-    }
-
-    private void CacheComponents()
-    {
-        _levelUp = transform.Find("Effects/LevelUp").GetComponent<ParticleSystem>(); // Get rid of the string
     }
 
     protected void LevelUp()
@@ -34,7 +23,6 @@ public class PlayerExperienceSystem : MonoBehaviour
         _level++;
         _experience = _experience - _nextLevelExperience;
         _nextLevelExperience = _nextLevelExperienceStartValue * Mathf.Pow(_nextLevelMultiplier, _level);
-        _levelUp.Play();
         onLevelChanged.Invoke(_level);
     }
 

@@ -10,7 +10,7 @@ public class BonusRegenerationSkill : MonoBehaviour, ISkill
     [SerializeField] private TextMeshProUGUI _coolDownText;
 
     private float _coolDownDuration = 15;
-    private float _skillDuration = 3;
+    private float _skillDuration = 5;
     private bool _isReady = true;
 
     private float _regenerationMultiplier = 6;

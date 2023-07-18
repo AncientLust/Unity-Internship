@@ -13,10 +13,10 @@ public class PlayerHealthSystem : MonoBehaviour
 
     private PlayerExperienceSystem _experienceSystem;
     private PlayerStatsSystem _statsSystem;
-    private ParticleSystem _bloodSplat;
     private HealthBar _healthBar;
 
     public event Action onDie;
+    public event Action onDamaged;
 
     public float Health { get { return _health; } set { _health = value; } }
 
@@ -65,7 +65,6 @@ public class PlayerHealthSystem : MonoBehaviour
 
     private void CacheComponents()
     {
-        _bloodSplat = transform.Find("Effects/BloodSplat").GetComponent<ParticleSystem>();
         _healthBar = transform.Find("Canvas/HealthBar").GetComponent<HealthBar>();
     }
 
@@ -73,8 +72,7 @@ public class PlayerHealthSystem : MonoBehaviour
     {
         _health -= damage;
         _healthBar.SetFill(_health / _maxHealth);
-
-        PlayBloodEffect();
+        onDamaged.Invoke();
         CheckIfDied();
     }
 
@@ -84,17 +82,6 @@ public class PlayerHealthSystem : MonoBehaviour
         {
             _isDead = true;
             onDie.Invoke();
-        }
-    }
-
-    private void PlayBloodEffect()
-    {
-        if (!_bloodSplat.isPlaying) // Ask SettingsSystem if enabled
-        {
-            //if (GameSettings.Instance.BloodEffect)
-            //{
-            _bloodSplat.Play();
-            //}
         }
     }
 

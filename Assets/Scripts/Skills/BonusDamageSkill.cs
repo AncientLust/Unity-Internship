@@ -10,7 +10,7 @@ public class BonusDamageSkill : MonoBehaviour, ISkill
     [SerializeField] private TextMeshProUGUI _coolDownText;
 
     private float _coolDownDuration = 10;
-    private float _skillDuration = 3;
+    private float _skillDuration = 5;
     private bool _isReady = true;
 
     private float _damageMultiplier = 2;
@@ -46,8 +46,8 @@ public class BonusDamageSkill : MonoBehaviour, ISkill
         while (timeLeft >= 0)
         {
             timeLeft -= Time.deltaTime;
-            _coolDownText.text = Mathf.Round(timeLeft).ToString();
-            _darkMask.fillAmount = (timeLeft / _coolDownDuration);
+            if (_coolDownText.isActiveAndEnabled) _coolDownText.text = Mathf.Round(timeLeft).ToString();
+            if (_darkMask.isActiveAndEnabled) _darkMask.fillAmount = (timeLeft / _coolDownDuration);
 
             yield return null;
         }
