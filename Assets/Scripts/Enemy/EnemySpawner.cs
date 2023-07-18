@@ -27,7 +27,7 @@ public class EnemySpawner : MonoBehaviour
 
     private void OnDestroy()
     {
-        StopCoroutine(_spawnCoroutine);
+        if (_spawnCoroutine != null) StopCoroutine(_spawnCoroutine);
     }
 
     public void StartSpawn()

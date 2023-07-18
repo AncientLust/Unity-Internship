@@ -2,7 +2,10 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    public void Init(ObjectPool objectPool)
+    public void Init(
+        ObjectPool objectPool, 
+        BonusRegenerationSkill bonusRegenerationSkill, 
+        BonusDamageSkill bonusDamageSkill)
     {
         var rigidBody = gameObject.GetComponent<Rigidbody>();
         var experienceSystem = gameObject.AddComponent<PlayerExperienceSystem>();
@@ -13,12 +16,16 @@ public class Player : MonoBehaviour
         var healthSystem = gameObject.AddComponent<PlayerHealthSystem>();
         var saveLoadSystem = gameObject.AddComponent<PlayerSaveLoadSystem>();
         var playerFacade = gameObject.AddComponent<PlayerFacade>();
+        var skillSystem = gameObject.AddComponent<PlayerSkillSystem>();
 
-        statsSystem.Init(experienceSystem);
+        var skills = new ISkill[] { bonusRegenerationSkill, bonusDamageSkill };
+
+        statsSystem.Init(experienceSystem, bonusRegenerationSkill, bonusDamageSkill);
         weaponSystem.Init(inputSystem, statsSystem, objectPool);
         movementSystem.Init(statsSystem, inputSystem, rigidBody);
-        healthSystem.Init(statsSystem);
+        healthSystem.Init(statsSystem, experienceSystem);
         saveLoadSystem.Init(experienceSystem, healthSystem);
+        skillSystem.Init(inputSystem, skills);
 
         playerFacade.Init(
             experienceSystem,

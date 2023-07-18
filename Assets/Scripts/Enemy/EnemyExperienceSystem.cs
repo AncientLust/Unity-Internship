@@ -4,7 +4,7 @@ using UnityEngine;
 public class EnemyExperienceSystem : MonoBehaviour
 {
     private int _level = 1;
-    private int _killExperience = 10;
+    private int _killExperience = 5;
     private float _levelsPerMinute = 3;
 
     public Action<int> OnLevelChanged;

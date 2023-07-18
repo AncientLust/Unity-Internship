@@ -15,11 +15,12 @@ public class Weapon : MonoBehaviour
     private bool _inDowntime = true;
     private Transform _shootPoint;
 
-    public float DamageMultiplier { private get; set; } = 1;
+    public float DamageMultiplier { get; set; } = 1;
     public float AmmoMultiplier { private get; set; } = 1;
     public float ReloadMultiplier { private get; set; } = 1;
     public bool InReloading { get; private set; } = false;
     public int Ammo { get; private set; }
+    public bool IsDoubleDamageEnabled { get; set; } = false;
 
     public EWeaponType Type { get { return _type; } }
 
@@ -61,7 +62,8 @@ public class Weapon : MonoBehaviour
         GameObject projectile = _objectPool.Get(EResource.Projectile);
         if (projectile != null)
         {
-            projectile.GetComponent<Projectile>().Init(_objectPool, _damage * DamageMultiplier, _pushPower);
+            var damage = IsDoubleDamageEnabled ? _damage * DamageMultiplier * 2 : _damage * DamageMultiplier;
+            projectile.GetComponent<Projectile>().Init(_objectPool, damage, _pushPower);
             projectile.transform.position = _shootPoint.position;
             projectile.transform.rotation = _shootPoint.rotation;
         }

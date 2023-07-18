@@ -1,6 +1,7 @@
 using UnityEngine;
 using Enums;
 using UnityEngine.EventSystems;
+using UnityEngine.Pool;
 
 public class Main : MonoBehaviour
 {
@@ -38,12 +39,16 @@ public class Main : MonoBehaviour
         _uiRoot = _objectFactory.Instantiate(EResource.UIRoot).GetComponent<UIRoot>();
         _hud = _uiRoot.GetComponentInChildren<HUD>(true);
         _enemySpawner = _objectFactory.Instantiate(EResource.EnemySpawner).GetComponent<EnemySpawner>();
-    
+
         _player = _objectFactory.Instantiate(EResource.Player).GetComponent<Player>();
-        _player.Init(_objectPool);
+        _player.Init(_objectPool, 
+            _uiRoot.GetComponentInChildren<BonusRegenerationSkill>(true),
+            _uiRoot.GetComponentInChildren<BonusDamageSkill>(true)
+            );
+        
         _iHUDCompatible = _player.GetComponent<IHUDCompatible>();
         _iPlayerFacade = _player.GetComponent<IPlayerFacade>();
-        
+
         _playerTransform = _player.GetComponent<ITargetable>().Transform;
         _playerExperienceSystem = _player.GetComponent<IExperienceTaker>();
 

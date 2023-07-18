@@ -11,6 +11,7 @@ public class PlayerHealthSystem : MonoBehaviour
     private float _regenPerSecond;
     private bool _isDead;
 
+    private PlayerExperienceSystem _experienceSystem;
     private PlayerStatsSystem _statsSystem;
     private ParticleSystem _bloodSplat;
     private HealthBar _healthBar;
@@ -19,10 +20,11 @@ public class PlayerHealthSystem : MonoBehaviour
 
     public float Health { get { return _health; } set { _health = value; } }
 
-    public void Init(PlayerStatsSystem statsSystem)
+    public void Init(PlayerStatsSystem statsSystem, PlayerExperienceSystem experienceSystem)
     {
         _statsSystem = statsSystem;
-        SubscribeEvents();
+        _experienceSystem = experienceSystem;
+        Subscribe();
     }
 
     private void Awake()
@@ -45,17 +47,20 @@ public class PlayerHealthSystem : MonoBehaviour
 
     private void OnDisable()
     {
-        UnsubscribeEvents();
+        Unsubscribe();
     }
 
-    private void SubscribeEvents()
+    private void Subscribe()
     {
-        _statsSystem.onStatsChanged += ApplyLevelUpMultipliers;
+        _statsSystem.onStatsChanged += ApplyStatsMultipliers;
+        _experienceSystem.onLevelChanged += (_) => RestoreHealth();
+    
     }
 
-    private void UnsubscribeEvents()
+    private void Unsubscribe()
     {
-        _statsSystem.onStatsChanged -= ApplyLevelUpMultipliers;
+        _statsSystem.onStatsChanged -= ApplyStatsMultipliers;
+        _experienceSystem.onLevelChanged -= (_) => RestoreHealth();
     }
 
     private void CacheComponents()
@@ -110,11 +115,10 @@ public class PlayerHealthSystem : MonoBehaviour
         _healthBar.gameObject.SetActive(_health != _maxHealth);
     }
 
-    private void ApplyLevelUpMultipliers(SPlayerStatsMultipliers stats)
+    private void ApplyStatsMultipliers(SPlayerStatsMultipliers stats)
     {
-        _health = _maxHealth = _baseHealth * stats.maxHealth;
-        _regenPerSecond = _baseHealthRegen * stats.maxHealth;
-        RestoreHealth();
+        _maxHealth = _baseHealth * stats.maxHealth;
+        _regenPerSecond = _baseHealthRegen * stats.healthRegen;
     }
 
     private void RestoreHealth()

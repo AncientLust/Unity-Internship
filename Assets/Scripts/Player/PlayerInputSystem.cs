@@ -8,6 +8,8 @@ public class PlayerInputSystem : MonoBehaviour
     public event Action onLeftMouseClicked;
     public event Action onReloadPressed;
     public event Action<Vector3> onDirectionAxisPressed;
+
+    public event Action<int> onSkill1Clicked;
     private Vector3 _directionVetor;
 
     public bool IsActive { get; set; } = false;
@@ -54,5 +56,20 @@ public class PlayerInputSystem : MonoBehaviour
         {
             onDirectionAxisPressed.Invoke(_directionVetor);
         }
+
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            onSkill1Clicked.Invoke(0);
+        }
+
+        if (Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            onSkill1Clicked.Invoke(1);
+        }
+
+        //if (Input.GetKeyDown(KeyCode.Alpha2))
+        //{
+        //    onSkill3Clicked.Invoke();
+        //}
     }
 }
