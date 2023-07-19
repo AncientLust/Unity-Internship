@@ -1,3 +1,4 @@
+using Enums;
 using UnityEngine;
 
 public class PlayerSkillSystem : MonoBehaviour
@@ -27,8 +28,10 @@ public class PlayerSkillSystem : MonoBehaviour
         _inputSystem.onSkill1Clicked -= ExecuteSkillSlot;
     }
 
-    private void ExecuteSkillSlot(int skillIndex)
+    private void ExecuteSkillSlot(ESkillSlot skillSlot)
     {
+        var skillIndex = (int)skillSlot;
+
         if (skillIndex > _skillSlots.Length - 1 || skillIndex < 0)
         {
             Debug.LogError($"Invalid skill index {skillIndex}");

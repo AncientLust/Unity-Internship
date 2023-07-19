@@ -9,11 +9,11 @@ public class BonusRegenerationSkill : MonoBehaviour, ISkill
     [SerializeField] private Image _darkMask;
     [SerializeField] private TextMeshProUGUI _coolDownText;
 
-    private float _cooldownDuration = 5;
+    private float _cooldownDuration = 10;
     private float _cooldownLeft = 0;
-    private float _skillDuration = 5;
     private bool _isReady = true;
 
+    private float _skillDuration = 5;
     private float _regenerationMultiplier = 6;
 
     public event Action<float, float> onActivation;

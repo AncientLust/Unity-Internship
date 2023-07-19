@@ -1,22 +1,19 @@
 using System;
+using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using System.Collections;
 
-public class BonusDamageSkill : MonoBehaviour, ISkill
+public class ThrowGrenadeSkill : MonoBehaviour, ISkill
 {
     [SerializeField] private Image _darkMask;
     [SerializeField] private TextMeshProUGUI _coolDownText;
 
-    private float _cooldownDuration = 10;
+    private float _cooldownDuration = 2;
     private float _cooldownLeft = 0;
     private bool _isReady = true;
 
-    private float _skillDuration = 5;
-    private float _damageMultiplier = 2;
-
-    public event Action<float, float> onActivation;
+    public event Action onActivation;
 
     private void Start()
     {
@@ -40,8 +37,9 @@ public class BonusDamageSkill : MonoBehaviour, ISkill
         {
             _darkMask.enabled = true;
             _coolDownText.enabled = true;
+            
             StartCoroutine(Cooldown());
-            onActivation.Invoke(_skillDuration, _damageMultiplier);
+            onActivation.Invoke();
         }
     }
 
@@ -51,7 +49,6 @@ public class BonusDamageSkill : MonoBehaviour, ISkill
         _cooldownLeft = 0;
         AbilityReady();
     }
-
     private IEnumerator Cooldown()
     {
         if (_isReady)

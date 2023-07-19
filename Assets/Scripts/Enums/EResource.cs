@@ -11,6 +11,7 @@ namespace Enums
         EnemySpawner,
         Player,
         Enemy,
-        Projectile
+        Projectile,
+        Grenade
     }
 }

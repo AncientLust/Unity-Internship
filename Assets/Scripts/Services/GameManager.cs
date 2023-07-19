@@ -145,8 +145,6 @@ public class GameManager
         _iPlayerFacade.EnableForGameSession();
         _iPlayerFacade.LoadState();
         _cameraController.MoveToPlayer();
-
-        Debug.Log("Game loaded");
     }
 
     private void LoadGameFromPause()
@@ -160,8 +158,6 @@ public class GameManager
         _uiRoot.SetUI(EUI.HUD);
         _cameraController.MoveToPlayer();
         _pauseManager.ResumeGame();
-
-        Debug.Log("Game loaded");
     }
 
     private void SaveGame()

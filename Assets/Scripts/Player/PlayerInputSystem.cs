@@ -1,3 +1,4 @@
+using Enums;
 using System;
 using UnityEngine;
 
@@ -9,7 +10,7 @@ public class PlayerInputSystem : MonoBehaviour
     public event Action onReloadPressed;
     public event Action<Vector3> onDirectionAxisPressed;
 
-    public event Action<int> onSkill1Clicked;
+    public event Action<ESkillSlot> onSkill1Clicked;
     private Vector3 _directionVetor;
 
     public bool IsActive { get; set; } = false;
@@ -28,6 +29,14 @@ public class PlayerInputSystem : MonoBehaviour
     }
 
     private void InputHandler()
+    {
+        HandleMouseInput();
+        HandleAxisInput();
+        HandleAxisInput();
+        HandleSkillsInput();
+    }
+
+    private void HandleMouseInput()
     {
         if (Input.GetMouseButton(0))
         {
@@ -48,7 +57,10 @@ public class PlayerInputSystem : MonoBehaviour
         {
             onScrollUp.Invoke();
         }
+    }
 
+    private void HandleAxisInput()
+    {
         _directionVetor.x = Input.GetAxisRaw("Horizontal");
         _directionVetor.z = Input.GetAxisRaw("Vertical");
 
@@ -56,20 +68,23 @@ public class PlayerInputSystem : MonoBehaviour
         {
             onDirectionAxisPressed.Invoke(_directionVetor);
         }
+    }
 
+    private void HandleSkillsInput()
+    {
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
-            onSkill1Clicked.Invoke(0);
+            onSkill1Clicked.Invoke(ESkillSlot._1);
         }
 
         if (Input.GetKeyDown(KeyCode.Alpha2))
         {
-            onSkill1Clicked.Invoke(1);
+            onSkill1Clicked.Invoke(ESkillSlot._2);
         }
 
-        //if (Input.GetKeyDown(KeyCode.Alpha2))
-        //{
-        //    onSkill3Clicked.Invoke();
-        //}
+        if (Input.GetKeyDown(KeyCode.Alpha3))
+        {
+            onSkill1Clicked.Invoke(ESkillSlot._3);
+        }
     }
 }

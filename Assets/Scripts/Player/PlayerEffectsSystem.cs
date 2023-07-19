@@ -65,8 +65,6 @@ public class PlayerEffectsSystem : MonoBehaviour
         _bonusHealing.Clear();
         _bonusDamage.Stop();
         _bonusDamage.Clear();
-
-        Debug.Log("Effects stopped.");
     }
 
     private void PlayBloodSplat()

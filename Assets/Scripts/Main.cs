@@ -43,8 +43,9 @@ public class Main : MonoBehaviour
         _player = _objectFactory.Instantiate(EResource.Player).GetComponent<Player>();
         _player.Init(_objectPool, 
             _uiRoot.GetComponentInChildren<BonusRegenerationSkill>(true),
-            _uiRoot.GetComponentInChildren<BonusDamageSkill>(true)
-            );
+            _uiRoot.GetComponentInChildren<BonusDamageSkill>(true),
+            _uiRoot.GetComponentInChildren<ThrowGrenadeSkill>(true)
+        );
         
         _iHUDCompatible = _player.GetComponent<IHUDCompatible>();
         _iPlayerFacade = _player.GetComponent<IPlayerFacade>();

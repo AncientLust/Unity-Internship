@@ -5,7 +5,8 @@ public class Player : MonoBehaviour
     public void Init(
         ObjectPool objectPool, 
         BonusRegenerationSkill bonusRegenerationSkill, 
-        BonusDamageSkill bonusDamageSkill)
+        BonusDamageSkill bonusDamageSkill,
+        ThrowGrenadeSkill throwGrenadeSkill)
     {
         var rigidBody = gameObject.GetComponent<Rigidbody>();
         var experienceSystem = gameObject.AddComponent<PlayerExperienceSystem>();
@@ -18,8 +19,9 @@ public class Player : MonoBehaviour
         var playerFacade = gameObject.AddComponent<PlayerFacade>();
         var skillSystem = gameObject.AddComponent<PlayerSkillSystem>();
         var effectsSystem = gameObject.AddComponent<PlayerEffectsSystem>();
+        var throwSystem = gameObject.AddComponent<PlayerThrowSystem>();
 
-        var skills = new ISkill[] { bonusRegenerationSkill, bonusDamageSkill };
+        var skills = new ISkill[] { bonusRegenerationSkill, bonusDamageSkill, throwGrenadeSkill };
 
         statsSystem.Init(experienceSystem, bonusRegenerationSkill, bonusDamageSkill);
         weaponSystem.Init(inputSystem, statsSystem, objectPool);
@@ -28,6 +30,7 @@ public class Player : MonoBehaviour
         saveLoadSystem.Init(experienceSystem, healthSystem);
         skillSystem.Init(inputSystem, skills);
         effectsSystem.Init(healthSystem, experienceSystem, bonusRegenerationSkill, bonusDamageSkill);
+        throwSystem.Init(objectPool, throwGrenadeSkill);
 
         playerFacade.Init(
             experienceSystem,
