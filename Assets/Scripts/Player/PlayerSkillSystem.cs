@@ -38,4 +38,12 @@ public class PlayerSkillSystem : MonoBehaviour
             _skillSlots[skillIndex].Execute();
         }
     }
+
+    public void ResetSkillsCooldown()
+    {
+        foreach (var skill in _skillSlots)
+        {
+            skill.ResetCooldown();
+        }
+    }
 }

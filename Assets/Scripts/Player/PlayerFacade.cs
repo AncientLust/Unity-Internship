@@ -13,6 +13,8 @@ public class PlayerFacade : MonoBehaviour,
     private PlayerInputSystem _inputSystem;
     private PlayerMovementSystem _movementSystem;
     private PlayerSaveLoadSystem _saveLoadSystem;
+    private PlayerEffectsSystem _effectsSystem;
+    private PlayerSkillSystem _skillSystem;
 
     public event Action<int> onAmmoChanged;
     public event Action<EWeaponType> onWeaponChanged;
@@ -30,7 +32,9 @@ public class PlayerFacade : MonoBehaviour,
         PlayerHealthSystem healthSystem,
         PlayerInputSystem inputSystem,
         PlayerMovementSystem movementSystem,
-        PlayerSaveLoadSystem saveLoadSystem)
+        PlayerSaveLoadSystem saveLoadSystem,
+        PlayerEffectsSystem effectsSystem,
+        PlayerSkillSystem skillSystem)
     {
         _experienceSystem = experienceSystem;
         _statsSystem = statsSystem;
@@ -39,6 +43,8 @@ public class PlayerFacade : MonoBehaviour,
         _inputSystem = inputSystem;
         _movementSystem = movementSystem;
         _saveLoadSystem = saveLoadSystem;
+        _effectsSystem = effectsSystem;
+        _skillSystem = skillSystem;
 
         Subscribe();
     }
@@ -78,6 +84,8 @@ public class PlayerFacade : MonoBehaviour,
         _healthSystem.ResetHealth();
         _movementSystem.ResetPosition();
         _weaponSystem.ResetWeapons();
+        _skillSystem.ResetSkillsCooldown();
+        _effectsSystem.StopAllEffects();
 
         _movementSystem.IsActive = true;
         _inputSystem.IsActive = true;

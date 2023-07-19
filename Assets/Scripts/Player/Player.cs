@@ -36,7 +36,9 @@ public class Player : MonoBehaviour
             healthSystem,
             inputSystem,
             movementSystem,
-            saveLoadSystem
+            saveLoadSystem,
+            effectsSystem,
+            skillSystem
         );
     }
 }

@@ -57,6 +57,18 @@ public class PlayerEffectsSystem : MonoBehaviour
         _bonusDamageSkill.onActivation -= (duration, bonus) => StartCoroutine(PlayBonusDamage(duration));
     }
 
+    public void StopAllEffects()
+    {
+        _bloodSplat.Stop();
+        _bloodSplat.Clear();
+        _bonusHealing.Stop();
+        _bonusHealing.Clear();
+        _bonusDamage.Stop();
+        _bonusDamage.Clear();
+
+        Debug.Log("Effects stopped.");
+    }
+
     private void PlayBloodSplat()
     {
         if (!_bloodSplat.isPlaying) // Ask SettingsSystem if enabled
@@ -75,21 +87,17 @@ public class PlayerEffectsSystem : MonoBehaviour
 
     private IEnumerator PlayBonusHealing(float duration)
     {
-        var main = _bonusHealing.main;
-        main.duration = duration;
-
         _bonusHealing.Play();
         yield return new WaitForSeconds(duration);
         _bonusHealing.Stop();
+        _bonusHealing.Clear();
     }
 
     private IEnumerator PlayBonusDamage(float duration)
     {
-        var main = _bonusDamage.main;
-        main.duration = duration;
-
         _bonusDamage.Play();
         yield return new WaitForSeconds(duration);
         _bonusDamage.Stop();
+        _bonusDamage.Clear();
     }
 }
