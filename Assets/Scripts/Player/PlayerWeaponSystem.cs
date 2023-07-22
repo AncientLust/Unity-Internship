@@ -9,8 +9,8 @@ public class PlayerWeaponSystem : MonoBehaviour
 {
     private PlayerInputSystem _playerInputSystem; // Must be injected
     private PlayerStatsSystem _statsSystem; // Must be injected
-    private List<Weapon> _weapons = new List<Weapon>();
-    private Weapon _currentWeapon;
+    private List<IWeapon> _weapons = new List<IWeapon>();
+    private IWeapon _currentWeapon;
     private int _equippedWeaponIndex;
 
     public Action<EWeaponType> onWeaponChanged;
@@ -49,7 +49,7 @@ public class PlayerWeaponSystem : MonoBehaviour
 
     private void CacheComponents()
     {
-        _weapons = new List<Weapon>(GetComponentsInChildren<Weapon>(true));
+        _weapons = new List<IWeapon>(GetComponentsInChildren<IWeapon>(true));
     }
 
     private void SubscribeEvents()
@@ -102,7 +102,7 @@ public class PlayerWeaponSystem : MonoBehaviour
         }
     }
 
-    private IEnumerator Reload(Weapon weapon)
+    private IEnumerator Reload(IWeapon weapon)
     {
         yield return new WaitForSeconds(weapon.GetReloadTime());
         weapon.FinishReload();
@@ -145,11 +145,11 @@ public class PlayerWeaponSystem : MonoBehaviour
             if (i == _equippedWeaponIndex)
             {
                 _currentWeapon = _weapons[i];
-                _currentWeapon.gameObject.SetActive(true);
+                _currentWeapon.SetPrefabState(true);
                 continue;
             }
 
-            _weapons[i].gameObject.SetActive(false);
+            _weapons[i].SetPrefabState(false);
         }
 
         onWeaponChanged.Invoke(_currentWeapon.Type);

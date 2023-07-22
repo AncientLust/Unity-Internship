@@ -3,7 +3,9 @@ namespace Enums
     public enum EWeaponType
     {
         Pistol,
-        MachineGun,
-        Sniper
+        Automate,
+        Sniper,
+        Shotgun,
+        MachineGun
     }
 }

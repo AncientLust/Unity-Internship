@@ -25,6 +25,11 @@ public class UIRoot : MonoBehaviour
     public event Action onGameOverRestartPressed;
     public event Action onGameOverMenuPressed;
 
+    private void Start()
+    {
+        SetUI(EUI.Menu);
+    }
+
     private void OnEnable()
     {
         _menuButton.start.onClick.AddListener(() => onStartPressed.Invoke());

@@ -9,6 +9,8 @@ public class Projectile : MonoBehaviour
     private float _damage = 0;
     private float _pushPower = 0;
 
+    public bool IsPenetratiable { get; set; } = false;
+
     public void Init(ObjectPool objectPool, float damage, float pushPower)
     {
         _objectPool = objectPool;
@@ -42,8 +44,13 @@ public class Projectile : MonoBehaviour
 
     private void OnTriggerEnter(Collider collider)
     {
-        ApplyDamage(collider);
-        ApplyPush(collider);
+        var player = collider.gameObject.GetComponent<IPlayerFacade>();
+        if (player == null)
+        {
+            ApplyDamage(collider);
+            ApplyPush(collider);
+            PenetrationCheck();
+        }
     }
 
     private void ApplyDamage(Collider collider)
@@ -61,6 +68,14 @@ public class Projectile : MonoBehaviour
         if (pushiable != null)
         {
             pushiable.Push(transform.forward * _pushPower);
+        }
+    }
+
+    private void PenetrationCheck()
+    {
+        if (!IsPenetratiable)
+        {
+            _objectPool.Return(gameObject);
         }
     }
 }

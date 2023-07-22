@@ -178,7 +178,7 @@ GameObject:
   - component: {fileID: 33887587134446058}
   - component: {fileID: 23314024491619116}
   - component: {fileID: 64939115521495000}
-  - component: {fileID: -4774812073818553792}
+  - component: {fileID: 4153426137512675434}
   m_Layer: 0
   m_Name: Sniper
   m_TagString: Untagged
@@ -206,7 +206,7 @@ Transform:
   - {fileID: 4993235556689634}
   - {fileID: 3691413409134517483}
   m_Father: {fileID: 0}
-  m_RootOrder: -1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &33887587134446058
 MeshFilter:
@@ -280,7 +280,7 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 43103284652768590, guid: 324bd130998a40545a2b2944f85cf6db, type: 2}
---- !u!114 &-4774812073818553792
+--- !u!114 &4153426137512675434
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -292,12 +292,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a0d48c8305c10449b36c20925c8c01f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _damage: 90
-  _shootSpeed: 1
-  _reloadTime: 3
-  _clipCapacity: 5
-  _pushPower: 30
-  _type: 2
+  _stats: {fileID: 11400000, guid: 32c22057f536c41408daa91c44f72f01, type: 2}
 --- !u!1 &1683238794451336
 GameObject:
   m_ObjectHideFlags: 0

@@ -68,29 +68,4 @@ public class EnemyFacade : MonoBehaviour,
     {
         _movementSystem.SetPosition(position);
     }
-
-
-
-
-
-
-
-    //public EntityData CaptureState()
-    //{
-    //    EntityData data = new EntityData();
-    //    //data.health = _statsSystem.CurrentHealth;
-    //    data.position = transform.position;
-    //    //data.level = _experienceSystem.Level;
-
-    //    return data;
-    //}
-
-
-
-    //public void LoadState(EntityData data)
-    //{
-    //    transform.position = data.position;
-    //    //_statsSystem.CurrentHealth = data.health;
-    //    //_experienceSystem.Level = data.level;
-    //}
 }

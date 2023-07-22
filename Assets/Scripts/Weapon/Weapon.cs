@@ -1,15 +1,11 @@
 using System.Collections;
 using UnityEngine;
 using Enums;
+using UnityEngine.UIElements;
 
-public class Weapon : MonoBehaviour
+public class Weapon : MonoBehaviour, IWeapon
 {
-    [SerializeField] private float _damage;
-    [SerializeField] private float _shootSpeed;
-    [SerializeField] private float _reloadTime;
-    [SerializeField] private int _clipCapacity;
-    [SerializeField] private float _pushPower;
-    [SerializeField] private EWeaponType _type;
+    [SerializeField] private WeaponStats _stats;
 
     private ObjectPool _objectPool;
     private bool _inDowntime = true;
@@ -20,19 +16,13 @@ public class Weapon : MonoBehaviour
     public float ReloadMultiplier { private get; set; } = 1;
     public bool InReloading { get; private set; } = false;
     public int Ammo { get; private set; }
-    public bool IsDoubleDamageEnabled { get; set; } = false;
-
-    public EWeaponType Type { get { return _type; } }
+    public EWeaponType Type { get { return _stats.type; } }
 
     public void Init(ObjectPool objectPool)
     {
         _objectPool = objectPool;
-        Ammo = _clipCapacity;
-    }
-
-    private void Awake()
-    {
         _shootPoint = transform.Find("ShootPoint");
+        Ammo = _stats.clipCapacity;
     }
 
     private void OnEnable()
@@ -46,7 +36,7 @@ public class Weapon : MonoBehaviour
         {
             if (Ammo > 0)
             {
-                SpawnProjectile();
+                ShootProjectile();
                 StartCoroutine(ShootDowntime());
                 Ammo--;
             }
@@ -57,22 +47,28 @@ public class Weapon : MonoBehaviour
         }
     }
 
-    private void SpawnProjectile()
+    private void ShootProjectile()
     {
-        GameObject projectile = _objectPool.Get(EResource.Projectile);
-        if (projectile != null)
+        for (int i = 0; i < _stats.projectilesPerShoot; i++)
         {
-            var damage = IsDoubleDamageEnabled ? _damage * DamageMultiplier * 2 : _damage * DamageMultiplier;
-            projectile.GetComponent<Projectile>().Init(_objectPool, damage, _pushPower);
-            projectile.transform.position = _shootPoint.position;
-            projectile.transform.rotation = _shootPoint.rotation;
+            var projectile = _objectPool.Get(EResource.Projectile).GetComponent<Projectile>();
+            if (projectile != null)
+            {
+                projectile.Init(_objectPool, _stats.damage * DamageMultiplier, _stats.pushPower);
+                projectile.transform.position = _shootPoint.position;
+
+                var semiSpread = _stats.spreadAngle / 2;
+                var spreadRotation = Quaternion.Euler(0, Random.Range(-semiSpread, semiSpread), 0);
+                projectile.transform.rotation = _shootPoint.rotation * spreadRotation;
+                projectile.IsPenetratiable = _stats.isPenetratable;
+            }
         }
     }
 
     private IEnumerator ShootDowntime()
     {
         _inDowntime = true;
-        yield return new WaitForSeconds(1 / _shootSpeed);
+        yield return new WaitForSeconds(1 / _stats.shootSpeed);
         _inDowntime = false;
     }
 
@@ -84,16 +80,21 @@ public class Weapon : MonoBehaviour
     public void FinishReload()
     {
         InReloading = false;
-        Ammo = (int)(_clipCapacity * AmmoMultiplier);
+        Ammo = (int)(_stats.clipCapacity * AmmoMultiplier);
     }
 
     public float GetReloadTime()
     {
-        return _reloadTime * ReloadMultiplier;
+        return _stats.reloadTime * ReloadMultiplier;
     }
 
     public bool HasEmptyClip()
     {
         return Ammo == 0;
+    }
+
+    public void SetPrefabState(bool state)
+    {
+        gameObject.SetActive(state);
     }
 }

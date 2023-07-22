@@ -61,23 +61,12 @@ public class EnemyMovementSystem : MonoBehaviour
 
     private void MoveIfPlayerAlive()
     {
-        //if (_target.gameObject.activeInHierarchy)
         if (true)
         {
             MoveToPlayer();
             RotateToPlayer();
         }
-        //else
-        //{
-        //    _rigidbody.angularVelocity = Vector3.zero;
-        //}
     }
-
-    //private bool ShouldAct()
-    //{
-    //    //return GameManager.Instance.IsStarted && !GameManager.Instance.IsPaused;
-    //    return true;
-    //}
 
     private void MoveToPlayer()
     {
