@@ -22,6 +22,11 @@ public class Weapon : MonoBehaviour, IWeapon
     {
         _objectPool = objectPool;
         _shootPoint = transform.Find("ShootPoint");
+        
+        DamageMultiplier = 1;
+        AmmoMultiplier = 1;
+        ReloadMultiplier = 1;
+        InReloading = false;
         Ammo = _stats.clipCapacity;
     }
 

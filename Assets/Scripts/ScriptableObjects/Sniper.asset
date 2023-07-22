@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Sniper
   m_EditorClassIdentifier: 
   type: 2
-  damage: 90
+  damage: 75
   shootSpeed: 1
   reloadTime: 3
   clipCapacity: 5

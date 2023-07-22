@@ -35,6 +35,7 @@ public class HUD : MonoBehaviour
         {
             _iHUDCompatible.onWeaponChanged += UpdateEquippedWeapon;
             _iHUDCompatible.onAmmoChanged += UpdateAmmo;
+            _iHUDCompatible.onReloadProgressChanged += SetReloadBarValue;
             _iHUDCompatible.onLevelChanged += UpdatePlayerLevel;
             _iHUDCompatible.onExperienceProgressChanged += UpdateExperienceProgress;
             _iHUDCompatible.onStatsChanged += UpdateStats;
@@ -64,7 +65,7 @@ public class HUD : MonoBehaviour
 
     private void UpdateAmmo(int ammo)
     {
-        _weaponUI.ammo.SetText($"999 / {ammo}");
+        _weaponUI.ammo.SetText(ammo.ToString());
     }
 
     private void UpdatePlayerLevel(int level)
@@ -88,11 +89,17 @@ public class HUD : MonoBehaviour
         _statsMultipliersUI.moveSpeed.text = multipliers.moveSpeed.ToString("F1");
     }
 
+    private void SetReloadBarValue(float value)
+    {
+        _weaponUI.reloadBar.SetFill(value);
+    }
+
     [Serializable]
     private struct WeaponUI
     {
         public Image[] sprites;
         public TextMeshProUGUI ammo;
+        public ReloadBar reloadBar;
     }
 
     [Serializable]

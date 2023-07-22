@@ -9,4 +9,5 @@ public interface IHUDCompatible
     public event Action<float> onExperienceProgressChanged;
     public event Action<int> onLevelChanged;
     public event Action<SPlayerStatsMultipliers> onStatsChanged;
+    public event Action<float> onReloadProgressChanged;
 }

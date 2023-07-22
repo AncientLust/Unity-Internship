@@ -18,6 +18,7 @@ public class PlayerFacade : MonoBehaviour,
 
     public event Action<int> onAmmoChanged;
     public event Action<EWeaponType> onWeaponChanged;
+    public event Action<float> onReloadProgressChanged;
     public event Action<float> onExperienceProgressChanged;
     public event Action<int> onLevelChanged;
     public event Action<SPlayerStatsMultipliers> onStatsChanged;
@@ -58,6 +59,7 @@ public class PlayerFacade : MonoBehaviour,
     {
         _weaponSystem.onAmmoChanged += ammo => onAmmoChanged.Invoke(ammo);
         _weaponSystem.onWeaponChanged += weaponName => onWeaponChanged.Invoke(weaponName);
+        _weaponSystem.onReloadProgressChanged += reloadProgress => onReloadProgressChanged.Invoke(reloadProgress);
         _experienceSystem.onExperienceProgressChanged += progress => onExperienceProgressChanged.Invoke(progress);
         _experienceSystem.onLevelChanged += level => onLevelChanged.Invoke(level);
         _statsSystem.onStatsChanged += statsMultipliers => onStatsChanged.Invoke(statsMultipliers);

@@ -7,16 +7,19 @@ using Structs;
 
 public class PlayerWeaponSystem : MonoBehaviour
 {
-    private PlayerInputSystem _playerInputSystem; // Must be injected
-    private PlayerStatsSystem _statsSystem; // Must be injected
-    private List<IWeapon> _weapons = new List<IWeapon>();
+    private PlayerInputSystem _playerInputSystem;
+    private PlayerStatsSystem _statsSystem;
+    private ObjectPool _objectPool;
+    
+    private List<IWeapon> _weapons;
     private IWeapon _currentWeapon;
     private int _equippedWeaponIndex;
+    private Queue<Coroutine> _reloadCoroutines = new Queue<Coroutine>();
 
     public Action<EWeaponType> onWeaponChanged;
     public Action<int> onAmmoChanged;
-    private ObjectPool _objectPool;
-
+    public Action<float> onReloadProgressChanged;
+    
     public void Init(PlayerInputSystem playerInputSystem, PlayerStatsSystem playerStatsSystem, ObjectPool objectPool)
     {
         _playerInputSystem = playerInputSystem;
@@ -38,6 +41,7 @@ public class PlayerWeaponSystem : MonoBehaviour
     public void ResetWeapons()
     {
         SortWeapons();
+        StopAllReloads();
         InitWeapons();
         EquipWeapon(0);
     }
@@ -98,19 +102,44 @@ public class PlayerWeaponSystem : MonoBehaviour
         if (!_currentWeapon.InReloading)
         {
             _currentWeapon.BeginReload();
-            StartCoroutine(Reload(_currentWeapon));
+            var reloadSession = StartCoroutine(Reload(_currentWeapon));
+            _reloadCoroutines.Enqueue(reloadSession);
         }
     }
 
     private IEnumerator Reload(IWeapon weapon)
     {
-        yield return new WaitForSeconds(weapon.GetReloadTime());
+        var reloadTime = weapon.GetReloadTime();
+        var passedTime = 0f;
+        
+        while (passedTime <= reloadTime)
+        {
+            if (weapon == _currentWeapon)
+            {
+                onReloadProgressChanged.Invoke(passedTime / reloadTime);
+            }
+
+            passedTime += Time.deltaTime;
+            yield return null;
+        }
+
         weapon.FinishReload();
+        _reloadCoroutines.Dequeue();
 
         if (weapon == _currentWeapon)
         {
             onAmmoChanged.Invoke(_currentWeapon.Ammo);
         }
+    }
+
+    private void StopAllReloads()
+    {
+        foreach (var reload in _reloadCoroutines)
+        {
+            StopCoroutine(reload);
+        }
+
+        _reloadCoroutines.Clear();
     }
 
     private void EquipNextWeapon()
@@ -138,11 +167,9 @@ public class PlayerWeaponSystem : MonoBehaviour
 
     private void EquipWeapon(int weaponIndex)
     {
-        _equippedWeaponIndex = weaponIndex;
-
         for (int i = 0; i < _weapons.Count; i++)
         {
-            if (i == _equippedWeaponIndex)
+            if (i == weaponIndex)
             {
                 _currentWeapon = _weapons[i];
                 _currentWeapon.SetPrefabState(true);
@@ -152,7 +179,13 @@ public class PlayerWeaponSystem : MonoBehaviour
             _weapons[i].SetPrefabState(false);
         }
 
+        _equippedWeaponIndex = weaponIndex;
         onWeaponChanged.Invoke(_currentWeapon.Type);
         onAmmoChanged.Invoke(_currentWeapon.Ammo);
+
+        if (!_currentWeapon.InReloading)
+        {
+            onReloadProgressChanged(1f);
+        }
     }
 }
