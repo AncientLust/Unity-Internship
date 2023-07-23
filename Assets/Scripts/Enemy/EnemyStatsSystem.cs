@@ -4,10 +4,10 @@ using Structs;
 
 public class EnemyStatsSystem : MonoBehaviour
 {
-    private EnemyExperienceSystem _experienceSystem;
-    private SEnemyStatsMultipliers _multipliers;
+    protected EnemyExperienceSystem _experienceSystem;
+    protected SEnemyStatsMultipliers _multipliers;
     
-    private struct _levelUpGrowth
+    protected struct _levelUpGrowth
     {
         public const float damage = .05f;
         public const float maxHealth = .05f;
@@ -23,27 +23,27 @@ public class EnemyStatsSystem : MonoBehaviour
         Subscribe();
     }
 
-    private void OnEnable()
+    protected void OnEnable()
     {
         Subscribe();
     }
 
-    private void OnDisable()
+    protected void OnDisable()
     {
         Unsubsribe();
     }
 
-    private void Subscribe()
+    protected void Subscribe()
     {
         if (_experienceSystem != null) _experienceSystem.OnLevelChanged += SetLevelStats;
     }
 
-    private void Unsubsribe()
+    protected void Unsubsribe()
     {
         if (_experienceSystem != null) _experienceSystem.OnLevelChanged -= SetLevelStats;
     }
 
-    private void SetLevelStats(int level)
+    protected void SetLevelStats(int level)
     {
         level--; // Enemy level starts with 1, so when he reaches level 2, 1x growth will be given.
 

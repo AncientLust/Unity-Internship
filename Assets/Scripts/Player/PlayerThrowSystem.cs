@@ -3,10 +3,10 @@ using Enums;
 
 public class PlayerThrowSystem : MonoBehaviour
 {
-    private ObjectPool _objectPool;
-    private ThrowGrenadeSkill _throwGrenadeSkill;
-    private float _throwForce = 5f;
-    private Transform _throwPoint;
+    protected ObjectPool _objectPool;
+    protected ThrowGrenadeSkill _throwGrenadeSkill;
+    protected float _throwForce = 5f;
+    protected Transform _throwPoint;
 
     public void Init(ObjectPool objectPool, ThrowGrenadeSkill throwGrenadeSkill)
     {
@@ -16,22 +16,22 @@ public class PlayerThrowSystem : MonoBehaviour
         Subscribe();
     }
 
-    private void OnDisable()
+    protected void OnDisable()
     {
         Unsubscribe();
     }
 
-    private void Subscribe()
+    protected void Subscribe()
     {
         _throwGrenadeSkill.onActivation += ThrowGrenade;
     }
 
-    private void Unsubscribe()
+    protected void Unsubscribe()
     {
         _throwGrenadeSkill.onActivation -= ThrowGrenade;
     }
 
-    private void ThrowGrenade()
+    protected void ThrowGrenade()
     {
         var grenade = _objectPool.Get(EResource.Grenade).GetComponent<Grenade>();
         grenade.Init(_objectPool, _throwPoint.position);

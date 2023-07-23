@@ -5,8 +5,11 @@ TagManager:
   serializedVersion: 2
   tags:
   - Projectile
-  - Enemy
   - Grenade
+  - EnemyMelee
+  - EnemyRange
+  - Bullet
+  - Rocket
   layers:
   - Default
   - TransparentFX

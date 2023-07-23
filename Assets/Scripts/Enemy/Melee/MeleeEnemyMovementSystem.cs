@@ -1,53 +1,52 @@
 using UnityEngine;
 using Structs;
 
-public class EnemyMovementSystem : MonoBehaviour
+public class MeleeEnemyMovementSystem : MonoBehaviour, IEnemyMovementSystem
 {
-    private float _stopDistance = 0.35f;
-    private float _baseMoveSpeed = 6f;
-    private float _moveSpeed;
-    private bool _mustMove = true;
-    
-    private Rigidbody _rigidbody;
-    private EnemyStatsSystem _statsSystem;
+    protected float _stopDistance = 0.35f;
+    protected float _baseMoveSpeed = 6f;
+    protected float _moveSpeed;
+    protected bool _mustMove = true;
 
-    private Transform _target; 
+    protected Rigidbody _rigidbody;
+    protected EnemyStatsSystem _statsSystem;
+
+    protected Transform _target;
 
     public void Init(Rigidbody rigidbody, EnemyStatsSystem enemyStatsSystem)
     {
         _rigidbody = rigidbody;
         _statsSystem = enemyStatsSystem;
-
         _moveSpeed = _baseMoveSpeed;
         Subscribe();
     }
 
-    private void OnEnable()
+    protected void OnEnable()
     {
         Subscribe();
     }
 
-    private void OnDisable()
+    protected void OnDisable()
     {
         Unsubscribe();
     }
 
-    private void Subscribe()
+    protected void Subscribe()
     {
         if (_statsSystem != null) _statsSystem.onStatsChanged += ApplyLevelUpMultipliers;
     }
 
-    private void Unsubscribe()
+    protected void Unsubscribe()
     {
         if (_statsSystem != null) _statsSystem.onStatsChanged -= ApplyLevelUpMultipliers;
     }
 
-    private void FixedUpdate()
+    protected void FixedUpdate()
     {
         ActPhisicallyIfGameRunning();
     }
 
-    private void ActPhisicallyIfGameRunning()
+    protected void ActPhisicallyIfGameRunning()
     {
         if (_mustMove)
         {
@@ -59,7 +58,7 @@ public class EnemyMovementSystem : MonoBehaviour
         }
     }
 
-    private void MoveIfPlayerAlive()
+    protected void MoveIfPlayerAlive()
     {
         if (true)
         {
@@ -68,7 +67,7 @@ public class EnemyMovementSystem : MonoBehaviour
         }
     }
 
-    private void MoveToPlayer()
+    protected void MoveToPlayer()
     {
         var distanceToPlayer = Vector3.Distance(transform.position, _target.position);
         if (distanceToPlayer > _stopDistance)
@@ -79,19 +78,19 @@ public class EnemyMovementSystem : MonoBehaviour
         }
     }
 
-    private void RotateToPlayer()
+    protected void RotateToPlayer()
     {
         Vector3 directionToTarget = (_target.position - _rigidbody.position).normalized;
         Quaternion targetRotation = Quaternion.LookRotation(directionToTarget);
         _rigidbody.MoveRotation(targetRotation);
     }
 
-    private void ApplyLevelUpMultipliers(SEnemyStatsMultipliers multipliers)
+    protected void ApplyLevelUpMultipliers(SEnemyStatsMultipliers multipliers)
     {
         _moveSpeed = _baseMoveSpeed * multipliers.moveSpeed;
     }
 
-    private void ResetVelosity()
+    protected void ResetVelosity()
     {
         _rigidbody.velocity = Vector3.zero;
         _rigidbody.angularVelocity = Vector3.zero;

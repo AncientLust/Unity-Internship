@@ -6,19 +6,19 @@ public class EnemyFacade : MonoBehaviour,
 {
     private EnemyHealthSystem _healthSystem;
     private EnemyExperienceSystem _experienceSystem;
-    private EnemyMovementSystem _movementSystem;
+    private IEnemyMovementSystem _iEnemyMovementSystem;
 
     public event Action<GameObject> OnDispose;
 
     public void Init(
         EnemyExperienceSystem experienceSystem,
         EnemyHealthSystem healthSystem,
-        EnemyMovementSystem movementSystem
+        IEnemyMovementSystem movementSystem
     )
     {
         _experienceSystem = experienceSystem;
         _healthSystem = healthSystem;
-        _movementSystem = movementSystem;
+        _iEnemyMovementSystem = movementSystem;
 
         Subscribe();
     }
@@ -56,16 +56,16 @@ public class EnemyFacade : MonoBehaviour,
 
     public void SetTarget(Transform target)
     {
-        _movementSystem.SetTarget(target);
+        _iEnemyMovementSystem.SetTarget(target);
     }
 
     public void Push(Vector3 force)
     {
-        _movementSystem.Push(force);
+        _iEnemyMovementSystem.Push(force);
     }
 
     public void SetPosition(Vector3 position)
     {
-        _movementSystem.SetPosition(position);
+        _iEnemyMovementSystem.SetPosition(position);
     }
 }

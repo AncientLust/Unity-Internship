@@ -1,11 +1,11 @@
 using UnityEngine;
 using Structs;
 
-public class EnemyAttackSystem : MonoBehaviour
+public class MeleeEnemyAttackSystem : MonoBehaviour
 {
-    private float _baseDamage = 15;
-    private float _damage;
-    private EnemyStatsSystem _enemyStatsSystem;
+    protected float _baseDamage = 15;
+    protected float _damage;
+    protected EnemyStatsSystem _enemyStatsSystem;
 
     public void Init(EnemyStatsSystem enemyStatsSystem)
     {
@@ -14,30 +14,30 @@ public class EnemyAttackSystem : MonoBehaviour
         Subscribe();
     }
 
-    private void OnEnable()
+    protected void OnEnable()
     {
         Subscribe();
     }
 
-    private void OnDisable()
+    protected void OnDisable()
     {
         Unsubscribe();
     }
 
-    private void Subscribe()
+    protected void Subscribe()
     {
         if (_enemyStatsSystem != null) _enemyStatsSystem.onStatsChanged += ApplyLevelUpMultipliers;
     }
 
-    private void Unsubscribe() 
+    protected void Unsubscribe() 
     {
         if (_enemyStatsSystem != null)  _enemyStatsSystem.onStatsChanged -= ApplyLevelUpMultipliers;
     }
 
-    private void OnCollisionStay(Collision collision)
+    protected void OnCollisionStay(Collision collision)
     {
         var damagable = collision.gameObject.GetComponent<IDamageable>();
-        var isEnemy = collision.gameObject.GetComponent<Enemy>();
+        var isEnemy = collision.gameObject.GetComponent<EnemyFacade>();
 
         if (damagable != null && !isEnemy)
         {
@@ -45,7 +45,7 @@ public class EnemyAttackSystem : MonoBehaviour
         }
     }
 
-    private void ApplyLevelUpMultipliers(SEnemyStatsMultipliers multipliers)
+    protected void ApplyLevelUpMultipliers(SEnemyStatsMultipliers multipliers)
     {
         _damage = _baseDamage * multipliers.damage;
     }

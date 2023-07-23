@@ -10,8 +10,10 @@ namespace Enums
         Environment,
         EnemySpawner,
         Player,
-        Enemy,
-        Projectile,
+        EnemyMelee,
+        EnemyRange,
+        Bullet,
+        Rocket,
         Grenade
     }
 }

@@ -1,18 +1,17 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerEffectsSystem : MonoBehaviour
 {
-    private ParticleSystem _bloodSplat;
-    private ParticleSystem _levelUp;
-    private ParticleSystem _bonusHealing;
-    private ParticleSystem _bonusDamage;
+    protected ParticleSystem _bloodSplat;
+    protected ParticleSystem _levelUp;
+    protected ParticleSystem _bonusHealing;
+    protected ParticleSystem _bonusDamage;
 
-    private PlayerHealthSystem _healthSystem;
-    private PlayerExperienceSystem _experienceSystem;
-    private BonusRegenerationSkill _bonusRegenerationSkill;
-    private BonusDamageSkill _bonusDamageSkill;
+    protected PlayerHealthSystem _healthSystem;
+    protected PlayerExperienceSystem _experienceSystem;
+    protected BonusRegenerationSkill _bonusRegenerationSkill;
+    protected BonusDamageSkill _bonusDamageSkill;
 
     public void Init(
         PlayerHealthSystem healthSystem, 
@@ -28,12 +27,12 @@ public class PlayerEffectsSystem : MonoBehaviour
         Subscribe();
     }
 
-    private void OnDisable()
+    protected void OnDisable()
     {
         Unsubscribe();
     }
 
-    private void CacheComponents()
+    protected void CacheComponents()
     {
         _bloodSplat = transform.Find("Effects/BloodSplat").GetComponent<ParticleSystem>();
         _levelUp = transform.Find("Effects/LevelUp").GetComponent<ParticleSystem>();
@@ -41,7 +40,7 @@ public class PlayerEffectsSystem : MonoBehaviour
         _bonusDamage = transform.Find("Effects/BonusDamage").GetComponent<ParticleSystem>();
     }
 
-    private void Subscribe()
+    protected void Subscribe()
     {
         _healthSystem.onDamaged += PlayBloodSplat;
         _experienceSystem.onLevelChanged += (level) => PlayerLevelUp(level);
@@ -49,7 +48,7 @@ public class PlayerEffectsSystem : MonoBehaviour
         _bonusDamageSkill.onActivation += (duration, bonus) => StartCoroutine(PlayBonusDamage(duration));
     }
 
-    private void Unsubscribe()
+    protected void Unsubscribe()
     {
         _healthSystem.onDamaged -= PlayBloodSplat;
         _experienceSystem.onLevelChanged -= (level) => PlayerLevelUp(level);
@@ -67,7 +66,7 @@ public class PlayerEffectsSystem : MonoBehaviour
         _bonusDamage.Clear();
     }
 
-    private void PlayBloodSplat()
+    protected void PlayBloodSplat()
     {
         if (!_bloodSplat.isPlaying) // Ask SettingsSystem if enabled
         {
@@ -75,7 +74,7 @@ public class PlayerEffectsSystem : MonoBehaviour
         }
     }
 
-    private void PlayerLevelUp(int level)
+    protected void PlayerLevelUp(int level)
     {
         if (level != 1) // Ask SettingsSystem if enabled
         {
@@ -83,7 +82,7 @@ public class PlayerEffectsSystem : MonoBehaviour
         }
     }
 
-    private IEnumerator PlayBonusHealing(float duration)
+    protected IEnumerator PlayBonusHealing(float duration)
     {
         _bonusHealing.Play();
         yield return new WaitForSeconds(duration);
@@ -91,7 +90,7 @@ public class PlayerEffectsSystem : MonoBehaviour
         _bonusHealing.Clear();
     }
 
-    private IEnumerator PlayBonusDamage(float duration)
+    protected IEnumerator PlayBonusDamage(float duration)
     {
         _bonusDamage.Play();
         yield return new WaitForSeconds(duration);

@@ -1,7 +1,6 @@
 using System.Collections;
 using UnityEngine;
 using Enums;
-using UnityEngine.UIElements;
 
 public class Weapon : MonoBehaviour, IWeapon
 {
@@ -56,7 +55,8 @@ public class Weapon : MonoBehaviour, IWeapon
     {
         for (int i = 0; i < _stats.projectilesPerShoot; i++)
         {
-            var projectile = _objectPool.Get(EResource.Projectile).GetComponent<Projectile>();
+            var projectileResource = ProjectileTypeToResource(_stats.projectileType);
+            var projectile = _objectPool.Get(projectileResource).GetComponent<Projectile>();
             if (projectile != null)
             {
                 projectile.Init(_objectPool, _stats.damage * DamageMultiplier, _stats.pushPower);
@@ -67,6 +67,19 @@ public class Weapon : MonoBehaviour, IWeapon
                 projectile.transform.rotation = _shootPoint.rotation * spreadRotation;
                 projectile.IsPenetratiable = _stats.isPenetratable;
             }
+        }
+    }
+
+    private EResource ProjectileTypeToResource(EProjectileType projectileType)
+    {
+        switch (projectileType)
+        {
+            case EProjectileType.Bullet:
+                return EResource.Bullet;
+            case EProjectileType.Rocket:
+                return EResource.Rocket;
+            default:
+                throw new System.ArgumentException("Invalid projectile type");
         }
     }
 

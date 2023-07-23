@@ -5,24 +5,21 @@ using UnityEngine;
 using Enums;
 using Structs;
 
-public class PlayerWeaponSystem : MonoBehaviour
+public class EnemyWeaponSystem : MonoBehaviour
 {
-    private PlayerInputSystem _playerInputSystem;
-    private PlayerStatsSystem _statsSystem;
+    private EnemyStatsSystem _statsSystem;
     private ObjectPool _objectPool;
     
     private List<IWeapon> _weapons;
     private IWeapon _currentWeapon;
-    private int _equippedWeaponIndex;
     private Queue<Coroutine> _reloadCoroutines = new Queue<Coroutine>();
 
     public Action<EWeaponType> onWeaponChanged;
     public Action<int> onAmmoChanged;
     public Action<float> onReloadProgressChanged;
     
-    public void Init(PlayerInputSystem inputSystem, PlayerStatsSystem statsSystem, ObjectPool objectPool)
+    public void Init(EnemyStatsSystem statsSystem, ObjectPool objectPool)
     {
-        _playerInputSystem = inputSystem;
         _statsSystem = statsSystem;
         _objectPool = objectPool;
         SubscribeEvents();
@@ -58,23 +55,15 @@ public class PlayerWeaponSystem : MonoBehaviour
 
     private void SubscribeEvents()
     {
-        _playerInputSystem.onScrollUp += EquipNextWeapon;
-        _playerInputSystem.onScrollDown += EquipPreviousWeapon;
-        _playerInputSystem.onLeftMouseClicked += ShootHandler;
-        _playerInputSystem.onReloadPressed += ReloadHandler;
         _statsSystem.onStatsChanged += SetLevelUpMultipliers;
     }
 
     private void UnsubscribeEvents()
     {
-        _playerInputSystem.onScrollUp -= EquipNextWeapon;
-        _playerInputSystem.onScrollDown -= EquipPreviousWeapon;
-        _playerInputSystem.onLeftMouseClicked -= ShootHandler;
-        _playerInputSystem.onReloadPressed -= ReloadHandler;
         _statsSystem.onStatsChanged -= SetLevelUpMultipliers;
     }
 
-    private void SetLevelUpMultipliers(SPlayerStatsMultipliers multipliers)
+    private void SetLevelUpMultipliers(SEnemyStatsMultipliers multipliers)
     {
         foreach (var weapon in _weapons)
         {
@@ -142,16 +131,6 @@ public class PlayerWeaponSystem : MonoBehaviour
         _reloadCoroutines.Clear();
     }
 
-    private void EquipNextWeapon()
-    {
-        EquipWeapon((_equippedWeaponIndex + 1) % _weapons.Count);
-    }
-
-    private void EquipPreviousWeapon()
-    {
-        EquipWeapon(_equippedWeaponIndex == 0 ? _weapons.Count - 1 : --_equippedWeaponIndex);
-    }
-
     private void SortWeapons()
     {
         _weapons.Sort((weapon1, weapon2) => weapon1.Type.CompareTo(weapon2.Type));
@@ -179,7 +158,6 @@ public class PlayerWeaponSystem : MonoBehaviour
             _weapons[i].SetPrefabState(false);
         }
 
-        _equippedWeaponIndex = weaponIndex;
         onWeaponChanged.Invoke(_currentWeapon.Type);
         onAmmoChanged.Invoke(_currentWeapon.Ammo);
 

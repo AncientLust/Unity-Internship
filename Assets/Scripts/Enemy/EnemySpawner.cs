@@ -4,19 +4,19 @@ using Enums;
 
 public class EnemySpawner : MonoBehaviour
 {
-    private Transform _target;
-    private IExperienceTaker _experienceTaker;
-    private ObjectPool _objectPool;
+    protected Transform _target;
+    protected IExperienceTaker _experienceTaker;
+    protected ObjectPool _objectPool;
 
-    private float _minRadius = 10f;
-    private float _maxRadius = 20f;
-    private float _spawnRaduis = 360f;
-    private float _minEnemySpawnTime = 1;
-    private float _maxEnemySpawnTime = 2;
-    private int _minEnemiesToSpawn = 1;
-    private int _maxEnemiesToSpawn = 3;
-    
-    private Coroutine _spawnCoroutine;
+    protected float _minRadius = 10f;
+    protected float _maxRadius = 20f;
+    protected float _spawnRaduis = 360f;
+    protected float _minEnemySpawnTime = 1;
+    protected float _maxEnemySpawnTime = 2;
+    protected int _minEnemiesToSpawn = 1;
+    protected int _maxEnemiesToSpawn = 3;
+    protected float _meleeEnemySpawnChance = .75f;
+    protected Coroutine _spawnCoroutine;
 
     public void Init(Transform playerTransform, IExperienceTaker experienceTaker, ObjectPool objectPool)
     {
@@ -25,7 +25,7 @@ public class EnemySpawner : MonoBehaviour
         _objectPool = objectPool;
     }
 
-    private void OnDestroy()
+    protected void OnDestroy()
     {
         if (_spawnCoroutine != null) StopCoroutine(_spawnCoroutine);
     }
@@ -40,7 +40,7 @@ public class EnemySpawner : MonoBehaviour
         StopCoroutine(_spawnCoroutine);
     }
 
-    private IEnumerator EnemySpawnerCycle()
+    protected IEnumerator EnemySpawnerCycle()
     {
         while (true)
         {
@@ -49,11 +49,12 @@ public class EnemySpawner : MonoBehaviour
         }
     }
 
-    private void SpawnEnemy(int enemiesToSpawn)
+    protected void SpawnEnemy(int enemiesToSpawn)
     {
         for (int i = 0; i < enemiesToSpawn; i++)
         {
-            var enemy = _objectPool.Get(EResource.Enemy);
+            var enemyType = GetRandomEnemyType();
+            var enemy = _objectPool.Get(enemyType);
             if (enemy != null)
             {
                 enemy.GetComponent<ITargetHolder>().SetTarget(_target);
@@ -64,25 +65,38 @@ public class EnemySpawner : MonoBehaviour
         }
     }
 
-    private void DisposeEnemyHandler(GameObject enemy)
+    protected EResource GetRandomEnemyType()
+    {
+        float randomValue = Random.value;
+        if (randomValue < _meleeEnemySpawnChance)
+        {
+            return EResource.EnemyMelee; 
+        }
+        else
+        {
+            return EResource.EnemyRange;
+        }
+    }
+
+    protected void DisposeEnemyHandler(GameObject enemy)
     {
         TransferExperience(enemy);
         DisposeEnemy(enemy);
     }
 
-    private void TransferExperience(GameObject enemy)
+    protected void TransferExperience(GameObject enemy)
     {
         var killExperience = enemy.GetComponent<IExperienceMaker>().MakeExperience();
         _experienceTaker.TakeExperience(killExperience);
     }
 
-    private void DisposeEnemy(GameObject enemy)
+    protected void DisposeEnemy(GameObject enemy)
     {
         enemy.GetComponent<IDisposable>().OnDispose -= DisposeEnemyHandler;
         _objectPool.Return(enemy);
     }
 
-    private Vector3 GetEnemySpawnPosition()
+    protected Vector3 GetEnemySpawnPosition()
     {
         var angle = Random.Range(0f, _spawnRaduis);
         var theta = Mathf.Deg2Rad * angle;

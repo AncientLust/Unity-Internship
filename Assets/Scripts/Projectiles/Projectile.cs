@@ -2,12 +2,12 @@ using UnityEngine;
 
 public class Projectile : MonoBehaviour
 {
-    private float _speed = 30;
-    private Renderer _renderer;
-    private ObjectPool _objectPool;
+    protected float _speed = 30;
+    protected Renderer _renderer;
+    protected ObjectPool _objectPool;
 
-    private float _damage = 0;
-    private float _pushPower = 0;
+    protected float _damage = 0;
+    protected float _pushPower = 0;
 
     public bool IsPenetratiable { get; set; } = false;
 
@@ -18,23 +18,23 @@ public class Projectile : MonoBehaviour
         _pushPower = pushPower;
     }
 
-    private void Start()
+    protected void Start()
     {
         _renderer = GetComponent<Renderer>();
     }
 
-    private void Update()
+    protected void Update()
     {
         MoveForward();
         ReturnToPoolOnceOutOfSight();
     }
 
-    private void MoveForward()
+    protected void MoveForward()
     {
         transform.Translate(Vector3.forward * _speed * Time.deltaTime);
     }
 
-    private void ReturnToPoolOnceOutOfSight()
+    protected void ReturnToPoolOnceOutOfSight()
     {
         if (!_renderer.isVisible)
         {
@@ -42,7 +42,7 @@ public class Projectile : MonoBehaviour
         }
     }
 
-    private void OnTriggerEnter(Collider collider)
+    protected void OnTriggerEnter(Collider collider)
     {
         var player = collider.gameObject.GetComponent<IPlayerFacade>();
         if (player == null)
@@ -53,7 +53,7 @@ public class Projectile : MonoBehaviour
         }
     }
 
-    private void ApplyDamage(Collider collider)
+    protected void ApplyDamage(Collider collider)
     {
         var damagable = collider.gameObject.GetComponent<IDamageable>();
         if (damagable != null)
@@ -62,7 +62,7 @@ public class Projectile : MonoBehaviour
         }
     }
 
-    private void ApplyPush(Collider collider)
+    protected void ApplyPush(Collider collider)
     {
         var pushiable = collider.gameObject.GetComponent<IPushiable>();
         if (pushiable != null)
@@ -71,7 +71,7 @@ public class Projectile : MonoBehaviour
         }
     }
 
-    private void PenetrationCheck()
+    protected void PenetrationCheck()
     {
         if (!IsPenetratiable)
         {
