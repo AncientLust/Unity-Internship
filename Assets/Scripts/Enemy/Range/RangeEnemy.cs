@@ -2,29 +2,41 @@ using UnityEngine;
 
 public class RangeEnemy : MonoBehaviour
 {
-    void Awake()
+    private Rigidbody _rigidBody;
+    private EnemyExperienceSystem _experienceSystem;
+    private EnemyStatsSystem _statsSystem;
+    private EnemyMovementSystem _movementSystem;
+    private EnemyHealthSystem _healthSystem;
+    private EnemyFacade _enemyFacade;
+    private EnemyEffectsSystem _effectSystem;
+    private EnemyWeaponSystem _weaponSystem;
+
+    private float _followPlayerDistance = 5f;
+
+    private void Awake()
     {
-        var rigidBody = gameObject.GetComponent<Rigidbody>();
-        var experienceSystem = gameObject.AddComponent<EnemyExperienceSystem>();
-        var statsSystem = gameObject.AddComponent<EnemyStatsSystem>();
-        var attackSystem = gameObject.AddComponent<MeleeEnemyAttackSystem>();
-        var movementSystem = gameObject.AddComponent<RangeEnemyMovementSystem>();
-        var healthSystem = gameObject.AddComponent<EnemyHealthSystem>();
-        var enemyFacade = gameObject.AddComponent<EnemyFacade>();
-        var effectSystem = gameObject.AddComponent<EnemyEffectsSystem>();
-        //var weaponSystem = gameObject.AddComponent<EnemyWeaponSystem>();
+        _rigidBody = gameObject.GetComponent<Rigidbody>();
+        _experienceSystem = gameObject.AddComponent<EnemyExperienceSystem>();
+        _statsSystem = gameObject.AddComponent<EnemyStatsSystem>();
+        _movementSystem = gameObject.AddComponent<EnemyMovementSystem>();
+        _healthSystem = gameObject.AddComponent<EnemyHealthSystem>();
+        _enemyFacade = gameObject.AddComponent<EnemyFacade>();
+        _effectSystem = gameObject.AddComponent<EnemyEffectsSystem>();
+        _weaponSystem = gameObject.AddComponent<EnemyWeaponSystem>();
+    }
 
-        statsSystem.Init(experienceSystem);
-        movementSystem.Init(rigidBody, statsSystem);
-        healthSystem.Init(statsSystem);
-        attackSystem.Init(statsSystem);
-        effectSystem.Init(healthSystem);
-        //weaponSystem.Init();
+    public void Init(ObjectPool objectPool, Transform target)
+    {
+        _statsSystem.Init(_experienceSystem);
+        _movementSystem.Init(target, _rigidBody, _statsSystem, _followPlayerDistance);
+        _healthSystem.Init(_statsSystem, objectPool);
+        _effectSystem.Init(_healthSystem);
+        _weaponSystem.Init(_statsSystem, objectPool);
 
-        enemyFacade.Init(
-            experienceSystem,
-            healthSystem,
-            movementSystem
+        _enemyFacade.Init(
+            _experienceSystem,
+            _healthSystem,
+            _movementSystem
         );
     }
 }

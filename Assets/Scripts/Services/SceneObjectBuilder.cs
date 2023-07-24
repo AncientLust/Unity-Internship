@@ -5,13 +5,13 @@ using UnityEngine.SceneManagement;
 
 public class SceneObjectBuilder
 {
-    private ObjectFactory _objectFactory;
+    private GenericFactory _genericFactory;
 
     public Action<EScene> onSceneObjectsBuild;
 
-    public void Init(ObjectFactory objectFactory)
+    public void Init(GenericFactory genericFactory)
     {
-        _objectFactory = objectFactory;
+        _genericFactory = genericFactory;
         SceneManager.sceneLoaded += SceneLoadHandler;
     }
 
@@ -55,7 +55,7 @@ public class SceneObjectBuilder
 
     private void CreateLevelEnvironment()
     {
-        _objectFactory.Instantiate(EResource.Environment);
-        _objectFactory.Instantiate(EResource.DirectionalLight);
+        _genericFactory.Instantiate(EResource.Environment);
+        _genericFactory.Instantiate(EResource.DirectionalLight);
     }
 }

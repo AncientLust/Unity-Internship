@@ -2,10 +2,10 @@ using UnityEngine;
 
 public class EnemyEffectsSystem : MonoBehaviour
 {
-    protected ParticleSystem _bloodSplat;
-    protected EnemyHealthSystem _healthSystem;
+    private ParticleSystem _bloodSplat;
+    private EnemyHealthSystem _healthSystem;
 
-    protected bool _isInitialized = false;
+    private bool _isInitialized = false;
 
     public void Init(EnemyHealthSystem healthSystem)
     {
@@ -16,22 +16,22 @@ public class EnemyEffectsSystem : MonoBehaviour
         _isInitialized = true;
     }
 
-    protected void OnEnable()
+    private void OnEnable()
     {
         Subscribe();
     }
 
-    protected void OnDisable()
+    private void OnDisable()
     {
         Unsubscribe();
     }
 
-    protected void CacheComponents()
+    private void CacheComponents()
     {
         _bloodSplat = transform.Find("Effects/BloodSplat").GetComponent<ParticleSystem>();
     }
 
-    protected void Subscribe()
+    private void Subscribe()
     {
         if (_healthSystem != null)
         {
@@ -44,7 +44,7 @@ public class EnemyEffectsSystem : MonoBehaviour
         }
     }
 
-    protected void Unsubscribe()
+    private void Unsubscribe()
     {
         if (_healthSystem != null)
         {
@@ -58,7 +58,7 @@ public class EnemyEffectsSystem : MonoBehaviour
         _bloodSplat.Clear();
     }
 
-    protected void PlayBloodSplat()
+    private void PlayBloodSplat()
     {
         if (!_bloodSplat.isPlaying) // Ask SettingsSystem if enabled
         {

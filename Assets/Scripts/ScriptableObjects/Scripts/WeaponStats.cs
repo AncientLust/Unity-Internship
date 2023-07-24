@@ -13,5 +13,6 @@ public class WeaponStats : ScriptableObject
     public float spreadAngle;
     public bool isPenetratable;
     public int projectilesPerShoot;
+    public int projectileSpeed;
     public EProjectileType projectileType;
 }

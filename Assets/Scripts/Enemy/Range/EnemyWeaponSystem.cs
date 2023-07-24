@@ -1,64 +1,67 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Enums;
 using Structs;
 
 public class EnemyWeaponSystem : MonoBehaviour
 {
     private EnemyStatsSystem _statsSystem;
     private ObjectPool _objectPool;
-    
-    private List<IWeapon> _weapons;
-    private IWeapon _currentWeapon;
-    private Queue<Coroutine> _reloadCoroutines = new Queue<Coroutine>();
 
-    public Action<EWeaponType> onWeaponChanged;
-    public Action<int> onAmmoChanged;
-    public Action<float> onReloadProgressChanged;
+    private List<Weapon> _weapons;
+    private Weapon _currentWeapon;
+    private Queue<Coroutine> _reloadCoroutines = new Queue<Coroutine>();
+    private bool _isInitializated = false;
     
     public void Init(EnemyStatsSystem statsSystem, ObjectPool objectPool)
     {
         _statsSystem = statsSystem;
         _objectPool = objectPool;
-        SubscribeEvents();
-    }
-
-    private void Awake()
-    {
+        _isInitializated = true;
         CacheComponents();
-    }
-
-    private void Start()
-    {
+        Subscribe();
         ResetWeapons();
+        InvokeRepeating("ShootHandler", 0, 1);
     }
 
-    public void ResetWeapons()
+    private void OnEnable()
     {
-        SortWeapons();
-        StopAllReloads();
-        InitWeapons();
-        EquipWeapon(0);
+        if (_isInitializated)
+        {
+            Subscribe();
+            ResetWeapons();
+            InvokeRepeating("ShootHandler", 0, 1);
+        }
     }
 
     private void OnDisable()
     {
-        UnsubscribeEvents();
+        Unsubscribe();
+        CancelInvoke("ShootHandler");
+    }
+
+    public void ResetWeapons()
+    {
+        if (_isInitializated)
+        {
+            SortWeapons();
+            StopAllReloads();
+            InitWeapons();
+            EquipWeapon(0);
+        }
     }
 
     private void CacheComponents()
     {
-        _weapons = new List<IWeapon>(GetComponentsInChildren<IWeapon>(true));
+        _weapons = new List<Weapon>(GetComponentsInChildren<Weapon>(true));
     }
 
-    private void SubscribeEvents()
+    private void Subscribe()
     {
         _statsSystem.onStatsChanged += SetLevelUpMultipliers;
     }
 
-    private void UnsubscribeEvents()
+    private void Unsubscribe()
     {
         _statsSystem.onStatsChanged -= SetLevelUpMultipliers;
     }
@@ -78,7 +81,6 @@ public class EnemyWeaponSystem : MonoBehaviour
         if (!_currentWeapon.HasEmptyClip())
         {
             _currentWeapon.Shoot();
-            onAmmoChanged.Invoke(_currentWeapon.Ammo);
         }
         else
         {
@@ -96,29 +98,19 @@ public class EnemyWeaponSystem : MonoBehaviour
         }
     }
 
-    private IEnumerator Reload(IWeapon weapon)
+    private IEnumerator Reload(Weapon weapon)
     {
         var reloadTime = weapon.GetReloadTime();
         var passedTime = 0f;
         
         while (passedTime <= reloadTime)
         {
-            if (weapon == _currentWeapon)
-            {
-                onReloadProgressChanged.Invoke(passedTime / reloadTime);
-            }
-
             passedTime += Time.deltaTime;
             yield return null;
         }
 
         weapon.FinishReload();
         _reloadCoroutines.Dequeue();
-
-        if (weapon == _currentWeapon)
-        {
-            onAmmoChanged.Invoke(_currentWeapon.Ammo);
-        }
     }
 
     private void StopAllReloads()
@@ -156,14 +148,6 @@ public class EnemyWeaponSystem : MonoBehaviour
             }
 
             _weapons[i].SetPrefabState(false);
-        }
-
-        onWeaponChanged.Invoke(_currentWeapon.Type);
-        onAmmoChanged.Invoke(_currentWeapon.Ammo);
-
-        if (!_currentWeapon.InReloading)
-        {
-            onReloadProgressChanged(1f);
         }
     }
 }

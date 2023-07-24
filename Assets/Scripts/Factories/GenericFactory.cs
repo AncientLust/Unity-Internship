@@ -2,16 +2,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using Enums;
 
-public class ObjectFactory
+public class GenericFactory : IObjectFactory
 {
     private readonly Dictionary<string, GameObject> _prefabDict;
 
-    public ObjectFactory()
+    public GenericFactory()
     {
         _prefabDict = new Dictionary<string, GameObject>();
-
         var prefabs = Resources.LoadAll<GameObject>("");
-
         foreach (var prefab in prefabs)
         {
             _prefabDict[prefab.name] = prefab;

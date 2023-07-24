@@ -2,18 +2,25 @@ using UnityEngine;
 
 public class Projectile : MonoBehaviour
 {
-    protected float _speed = 30;
     protected Renderer _renderer;
     protected ObjectPool _objectPool;
 
-    protected float _damage = 0;
-    protected float _pushPower = 0;
+    protected float _speed;
+    protected float _damage;
+    protected float _pushPower;
 
     public bool IsPenetratiable { get; set; } = false;
 
-    public void Init(ObjectPool objectPool, float damage, float pushPower)
+    public void Init
+    (
+        ObjectPool objectPool,
+        float speed,
+        float damage, 
+        float pushPower
+    )
     {
         _objectPool = objectPool;
+        _speed = speed;
         _damage = damage;
         _pushPower = pushPower;
     }
@@ -42,18 +49,14 @@ public class Projectile : MonoBehaviour
         }
     }
 
-    protected void OnTriggerEnter(Collider collider)
+    virtual protected void OnTriggerEnter(Collider collider)
     {
-        var player = collider.gameObject.GetComponent<IPlayerFacade>();
-        if (player == null)
-        {
-            ApplyDamage(collider);
-            ApplyPush(collider);
-            PenetrationCheck();
-        }
+        TryApplyPush(collider);
+        TryApplyDamage(collider);
+        PenetrationCheck();
     }
 
-    protected void ApplyDamage(Collider collider)
+    virtual protected void TryApplyDamage(Collider collider)
     {
         var damagable = collider.gameObject.GetComponent<IDamageable>();
         if (damagable != null)
@@ -62,7 +65,7 @@ public class Projectile : MonoBehaviour
         }
     }
 
-    protected void ApplyPush(Collider collider)
+    virtual protected void TryApplyPush(Collider collider)
     {
         var pushiable = collider.gameObject.GetComponent<IPushiable>();
         if (pushiable != null)
@@ -71,7 +74,7 @@ public class Projectile : MonoBehaviour
         }
     }
 
-    protected void PenetrationCheck()
+    virtual protected void PenetrationCheck()
     {
         if (!IsPenetratiable)
         {

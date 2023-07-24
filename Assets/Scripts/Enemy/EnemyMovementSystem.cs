@@ -1,56 +1,65 @@
 using UnityEngine;
 using Structs;
 
-public class MeleeEnemyMovementSystem : MonoBehaviour, IEnemyMovementSystem
+public class EnemyMovementSystem : MonoBehaviour
 {
-    protected float _stopDistance = 0.35f;
-    protected float _baseMoveSpeed = 6f;
-    protected float _moveSpeed;
-    protected bool _mustMove = true;
+    private float _followPlayerDistance;
+    private float _baseMoveSpeed = 6f;
+    private float _moveSpeed;
+    private bool _mustMove = true;
 
-    protected Rigidbody _rigidbody;
-    protected EnemyStatsSystem _statsSystem;
+    private Rigidbody _rigidbody;
+    private EnemyStatsSystem _statsSystem;
 
-    protected Transform _target;
+    private Transform _target;
 
-    public void Init(Rigidbody rigidbody, EnemyStatsSystem enemyStatsSystem)
+    public void Init
+    (
+        Transform target,
+        Rigidbody rigidbody, 
+        EnemyStatsSystem enemyStatsSystem, 
+        float followPlayerDistance
+    )
     {
+        _target = target;
         _rigidbody = rigidbody;
         _statsSystem = enemyStatsSystem;
         _moveSpeed = _baseMoveSpeed;
+        _followPlayerDistance = followPlayerDistance;
         Subscribe();
     }
 
-    protected void OnEnable()
+    private void OnEnable()
     {
         Subscribe();
     }
 
-    protected void OnDisable()
+    private void OnDisable()
     {
         Unsubscribe();
     }
 
-    protected void Subscribe()
+    private void Subscribe()
     {
         if (_statsSystem != null) _statsSystem.onStatsChanged += ApplyLevelUpMultipliers;
     }
 
-    protected void Unsubscribe()
+    private void Unsubscribe()
     {
         if (_statsSystem != null) _statsSystem.onStatsChanged -= ApplyLevelUpMultipliers;
     }
 
-    protected void FixedUpdate()
+    private void FixedUpdate()
     {
         ActPhisicallyIfGameRunning();
     }
 
-    protected void ActPhisicallyIfGameRunning()
+    private void ActPhisicallyIfGameRunning()
     {
         if (_mustMove)
         {
-            MoveIfPlayerAlive();
+            MoveToPlayer();
+            RotateToPlayer();
         }
         else
         {
@@ -58,39 +67,29 @@ public class MeleeEnemyMovementSystem : MonoBehaviour, IEnemyMovementSystem
         }
     }
 
-    protected void MoveIfPlayerAlive()
-    {
-        if (true)
-        {
-            MoveToPlayer();
-            RotateToPlayer();
-        }
-    }
-
-    protected void MoveToPlayer()
+    private void MoveToPlayer()
     {
         var distanceToPlayer = Vector3.Distance(transform.position, _target.position);
-        if (distanceToPlayer > _stopDistance)
+        if (distanceToPlayer > _followPlayerDistance)
         {
-            Vector3 direction = (_target.position - transform.position).normalized;
-
+            var direction = (_target.position - transform.position).normalized;
             _rigidbody.MovePosition(_rigidbody.position + direction * _moveSpeed * Time.deltaTime);
         }
     }
 
-    protected void RotateToPlayer()
+    private void RotateToPlayer()
     {
         Vector3 directionToTarget = (_target.position - _rigidbody.position).normalized;
         Quaternion targetRotation = Quaternion.LookRotation(directionToTarget);
         _rigidbody.MoveRotation(targetRotation);
     }
 
-    protected void ApplyLevelUpMultipliers(SEnemyStatsMultipliers multipliers)
+    private void ApplyLevelUpMultipliers(SEnemyStatsMultipliers multipliers)
     {
         _moveSpeed = _baseMoveSpeed * multipliers.moveSpeed;
     }
 
-    protected void ResetVelosity()
+    private void ResetVelosity()
     {
         _rigidbody.velocity = Vector3.zero;
         _rigidbody.angularVelocity = Vector3.zero;
@@ -99,15 +98,5 @@ public class MeleeEnemyMovementSystem : MonoBehaviour, IEnemyMovementSystem
     public void Push(Vector3 force)
     {
         _rigidbody.AddForce(force, ForceMode.Impulse);
-    }
-
-    public void SetTarget(Transform target)
-    {
-        _target = target;
-    }
-
-    public void SetPosition(Vector3 position)
-    {
-        transform.position = position;
     }
 }

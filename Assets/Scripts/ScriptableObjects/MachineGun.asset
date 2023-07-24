@@ -15,9 +15,11 @@ MonoBehaviour:
   type: 4
   damage: 25
   shootSpeed: 15
-  reloadTime: 0.6
+  reloadTime: 5
   clipCapacity: 40
   pushPower: 2
   spreadAngle: 20
   isPenetratable: 0
   projectilesPerShoot: 1
+  projectileSpeed: 30
+  projectileType: 0

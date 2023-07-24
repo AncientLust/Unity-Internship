@@ -2,27 +2,41 @@ using UnityEngine;
 
 public class MeleeEnemy : MonoBehaviour
 {
-    void Awake()
+    private Rigidbody _rigidBody;
+    private EnemyExperienceSystem _experienceSystem;
+    private EnemyStatsSystem _statsSystem;
+    private MeleeEnemyAttackSystem _attackSystem;
+    private EnemyMovementSystem _movementSystem;
+    private EnemyHealthSystem _healthSystem;
+    private EnemyFacade _enemyFacade;
+    private EnemyEffectsSystem _effectSystem;
+
+    private float _followPlayerDistance = 0.5f;
+
+    private void Awake()
     {
-        var rigidBody = gameObject.GetComponent<Rigidbody>();
-        var experienceSystem = gameObject.AddComponent<EnemyExperienceSystem>();
-        var statsSystem = gameObject.AddComponent<EnemyStatsSystem>();
-        var attackSystem = gameObject.AddComponent<MeleeEnemyAttackSystem>();
-        var movementSystem = gameObject.AddComponent<MeleeEnemyMovementSystem>();
-        var healthSystem = gameObject.AddComponent<EnemyHealthSystem>();
-        var enemyFacade = gameObject.AddComponent<EnemyFacade>();
-        var effectSystem = gameObject.AddComponent<EnemyEffectsSystem>();
+        _rigidBody = gameObject.GetComponent<Rigidbody>();
+        _experienceSystem = gameObject.AddComponent<EnemyExperienceSystem>();
+        _statsSystem = gameObject.AddComponent<EnemyStatsSystem>();
+        _attackSystem = gameObject.AddComponent<MeleeEnemyAttackSystem>();
+        _movementSystem = gameObject.AddComponent<EnemyMovementSystem>();
+        _healthSystem = gameObject.AddComponent<EnemyHealthSystem>();
+        _enemyFacade = gameObject.AddComponent<EnemyFacade>();
+        _effectSystem = gameObject.AddComponent<EnemyEffectsSystem>();
+    }
 
-        statsSystem.Init(experienceSystem);
-        movementSystem.Init(rigidBody, statsSystem);
-        healthSystem.Init(statsSystem);
-        attackSystem.Init(statsSystem);
-        effectSystem.Init(healthSystem);
+    public void Init(ObjectPool opbjectPool, Transform target)
+    {
+        _statsSystem.Init(_experienceSystem);
+        _movementSystem.Init(target, _rigidBody, _statsSystem, _followPlayerDistance);
+        _healthSystem.Init(_statsSystem, opbjectPool);
+        _attackSystem.Init(_statsSystem);
+        _effectSystem.Init(_healthSystem);
 
-        enemyFacade.Init(
-            experienceSystem,
-            healthSystem,
-            movementSystem
+        _enemyFacade.Init(
+            _experienceSystem,
+            _healthSystem,
+            _movementSystem
         );
     }
 }

@@ -4,7 +4,7 @@ using Structs;
 using Enums;
 
 public class PlayerFacade : MonoBehaviour, 
-    IPlayerFacade, IHUDCompatible, IExperienceTaker, IDamageable, ITargetable
+    IPlayerFacade, IHUDCompatible, IExperienceTaker, IDamageable, IPushiable
 {
     private PlayerHealthSystem _healthSystem;
     private PlayerWeaponSystem _weaponSystem;
@@ -23,8 +23,6 @@ public class PlayerFacade : MonoBehaviour,
     public event Action<int> onLevelChanged;
     public event Action<SPlayerStatsMultipliers> onStatsChanged;
     public event Action onDie;
-
-    public Transform Transform => transform;
 
     public void Init(
         PlayerExperienceSystem experienceSystem,
@@ -85,6 +83,7 @@ public class PlayerFacade : MonoBehaviour,
         _experienceSystem.SetLevel(1);
         _healthSystem.ResetHealth();
         _movementSystem.ResetPosition();
+        _movementSystem.ResetVelosity();
         _weaponSystem.ResetWeapons();
         _skillSystem.ResetSkillsCooldown();
         _effectsSystem.StopAllEffects();
@@ -107,6 +106,11 @@ public class PlayerFacade : MonoBehaviour,
     {
         _movementSystem.IsActive = state;
         _inputSystem.IsActive = state;
+    }
+
+    public void Push(Vector3 force)
+    {
+        _movementSystem.Push(force);
     }
 
     public void SaveState()

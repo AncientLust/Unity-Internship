@@ -4,28 +4,29 @@ using Structs;
 
 public class EnemyHealthSystem : MonoBehaviour
 {
-    protected float _baseHealth = 100;
-    protected float _baseHealthRegen = 10;
+    private float _baseHealth = 100;
+    private float _baseHealthRegen = 10;
 
-    protected float _maxHealth;
-    protected float _health;
-    protected float _regenPerSecond;
-    protected bool _isDead;
+    private float _maxHealth;
+    private float _health;
+    private float _regenPerSecond;
+    private bool _isDead;
 
-    protected EnemyStatsSystem _statsSystem;
-    protected HealthBar _healthBar;
+    private EnemyStatsSystem _statsSystem;
+    private HealthBar _healthBar;
+    private ObjectPool _objectPool;
 
-    public event Action OnDie;
     public event Action onDamaged;
     
-    public void Init(EnemyStatsSystem statsSystem)
+    public void Init(EnemyStatsSystem statsSystem, ObjectPool objectPool)
     {
         _statsSystem = statsSystem;
+        _objectPool = objectPool;
         Subscribe();
         CacheComponents();
     }
 
-    protected void Start()
+    private void Start()
     {
         _isDead = false;
         _health = _baseHealth;
@@ -34,32 +35,32 @@ public class EnemyHealthSystem : MonoBehaviour
         _healthBar.SetFill(1);
     }
 
-    protected void OnEnable()
+    private void OnEnable()
     {
         Subscribe();
     }
 
-    protected void OnDisable()
+    private void OnDisable()
     {
         Unsubscribe();
     }
 
-    protected void Subscribe()
+    private void Subscribe()
     {
         if (_statsSystem != null) _statsSystem.onStatsChanged += ApplyLevelUpMultipliers;
     }
 
-    protected void Unsubscribe()
+    private void Unsubscribe()
     {
         if (_statsSystem != null) _statsSystem.onStatsChanged -= ApplyLevelUpMultipliers;
     }
 
-    protected void Update()
+    private void Update()
     {
         Regenerate();
     }
 
-    protected void CacheComponents()
+    private void CacheComponents()
     {
         _healthBar = transform.Find("Canvas/HealthBar").GetComponent<HealthBar>();
     }
@@ -73,12 +74,12 @@ public class EnemyHealthSystem : MonoBehaviour
         CheckIfDied();
     }
 
-    protected void CheckIfDied()
+    private void CheckIfDied()
     {
         if (_health <= 0)
         {
             _isDead = true;
-            OnDie.Invoke();
+            _objectPool.Return(gameObject);
         }
     }
 
@@ -99,7 +100,7 @@ public class EnemyHealthSystem : MonoBehaviour
         _healthBar.gameObject.SetActive(_health != _maxHealth);
     }
 
-    protected void ApplyLevelUpMultipliers(SEnemyStatsMultipliers stats)
+    private void ApplyLevelUpMultipliers(SEnemyStatsMultipliers stats)
     {
         _maxHealth = _baseHealth * stats.maxHealth;
         _regenPerSecond = _baseHealthRegen * stats.maxHealth;

@@ -1,41 +1,21 @@
-using System;
 using UnityEngine;
 
 public class EnemyFacade : MonoBehaviour, 
-    IResetable, IPushiable, IExperienceMaker, IDamageable, IDisposable, ITargetHolder, IPositionable
+    IResetable, IPushiable, IExperienceMaker, IDamageable
 {
     private EnemyHealthSystem _healthSystem;
     private EnemyExperienceSystem _experienceSystem;
-    private IEnemyMovementSystem _iEnemyMovementSystem;
-
-    public event Action<GameObject> OnDispose;
+    private EnemyMovementSystem _enemyMovementSystem;
 
     public void Init(
         EnemyExperienceSystem experienceSystem,
         EnemyHealthSystem healthSystem,
-        IEnemyMovementSystem movementSystem
+        EnemyMovementSystem movementSystem
     )
     {
         _experienceSystem = experienceSystem;
         _healthSystem = healthSystem;
-        _iEnemyMovementSystem = movementSystem;
-
-        Subscribe();
-    }
-
-    private void OnDisable()
-    {
-        Unsubscribe();
-    }
-
-    private void Subscribe()
-    {
-        if (_healthSystem != null) _healthSystem.OnDie += () => OnDispose.Invoke(gameObject);
-    }
-
-    private void Unsubscribe()
-    {
-        if (_healthSystem != null) _healthSystem.OnDie -= () => OnDispose.Invoke(gameObject);
+        _enemyMovementSystem = movementSystem;
     }
 
     public float MakeExperience()
@@ -54,18 +34,8 @@ public class EnemyFacade : MonoBehaviour,
         _healthSystem.RestoreHealth();
     }
 
-    public void SetTarget(Transform target)
-    {
-        _iEnemyMovementSystem.SetTarget(target);
-    }
-
     public void Push(Vector3 force)
     {
-        _iEnemyMovementSystem.Push(force);
-    }
-
-    public void SetPosition(Vector3 position)
-    {
-        _iEnemyMovementSystem.SetPosition(position);
+        _enemyMovementSystem.Push(force);
     }
 }

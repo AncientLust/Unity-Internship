@@ -21,3 +21,5 @@ MonoBehaviour:
   spreadAngle: 30
   isPenetratable: 0
   projectilesPerShoot: 10
+  projectileSpeed: 30
+  projectileType: 0

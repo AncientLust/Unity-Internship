@@ -3,12 +3,12 @@ using Structs;
 
 public class PlayerMovementSystem : MonoBehaviour
 {
-    protected float _baseMoveSpeed = 5;
-    protected float _moveSpeed;
-    protected Vector3 _moveDirection;
-    protected PlayerStatsSystem _statsSystem;
-    protected PlayerInputSystem _inputSystem;
-    protected Rigidbody _rigidbody;
+    private float _baseMoveSpeed = 5;
+    private float _moveSpeed;
+    private Vector3 _moveDirection;
+    private PlayerStatsSystem _statsSystem;
+    private PlayerInputSystem _inputSystem;
+    private Rigidbody _rigidbody;
 
     public bool IsActive { get; set; } = false;
 
@@ -21,34 +21,34 @@ public class PlayerMovementSystem : MonoBehaviour
         SubscribeEvents();
     }
 
-    protected void Start()
+    private void Start()
     {
         _moveSpeed = _baseMoveSpeed;
     }
 
-    protected void OnDisable()
+    private void OnDisable()
     {
         UnsubscribeEvents();
     }
 
-    protected void SubscribeEvents()
+    private void SubscribeEvents()
     {
         _statsSystem.onStatsChanged += ApplyLevelUpMultipliers;
         _inputSystem.onDirectionAxisPressed += SetMoveDirection;
     }
 
-    protected void UnsubscribeEvents()
+    private void UnsubscribeEvents()
     {
         _statsSystem.onStatsChanged -= ApplyLevelUpMultipliers;
         _inputSystem.onDirectionAxisPressed -= SetMoveDirection;
     }
 
-    protected void FixedUpdate()
+    private void FixedUpdate()
     {
         MoveIfNecessary();
     }
 
-    protected void MoveIfNecessary()
+    private void MoveIfNecessary()
     {
         if (IsActive)
         {
@@ -61,19 +61,19 @@ public class PlayerMovementSystem : MonoBehaviour
         }
     }
 
-    protected void SetMoveDirection(Vector3 direction)
+    private void SetMoveDirection(Vector3 direction)
     {
         _moveDirection = direction;
     }
 
-    protected void Move()
+    private void Move()
     {
         _moveDirection.Normalize();
         _rigidbody.MovePosition(_rigidbody.position + _moveDirection * _moveSpeed * Time.deltaTime);
         _moveDirection = Vector3.zero;
     }
 
-    protected void Rotate()
+    private void Rotate()
     {
         var mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         var playerToMouseDirection = mousePosition - transform.position;
@@ -83,13 +83,15 @@ public class PlayerMovementSystem : MonoBehaviour
         _rigidbody.MoveRotation(targetRotation);
     }
 
-    protected void ResetVelosity()
+    public void ResetVelosity()
     {
-        _rigidbody.velocity = Vector3.zero;
-        _rigidbody.angularVelocity = Vector3.zero;
+        //_rigidbody.velocity = Vector3.zero;
+        //_rigidbody.angularVelocity = Vector3.zero;
+        _rigidbody.isKinematic = true;
+        _rigidbody.isKinematic = false;
     }
 
-    protected void ApplyLevelUpMultipliers(SPlayerStatsMultipliers multipliers)
+    private void ApplyLevelUpMultipliers(SPlayerStatsMultipliers multipliers)
     {
         _moveSpeed = _baseMoveSpeed * multipliers.moveSpeed;
     }
@@ -97,5 +99,10 @@ public class PlayerMovementSystem : MonoBehaviour
     public void ResetPosition()
     {
         transform.position = Vector3.zero;
+    }
+
+    public void Push(Vector3 force)
+    {
+        _rigidbody.AddForce(force, ForceMode.Impulse);
     }
 }

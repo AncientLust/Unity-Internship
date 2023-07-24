@@ -6,6 +6,7 @@ namespace Enums
         Automate,
         Sniper,
         Shotgun,
-        MachineGun
+        MachineGun,
+        RocketLauncher
     }
 }

@@ -11,8 +11,8 @@ public class PlayerWeaponSystem : MonoBehaviour
     private PlayerStatsSystem _statsSystem;
     private ObjectPool _objectPool;
     
-    private List<IWeapon> _weapons;
-    private IWeapon _currentWeapon;
+    private List<Weapon> _weapons;
+    private Weapon _currentWeapon;
     private int _equippedWeaponIndex;
     private Queue<Coroutine> _reloadCoroutines = new Queue<Coroutine>();
 
@@ -53,7 +53,7 @@ public class PlayerWeaponSystem : MonoBehaviour
 
     private void CacheComponents()
     {
-        _weapons = new List<IWeapon>(GetComponentsInChildren<IWeapon>(true));
+        _weapons = new List<Weapon>(GetComponentsInChildren<Weapon>(true));
     }
 
     private void SubscribeEvents()
@@ -107,7 +107,7 @@ public class PlayerWeaponSystem : MonoBehaviour
         }
     }
 
-    private IEnumerator Reload(IWeapon weapon)
+    private IEnumerator Reload(Weapon weapon)
     {
         var reloadTime = weapon.GetReloadTime();
         var passedTime = 0f;
