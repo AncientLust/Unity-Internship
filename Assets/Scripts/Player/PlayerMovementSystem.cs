@@ -69,7 +69,7 @@ public class PlayerMovementSystem : MonoBehaviour
     private void Move()
     {
         _moveDirection.Normalize();
-        _rigidbody.MovePosition(_rigidbody.position + _moveDirection * _moveSpeed * Time.fixedDeltaTime);
+        _rigidbody.velocity = _moveDirection * _moveSpeed;
         _moveDirection = Vector3.zero;
     }
 
@@ -85,10 +85,8 @@ public class PlayerMovementSystem : MonoBehaviour
 
     public void ResetVelosity()
     {
-        //_rigidbody.velocity = Vector3.zero;
-        //_rigidbody.angularVelocity = Vector3.zero;
-        _rigidbody.isKinematic = true;
-        _rigidbody.isKinematic = false;
+        _rigidbody.velocity = Vector3.zero;
+        _rigidbody.angularVelocity = Vector3.zero;
     }
 
     private void ApplyLevelUpMultipliers(SPlayerStatsMultipliers multipliers)

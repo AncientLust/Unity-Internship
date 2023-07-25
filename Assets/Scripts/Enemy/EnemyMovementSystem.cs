@@ -6,12 +6,10 @@ public class EnemyMovementSystem : MonoBehaviour
     private float _followPlayerDistance;
     private float _baseMoveSpeed = 6f;
     private float _moveSpeed;
-    private bool _mustMove = true;
-
     private Rigidbody _rigidbody;
     private EnemyStatsSystem _statsSystem;
-
     private Transform _target;
+    private bool _isInitialized;
 
     public void Init
     (
@@ -26,6 +24,7 @@ public class EnemyMovementSystem : MonoBehaviour
         _statsSystem = enemyStatsSystem;
         _moveSpeed = _baseMoveSpeed;
         _followPlayerDistance = followPlayerDistance;
+        _isInitialized = true;
         Subscribe();
     }
 
@@ -51,19 +50,15 @@ public class EnemyMovementSystem : MonoBehaviour
 
     private void FixedUpdate()
     {
-        ActPhisicallyIfGameRunning();
+        ActPhisically();
     }
 
-    private void ActPhisicallyIfGameRunning()
+    private void ActPhisically()
     {
-        if (_mustMove)
+        if (_isInitialized)
         {
             MoveToPlayer();
             RotateToPlayer();
-        }
-        else
-        {
-            ResetVelosity();
         }
     }
 
@@ -73,26 +68,23 @@ public class EnemyMovementSystem : MonoBehaviour
         if (distanceToPlayer > _followPlayerDistance)
         {
             var direction = (_target.position - transform.position).normalized;
-            _rigidbody.MovePosition(_rigidbody.position + direction * _moveSpeed * Time.fixedDeltaTime);
+            _rigidbody.velocity = direction * _moveSpeed;
         }
     }
 
     private void RotateToPlayer()
     {
         Vector3 directionToTarget = (_target.position - _rigidbody.position).normalized;
-        Quaternion targetRotation = Quaternion.LookRotation(directionToTarget);
-        _rigidbody.MoveRotation(targetRotation);
+        if (directionToTarget != Vector3.zero)
+        {
+            Quaternion targetRotation = Quaternion.LookRotation(directionToTarget);
+            _rigidbody.MoveRotation(targetRotation);
+        }
     }
 
     private void ApplyLevelUpMultipliers(SEnemyStatsMultipliers multipliers)
     {
         _moveSpeed = _baseMoveSpeed * multipliers.moveSpeed;
-    }
-
-    private void ResetVelosity()
-    {
-        _rigidbody.velocity = Vector3.zero;
-        _rigidbody.angularVelocity = Vector3.zero;
     }
 
     public void Push(Vector3 force)
