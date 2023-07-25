@@ -10,6 +10,7 @@ public class MeleeEnemy : MonoBehaviour
     private EnemyHealthSystem _healthSystem;
     private EnemyFacade _enemyFacade;
     private EnemyEffectsSystem _effectSystem;
+    private EnemyDisposalSystem _enemyDisposalSystem;
 
     private float _followPlayerDistance = 0.5f;
 
@@ -23,21 +24,17 @@ public class MeleeEnemy : MonoBehaviour
         _healthSystem = gameObject.AddComponent<EnemyHealthSystem>();
         _enemyFacade = gameObject.AddComponent<EnemyFacade>();
         _effectSystem = gameObject.AddComponent<EnemyEffectsSystem>();
+        _enemyDisposalSystem = gameObject.AddComponent<EnemyDisposalSystem>();
     }
 
-    public void Init
-    (
-        ObjectPool objectPool, 
-        Transform target, 
-        IExperienceTaker experienceTaker
-    )
+    public void Init(Transform target)
     {
         _statsSystem.Init(_experienceSystem);
-        _experienceSystem.Init(experienceTaker, _healthSystem);
         _movementSystem.Init(target, _rigidBody, _statsSystem, _followPlayerDistance);
-        _healthSystem.Init(_statsSystem, objectPool);
+        _healthSystem.Init(_statsSystem);
         _attackSystem.Init(_statsSystem);
         _effectSystem.Init(_healthSystem);
+        _enemyDisposalSystem.Init(_healthSystem);
 
         _enemyFacade.Init(
             _experienceSystem,

@@ -1,7 +1,7 @@
 using UnityEngine;
 
 public class EnemyFacade : MonoBehaviour, 
-    IResetable, IPushiable, IDamageable
+    IResetable, IPushiable, IDamageable, IExperienceMaker
 {
     private EnemyHealthSystem _healthSystem;
     private EnemyExperienceSystem _experienceSystem;
@@ -32,5 +32,10 @@ public class EnemyFacade : MonoBehaviour,
     public void Push(Vector3 force)
     {
         _enemyMovementSystem.Push(force);
+    }
+
+    public float MakeExperience()
+    {
+        return _experienceSystem.GetExperience();
     }
 }

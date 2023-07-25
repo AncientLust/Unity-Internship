@@ -6,6 +6,7 @@ namespace Enums
         HUD,
         GameOver,
         Pause,
-        Settings
+        Settings,
+        LevelCompleted
     }
 }

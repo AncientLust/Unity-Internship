@@ -12,6 +12,7 @@ public class UIRoot : MonoBehaviour
     [SerializeField] private SettingsButton _settingButton;
     [SerializeField] private PauseButton _pauseButton;
     [SerializeField] private GameOverButton _gameOverButton;
+    [SerializeField] private LevelCompleteButton _levelCompleteButton;
 
     public event Action onStartPressed;
     public event Action onMenuLoadPressed;
@@ -125,5 +126,11 @@ public class UIRoot : MonoBehaviour
     {
         public Button restart;
         public Button menu;
+    }
+
+    [Serializable]
+    private struct LevelCompleteButton
+    {
+        public Button continueGame;
     }
 }

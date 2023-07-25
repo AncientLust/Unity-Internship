@@ -20,8 +20,11 @@ public class Main : MonoBehaviour
     private SceneController _sceneLoader;
     private SceneObjectBuilder _sceneObjectBuilder;
     private GameManager _gameManager;
+    private LevelProgressManager _levelProgressManager;
     private IExperienceTaker _iExperienceTaker;
     private PauseManager _pauseManager;
+    private EnemyDisposalManager _enemyDisposalManager;
+    private LevelCompletedUI _levelCompletedUI;
 
     void Awake()
     {
@@ -40,11 +43,14 @@ public class Main : MonoBehaviour
         _sceneLoader = new SceneController();
         _sceneObjectBuilder = new SceneObjectBuilder();
         _gameManager = new GameManager();
+        _levelProgressManager = new LevelProgressManager();
+        _enemyDisposalManager = new EnemyDisposalManager();
 
         _eventSystem = new GameObject("EventSystem").AddComponent<StandaloneInputModule>();
         _cameraController = _genericFactory.Instantiate(EResource.MainCamera).GetComponent<CameraController>();
         _uiRoot = _genericFactory.Instantiate(EResource.UIRoot).GetComponent<UIRoot>();
         _hud = _uiRoot.GetComponentInChildren<HUD>(true);
+        _levelCompletedUI = _uiRoot.GetComponentInChildren<LevelCompletedUI>(true);
         _enemySpawner = _genericFactory.Instantiate(EResource.EnemySpawner).GetComponent<EnemySpawner>();
 
         _player = _genericFactory.Instantiate(EResource.Player).GetComponent<Player>();
@@ -64,14 +70,16 @@ public class Main : MonoBehaviour
 
     private void LinkObjects()
     {
-        _hud.Init(_iHUDCompatible);
+        _hud.Init(_iHUDCompatible, _levelProgressManager);
         _sceneObjectBuilder.Init(_genericFactory);
         _cameraController.Init(_playerTransform);
-        _enemySpawner.Init(_playerTransform, _objectPool);
+        _enemySpawner.Init(_playerTransform, _objectPool, _enemyDisposalManager);
+        _enemyDisposalManager.Init(_iExperienceTaker, _objectPool);
+        _levelProgressManager.Init(_enemyDisposalManager, _levelCompletedUI);
 
         _objectPool.Init(_projectileFactory, _enemyFactory);
         _projectileFactory.Init(_objectPool);
-        _enemyFactory.Init(_objectPool, _playerTransform, _iExperienceTaker);
+        _enemyFactory.Init(_objectPool, _playerTransform);
 
         _gameManager.Init(
             _uiRoot, 
@@ -81,7 +89,8 @@ public class Main : MonoBehaviour
             _iPlayerFacade, 
             _objectPool, 
             _cameraController, 
-            _pauseManager
+            _pauseManager,
+            _levelProgressManager
         );
     }
 }

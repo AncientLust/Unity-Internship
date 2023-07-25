@@ -10,12 +10,15 @@ public class HUD : MonoBehaviour
     [SerializeField] private WeaponUI _weaponUI;
     [SerializeField] private ExperienceUI _experienceUI;
     [SerializeField] private StatsMultipliersUI _statsMultipliersUI;
+    [SerializeField] private LevelProgressUI _levelProgressUI;
 
     private IHUDCompatible _iHUDCompatible;
+    private LevelProgressManager _levelProgressManager;
 
-    public void Init(IHUDCompatible iHUDCompatible)
+    public void Init(IHUDCompatible iHUDCompatible, LevelProgressManager levelProgressManager)
     {
         _iHUDCompatible = iHUDCompatible;
+        _levelProgressManager = levelProgressManager;
         SubscribeEvents();
     }
 
@@ -38,8 +41,10 @@ public class HUD : MonoBehaviour
             _iHUDCompatible.onReloadProgressChanged += SetReloadBarValue;
             _iHUDCompatible.onLevelChanged += UpdatePlayerLevel;
             _iHUDCompatible.onExperienceProgressChanged += UpdateExperienceProgress;
-            _iHUDCompatible.onStatsChanged += UpdateStats;
+            _iHUDCompatible.onStatsChanged += UpdateStats;   
         }
+
+        if (_levelProgressManager != null)  _levelProgressManager.onKillProgressChnaged += UpdateLevelKillProgress;
     }
 
     private void UnsubscribeEvents()
@@ -52,6 +57,8 @@ public class HUD : MonoBehaviour
             _iHUDCompatible.onExperienceProgressChanged -= UpdateExperienceProgress;
             _iHUDCompatible.onStatsChanged -= UpdateStats;
         }
+
+        if (_levelProgressManager != null) _levelProgressManager.onKillProgressChnaged -= UpdateLevelKillProgress;
     }
 
     private void UpdateEquippedWeapon(EWeaponType weapon)
@@ -94,6 +101,11 @@ public class HUD : MonoBehaviour
         _weaponUI.reloadBar.SetFill(value);
     }
 
+    private void UpdateLevelKillProgress(int enemiesKilled, int levelGoal)
+    {
+        _levelProgressUI.levelKillProgress.text = $"KILLS {enemiesKilled}/{levelGoal}";
+    }
+
     [Serializable]
     private struct WeaponUI
     {
@@ -119,5 +131,11 @@ public class HUD : MonoBehaviour
         public TextMeshProUGUI maxHealth;
         public TextMeshProUGUI healthRegen;
         public TextMeshProUGUI moveSpeed;
+    }
+    
+    [Serializable]
+    private struct LevelProgressUI
+    {
+        public TextMeshProUGUI levelKillProgress;
     }
 }

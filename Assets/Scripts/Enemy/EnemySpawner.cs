@@ -6,21 +6,23 @@ public class EnemySpawner : MonoBehaviour
 {
     private Transform _target;
     private ObjectPool _objectPool;
+    private EnemyDisposalManager _disposalManager;
 
     private float _minRadius = 10f;
     private float _maxRadius = 20f;
     private float _spawnRaduis = 360f;
     private float _minEnemySpawnTime = 1;
-    private float _maxEnemySpawnTime = 2;
+    private float _maxEnemySpawnTime = 3;
     private int _minEnemiesToSpawn = 1;
     private int _maxEnemiesToSpawn = 2;
     private float _meleeEnemySpawnChance = .90f;
     private Coroutine _spawnCoroutine;
 
-    public void Init(Transform playerTransform, ObjectPool objectPool)
+    public void Init(Transform playerTransform, ObjectPool objectPool, EnemyDisposalManager disposalManager)
     {
         _target = playerTransform;
         _objectPool = objectPool;
+        _disposalManager = disposalManager;
     }
 
     private void OnDestroy()
@@ -55,6 +57,8 @@ public class EnemySpawner : MonoBehaviour
             var enemy = _objectPool.Get(enemyType);
             if (enemy != null)
             {
+                var enemyDisposalSystem = enemy.GetComponent<EnemyDisposalSystem>();
+                _disposalManager.SubscribeEnemy(enemyDisposalSystem);
                 enemy.transform.position = GetEnemySpawnPosition();
                 enemy.GetComponent<IResetable>().ResetState();
             }

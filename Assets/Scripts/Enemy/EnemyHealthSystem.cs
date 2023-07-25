@@ -14,15 +14,13 @@ public class EnemyHealthSystem : MonoBehaviour
 
     private EnemyStatsSystem _statsSystem;
     private HealthBar _healthBar;
-    private ObjectPool _objectPool;
 
     public event Action onDamaged;
     public event Action onDie;
     
-    public void Init(EnemyStatsSystem statsSystem, ObjectPool objectPool)
+    public void Init(EnemyStatsSystem statsSystem)
     {
         _statsSystem = statsSystem;
-        _objectPool = objectPool;
         Subscribe();
         CacheComponents();
     }
@@ -81,7 +79,6 @@ public class EnemyHealthSystem : MonoBehaviour
         {
             _isDead = true;
             onDie.Invoke();
-            _objectPool.Return(gameObject);
         }
     }
 

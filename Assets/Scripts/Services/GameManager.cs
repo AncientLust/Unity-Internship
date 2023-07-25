@@ -12,6 +12,7 @@ public class GameManager
     private IPlayerFacade _iPlayerFacade;
     private CameraController _cameraController;
     private PauseManager _pauseManager;
+    private LevelProgressManager _levelProgressManager;
 
     private EGameSession _eGameSession;
 
@@ -22,7 +23,8 @@ public class GameManager
         IPlayerFacade iPlayerFacade,
         ObjectPool objectPool,
         CameraController cameraController,
-        PauseManager pauseManager)
+        PauseManager pauseManager,
+        LevelProgressManager levelProgressManager)
     {
         _uiRoot = uiRoot;
         _sceneObjectLoader = sceneObjectLoader;
@@ -32,13 +34,9 @@ public class GameManager
         _objectPool = objectPool;
         _cameraController = cameraController;
         _pauseManager = pauseManager;
+        _levelProgressManager = levelProgressManager;
 
         Subscribe();
-    }
-
-    public void SetEnemySpawner(EnemySpawner enemySpawner)
-    {
-        _enemySpawner = enemySpawner;
     }
 
     ~GameManager()
@@ -61,6 +59,7 @@ public class GameManager
         _uiRoot.onPauseSavePressed += SaveGame;
         _uiRoot.onGameOverRestartPressed += RestartGame;
         _iPlayerFacade.onDie += GameOver;
+        _levelProgressManager.onLevelGoalReached += (_) => LevelCompleted();
     }
 
     private void Unsubscribe()
@@ -78,6 +77,7 @@ public class GameManager
         _uiRoot.onPauseSavePressed -= SaveGame;
         _uiRoot.onGameOverRestartPressed -= RestartGame;
         _iPlayerFacade.onDie -= GameOver;
+        _levelProgressManager.onLevelGoalReached -= (_) => LevelCompleted();
     }
 
     private void PrepareGame(EGameSession eGameSession)
@@ -183,6 +183,13 @@ public class GameManager
         _iPlayerFacade.DisableForGameSession();
         _uiRoot.SetUI(EUI.GameOver);
         _pauseManager.PauseGame();
+    }
+
+    private void LevelCompleted()
+    {
+        _pauseManager.PauseGame();
+        _uiRoot.SetUI(EUI.LevelCompleted);
+        Debug.Log("Level completed");
     }
 
     private void QuitGame()
