@@ -1,7 +1,7 @@
 using UnityEngine;
 
 public class EnemyFacade : MonoBehaviour, 
-    IResetable, IPushiable, IExperienceMaker, IDamageable
+    IResetable, IPushiable, IDamageable
 {
     private EnemyHealthSystem _healthSystem;
     private EnemyExperienceSystem _experienceSystem;
@@ -16,11 +16,6 @@ public class EnemyFacade : MonoBehaviour,
         _experienceSystem = experienceSystem;
         _healthSystem = healthSystem;
         _enemyMovementSystem = movementSystem;
-    }
-
-    public float MakeExperience()
-    {
-        return _experienceSystem.MakeExperience();
     }
 
     public void TakeDamage(float damage)

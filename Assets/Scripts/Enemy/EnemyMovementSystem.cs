@@ -73,7 +73,7 @@ public class EnemyMovementSystem : MonoBehaviour
         if (distanceToPlayer > _followPlayerDistance)
         {
             var direction = (_target.position - transform.position).normalized;
-            _rigidbody.MovePosition(_rigidbody.position + direction * _moveSpeed * Time.deltaTime);
+            _rigidbody.MovePosition(_rigidbody.position + direction * _moveSpeed * Time.fixedDeltaTime);
         }
     }
 

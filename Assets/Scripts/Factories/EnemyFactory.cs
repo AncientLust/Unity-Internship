@@ -7,6 +7,7 @@ public class EnemyFactory : IObjectFactory
     private readonly Dictionary<string, GameObject> _prefabDict;
     private ObjectPool _objectPool;
     private Transform _target;
+    private IExperienceTaker _experienceTaker;
 
     public EnemyFactory()
     {
@@ -18,10 +19,16 @@ public class EnemyFactory : IObjectFactory
         }
     }
 
-    public void Init(ObjectPool objectPool, Transform target)
+    public void Init
+    (
+        ObjectPool objectPool, 
+        Transform target, 
+        IExperienceTaker experienceTaker
+    )
     {
         _objectPool = objectPool;
         _target = target;
+        _experienceTaker = experienceTaker;
     }
 
     public GameObject Instantiate(EResource resource)
@@ -51,7 +58,7 @@ public class EnemyFactory : IObjectFactory
     {
         var meleeEnemyObj = Object.Instantiate(prefab);
         var meleeEnemy = meleeEnemyObj.GetComponent<MeleeEnemy>();
-        meleeEnemy.Init(_objectPool, _target);
+        meleeEnemy.Init(_objectPool, _target, _experienceTaker);
         return meleeEnemyObj;
     }
 
@@ -59,7 +66,7 @@ public class EnemyFactory : IObjectFactory
     {
         var rangeEnemyObj = Object.Instantiate(prefab);
         var rangeEnemy = rangeEnemyObj.GetComponent<RangeEnemy>();
-        rangeEnemy.Init(_objectPool, _target);
+        rangeEnemy.Init(_objectPool, _target, _experienceTaker);
         return rangeEnemyObj;
     }
 }

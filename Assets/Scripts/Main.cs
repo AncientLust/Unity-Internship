@@ -20,7 +20,7 @@ public class Main : MonoBehaviour
     private SceneController _sceneLoader;
     private SceneObjectBuilder _sceneObjectBuilder;
     private GameManager _gameManager;
-    private IExperienceTaker _playerExperienceSystem;
+    private IExperienceTaker _iExperienceTaker;
     private PauseManager _pauseManager;
 
     void Awake()
@@ -59,7 +59,7 @@ public class Main : MonoBehaviour
         _iPlayerFacade = _player.GetComponent<IPlayerFacade>();
 
         _playerTransform = _player.transform;
-        _playerExperienceSystem = _player.GetComponent<IExperienceTaker>();
+        _iExperienceTaker = _player.GetComponent<IExperienceTaker>();
     }
 
     private void LinkObjects()
@@ -71,7 +71,7 @@ public class Main : MonoBehaviour
 
         _objectPool.Init(_projectileFactory, _enemyFactory);
         _projectileFactory.Init(_objectPool);
-        _enemyFactory.Init(_objectPool, _playerTransform);
+        _enemyFactory.Init(_objectPool, _playerTransform, _iExperienceTaker);
 
         _gameManager.Init(
             _uiRoot, 

@@ -25,11 +25,17 @@ public class MeleeEnemy : MonoBehaviour
         _effectSystem = gameObject.AddComponent<EnemyEffectsSystem>();
     }
 
-    public void Init(ObjectPool opbjectPool, Transform target)
+    public void Init
+    (
+        ObjectPool objectPool, 
+        Transform target, 
+        IExperienceTaker experienceTaker
+    )
     {
         _statsSystem.Init(_experienceSystem);
+        _experienceSystem.Init(experienceTaker, _healthSystem);
         _movementSystem.Init(target, _rigidBody, _statsSystem, _followPlayerDistance);
-        _healthSystem.Init(_statsSystem, opbjectPool);
+        _healthSystem.Init(_statsSystem, objectPool);
         _attackSystem.Init(_statsSystem);
         _effectSystem.Init(_healthSystem);
 

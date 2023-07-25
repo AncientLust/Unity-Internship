@@ -25,9 +25,15 @@ public class RangeEnemy : MonoBehaviour
         _weaponSystem = gameObject.AddComponent<EnemyWeaponSystem>();
     }
 
-    public void Init(ObjectPool objectPool, Transform target)
+    public void Init
+    (
+        ObjectPool objectPool, 
+        Transform target, 
+        IExperienceTaker experienceTaker
+    )
     {
         _statsSystem.Init(_experienceSystem);
+        _experienceSystem.Init(experienceTaker, _healthSystem);
         _movementSystem.Init(target, _rigidBody, _statsSystem, _followPlayerDistance);
         _healthSystem.Init(_statsSystem, objectPool);
         _effectSystem.Init(_healthSystem);

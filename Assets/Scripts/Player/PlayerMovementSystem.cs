@@ -69,7 +69,7 @@ public class PlayerMovementSystem : MonoBehaviour
     private void Move()
     {
         _moveDirection.Normalize();
-        _rigidbody.MovePosition(_rigidbody.position + _moveDirection * _moveSpeed * Time.deltaTime);
+        _rigidbody.MovePosition(_rigidbody.position + _moveDirection * _moveSpeed * Time.fixedDeltaTime);
         _moveDirection = Vector3.zero;
     }
 
