@@ -111,7 +111,7 @@ public class PlayerWeaponSystem : MonoBehaviour
     {
         var reloadTime = weapon.GetReloadTime();
         var passedTime = 0f;
-        
+
         while (passedTime <= reloadTime)
         {
             if (weapon == _currentWeapon)
@@ -129,6 +129,7 @@ public class PlayerWeaponSystem : MonoBehaviour
         if (weapon == _currentWeapon)
         {
             onAmmoChanged.Invoke(_currentWeapon.Ammo);
+            onReloadProgressChanged.Invoke(passedTime / reloadTime);
         }
     }
 

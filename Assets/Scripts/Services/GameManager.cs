@@ -112,6 +112,7 @@ public class GameManager
         _uiRoot.SetUI(EUI.HUD);
         _objectPool.Reset();
         _enemySpawner.StartSpawn();
+        _enemySpawner.ResetEnemyLevel();
         _iPlayerFacade.EnableForGameSession();
         _cameraController.MoveToPlayer();
         _levelProgressManager.ResetProgress();
@@ -145,6 +146,7 @@ public class GameManager
         _uiRoot.SetUI(EUI.HUD);
         _objectPool.Reset();
         _enemySpawner.StartSpawn();
+        _enemySpawner.ResetEnemyLevel();
         _iPlayerFacade.EnableForGameSession();
         _iPlayerFacade.LoadState();
         _cameraController.MoveToPlayer();
@@ -158,6 +160,7 @@ public class GameManager
         _iPlayerFacade.EnableForGameSession();
         _iPlayerFacade.LoadState();
         _enemySpawner.StartSpawn();
+        _enemySpawner.ResetEnemyLevel();
         _uiRoot.SetUI(EUI.HUD);
         _cameraController.MoveToPlayer();
         _pauseManager.ResumeGame();
@@ -175,6 +178,7 @@ public class GameManager
         _sceneController.CleanScene(EScene.GameSession);
         _objectPool.Reset();
         _enemySpawner.StartSpawn();
+        _enemySpawner.ResetEnemyLevel();
         _iPlayerFacade.EnableForGameSession();
         _uiRoot.SetUI(EUI.HUD);
         _levelProgressManager.ResetProgress();
@@ -193,7 +197,6 @@ public class GameManager
     {
         _pauseManager.PauseGame();
         _uiRoot.SetUI(EUI.LevelCompleted);
-        Debug.Log("Level completed");
     }
 
     private void StartNextLevel()
@@ -203,8 +206,8 @@ public class GameManager
         _sceneController.CleanScene(EScene.GameSession);
         _objectPool.Reset();
         _enemySpawner.StartSpawn();
+        _cameraController.MoveToPlayer();
         _uiRoot.SetUI(EUI.HUD);
-        Debug.Log("Next level started");
     }
 
     private void QuitGame()

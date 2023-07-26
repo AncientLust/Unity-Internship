@@ -25,8 +25,7 @@ public class EnemyFacade : MonoBehaviour,
 
     public void ResetState()
     {
-        _experienceSystem.ResetLevel();
-        _healthSystem.RestoreHealth();
+        _healthSystem.ResetHealth();
     }
 
     public void Push(Vector3 force)

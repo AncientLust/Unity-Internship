@@ -5,19 +5,12 @@ public class EnemyExperienceSystem : MonoBehaviour
 {
     private int _level = 1;
     private int _killExperience = 5;
-    private float _levelsPerMinute = 3;
 
     public Action<int> OnLevelChanged;
 
-    public void ResetLevel()
+    public void SetLevel(int level)
     {
-        SetLevelBasedOnGameDuration();
-    }
-
-    private void SetLevelBasedOnGameDuration() // Must be refactored
-    {
-        var minutesSceneLoaded = Time.timeSinceLevelLoad / 60.0f;
-        _level = (int)Mathf.Ceil(minutesSceneLoaded * _levelsPerMinute);
+        _level = level;
         OnLevelChanged.Invoke(_level);
     }
 

@@ -20,13 +20,10 @@ public class EnemyHealthSystem : MonoBehaviour
     
     public void Init(EnemyStatsSystem statsSystem)
     {
-        _statsSystem = statsSystem;
-        Subscribe();
+        _statsSystem = statsSystem;        
         CacheComponents();
-    }
+        Subscribe();
 
-    private void Start()
-    {
         _isDead = false;
         _health = _baseHealth;
         _maxHealth = _baseHealth;
@@ -102,10 +99,12 @@ public class EnemyHealthSystem : MonoBehaviour
     private void ApplyLevelUpMultipliers(SEnemyStatsMultipliers stats)
     {
         _maxHealth = _baseHealth * stats.maxHealth;
+        _health = _maxHealth;
+        _healthBar.SetFill(_health / _maxHealth);
         _regenPerSecond = _baseHealthRegen * stats.maxHealth;
     }
 
-    public void RestoreHealth()
+    public void ResetHealth()
     {
         _isDead = false;
         _health = _baseHealth;

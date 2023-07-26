@@ -4,30 +4,44 @@ using Enums;
 
 public class EnemySpawner : MonoBehaviour
 {
-    private Transform _target;
-    private ObjectPool _objectPool;
-    private EnemyDisposalManager _disposalManager;
-
     private float _minRadius = 10f;
     private float _maxRadius = 20f;
     private float _spawnRaduis = 360f;
     private float _minEnemySpawnTime = 1;
-    private float _maxEnemySpawnTime = 3;
+    private float _maxEnemySpawnTime = 2;
     private int _minEnemiesToSpawn = 1;
     private int _maxEnemiesToSpawn = 2;
     private float _meleeEnemySpawnChance = .90f;
+    private int _baseEnemyLevel = 1;
+    private int _enemyLevel;
     private Coroutine _spawnCoroutine;
 
-    public void Init(Transform playerTransform, ObjectPool objectPool, EnemyDisposalManager disposalManager)
+    private Transform _target;
+    private ObjectPool _objectPool;
+    private EnemyDisposalManager _disposalManager;
+    private LevelProgressManager _levelProgressManager;
+
+    public void Init
+    (
+        Transform playerTransform, 
+        ObjectPool objectPool, 
+        EnemyDisposalManager disposalManager, 
+        LevelProgressManager levelProgressManager
+    )
     {
         _target = playerTransform;
         _objectPool = objectPool;
         _disposalManager = disposalManager;
+        _levelProgressManager = levelProgressManager;
+
+        _enemyLevel = _baseEnemyLevel;
+        _levelProgressManager.onGameLevelChanged += SetEnemyLevel;
     }
 
     private void OnDestroy()
     {
         if (_spawnCoroutine != null) StopCoroutine(_spawnCoroutine);
+        _levelProgressManager.onGameLevelChanged -= SetEnemyLevel;
     }
 
     public void StartSpawn()
@@ -38,6 +52,16 @@ public class EnemySpawner : MonoBehaviour
     public void StopSpawn()
     {
         StopCoroutine(_spawnCoroutine);
+    }
+
+    private void SetEnemyLevel(int enemyLevel)
+    {
+        _enemyLevel = enemyLevel;
+    }
+
+    public void ResetEnemyLevel()
+    {
+        _enemyLevel = _baseEnemyLevel;
     }
 
     private IEnumerator EnemySpawnerCycle()
@@ -61,6 +85,7 @@ public class EnemySpawner : MonoBehaviour
                 _disposalManager.SubscribeEnemy(enemyDisposalSystem);
                 enemy.transform.position = GetEnemySpawnPosition();
                 enemy.GetComponent<IResetable>().ResetState();
+                enemy.GetComponent<EnemyExperienceSystem>().SetLevel(_enemyLevel);
             }
         }
     }
