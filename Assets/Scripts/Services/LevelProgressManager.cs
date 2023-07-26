@@ -69,4 +69,14 @@ public class LevelProgressManager
         _gameLevel++;
         onGameLevelChanged.Invoke(_gameLevel);
     }
+
+    public void ResetProgress()
+    {
+        _enemiesKilled = 0;
+        _levelKillGoal = _baseLevelKillGoal;
+        _gameLevel = 1;
+
+        onGameLevelChanged.Invoke(_gameLevel);
+        onKillProgressChnaged.Invoke(_enemiesKilled, _levelKillGoal);
+    }
 }

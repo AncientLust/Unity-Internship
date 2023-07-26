@@ -114,6 +114,7 @@ public class GameManager
         _enemySpawner.StartSpawn();
         _iPlayerFacade.EnableForGameSession();
         _cameraController.MoveToPlayer();
+        _levelProgressManager.ResetProgress();
     }
 
     private void PauseGame()
@@ -173,9 +174,10 @@ public class GameManager
         _enemySpawner.StopSpawn();
         _sceneController.CleanScene(EScene.GameSession);
         _objectPool.Reset();
-        _iPlayerFacade.EnableForGameSession();
         _enemySpawner.StartSpawn();
+        _iPlayerFacade.EnableForGameSession();
         _uiRoot.SetUI(EUI.HUD);
+        _levelProgressManager.ResetProgress();
         _cameraController.MoveToPlayer();
         _pauseManager.ResumeGame();
     }
@@ -197,6 +199,10 @@ public class GameManager
     private void StartNextLevel()
     {
         _pauseManager.ResumeGame();
+        _enemySpawner.StopSpawn();
+        _sceneController.CleanScene(EScene.GameSession);
+        _objectPool.Reset();
+        _enemySpawner.StartSpawn();
         _uiRoot.SetUI(EUI.HUD);
         Debug.Log("Next level started");
     }
