@@ -44,7 +44,11 @@ public class HUD : MonoBehaviour
             _iHUDCompatible.onStatsChanged += UpdateStats;   
         }
 
-        if (_levelProgressManager != null)  _levelProgressManager.onKillProgressChnaged += UpdateLevelKillProgress;
+        if (_levelProgressManager != null)
+        {
+            _levelProgressManager.onKillProgressChnaged += UpdateLevelKillProgress;
+            _levelProgressManager.onGameLevelChanged += SetGameLevel;
+        }
     }
 
     private void UnsubscribeEvents()
@@ -58,7 +62,11 @@ public class HUD : MonoBehaviour
             _iHUDCompatible.onStatsChanged -= UpdateStats;
         }
 
-        if (_levelProgressManager != null) _levelProgressManager.onKillProgressChnaged -= UpdateLevelKillProgress;
+        if (_levelProgressManager != null)
+        {
+            _levelProgressManager.onKillProgressChnaged -= UpdateLevelKillProgress;
+            _levelProgressManager.onGameLevelChanged -= SetGameLevel;
+        }
     }
 
     private void UpdateEquippedWeapon(EWeaponType weapon)
@@ -106,6 +114,11 @@ public class HUD : MonoBehaviour
         _levelProgressUI.levelKillProgress.text = $"KILLS {enemiesKilled}/{levelGoal}";
     }
 
+    private void SetGameLevel(int level)
+    {
+        _levelProgressUI.gameLevel.text = $"LEVEL {level}";
+    }
+
     [Serializable]
     private struct WeaponUI
     {
@@ -137,5 +150,6 @@ public class HUD : MonoBehaviour
     private struct LevelProgressUI
     {
         public TextMeshProUGUI levelKillProgress;
+        public TextMeshProUGUI gameLevel;
     }
 }

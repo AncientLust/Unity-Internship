@@ -60,6 +60,7 @@ public class GameManager
         _uiRoot.onGameOverRestartPressed += RestartGame;
         _iPlayerFacade.onDie += GameOver;
         _levelProgressManager.onLevelGoalReached += (_) => LevelCompleted();
+        _uiRoot.onStartNextLevel += StartNextLevel;
     }
 
     private void Unsubscribe()
@@ -78,6 +79,7 @@ public class GameManager
         _uiRoot.onGameOverRestartPressed -= RestartGame;
         _iPlayerFacade.onDie -= GameOver;
         _levelProgressManager.onLevelGoalReached -= (_) => LevelCompleted();
+        _uiRoot.onStartNextLevel -= StartNextLevel;
     }
 
     private void PrepareGame(EGameSession eGameSession)
@@ -190,6 +192,13 @@ public class GameManager
         _pauseManager.PauseGame();
         _uiRoot.SetUI(EUI.LevelCompleted);
         Debug.Log("Level completed");
+    }
+
+    private void StartNextLevel()
+    {
+        _pauseManager.ResumeGame();
+        _uiRoot.SetUI(EUI.HUD);
+        Debug.Log("Next level started");
     }
 
     private void QuitGame()

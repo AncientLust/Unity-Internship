@@ -75,7 +75,8 @@ public class Main : MonoBehaviour
         _cameraController.Init(_playerTransform);
         _enemySpawner.Init(_playerTransform, _objectPool, _enemyDisposalManager);
         _enemyDisposalManager.Init(_iExperienceTaker, _objectPool);
-        _levelProgressManager.Init(_enemyDisposalManager, _levelCompletedUI);
+        _levelCompletedUI.Init(_levelProgressManager);
+        _levelProgressManager.Init(_enemyDisposalManager);
 
         _objectPool.Init(_projectileFactory, _enemyFactory);
         _projectileFactory.Init(_objectPool);

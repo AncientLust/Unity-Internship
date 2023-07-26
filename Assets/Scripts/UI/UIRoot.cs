@@ -25,6 +25,7 @@ public class UIRoot : MonoBehaviour
     public event Action onPauseMenuPressed;
     public event Action onGameOverRestartPressed;
     public event Action onGameOverMenuPressed;
+    public event Action onStartNextLevel;
 
     private void OnEnable()
     {
@@ -44,6 +45,12 @@ public class UIRoot : MonoBehaviour
 
         _gameOverButton.restart.onClick.AddListener(() => onGameOverRestartPressed.Invoke());
         _gameOverButton.menu.onClick.AddListener(() => onGameOverMenuPressed.Invoke());
+        _levelCompleteButton.continueGame.onClick.AddListener(() => onStartNextLevel.Invoke());
+    }
+
+    private void Awake()
+    {
+        SetUI(EUI.Menu);
     }
 
     private void OnDisable()
@@ -64,6 +71,7 @@ public class UIRoot : MonoBehaviour
 
         _gameOverButton.restart.onClick.RemoveListener(() => onGameOverRestartPressed.Invoke());
         _gameOverButton.menu.onClick.RemoveListener(() => onGameOverMenuPressed.Invoke());
+        _levelCompleteButton.continueGame.onClick.RemoveListener(() => onStartNextLevel.Invoke());
     }
 
     public void SetUI(EUI name)
