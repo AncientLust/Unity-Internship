@@ -12,6 +12,7 @@ public class RangeEnemy : MonoBehaviour
     private EnemyEffectsSystem _effectSystem;
     private EnemyWeaponSystem _weaponSystem;
     private EnemyDisposalSystem _enemyDisposalSystem;
+    private EnemyAnimationSystem _animationSystem;
 
     private float _followPlayerDistance = 5f;
 
@@ -27,6 +28,7 @@ public class RangeEnemy : MonoBehaviour
         _effectSystem = gameObject.AddComponent<EnemyEffectsSystem>();
         _weaponSystem = gameObject.AddComponent<EnemyWeaponSystem>();
         _enemyDisposalSystem = gameObject.AddComponent<EnemyDisposalSystem>();
+        _animationSystem = gameObject.AddComponent<EnemyAnimationSystem>();
     }
 
     public void Init(ObjectPool objectPool, Transform target)
@@ -35,8 +37,9 @@ public class RangeEnemy : MonoBehaviour
         _movementSystem.Init(target, _rigidBody, _collider, _statsSystem, _healthSystem, _followPlayerDistance);
         _healthSystem.Init(_statsSystem);
         _effectSystem.Init(_healthSystem);
-        _weaponSystem.Init(_statsSystem, objectPool);
+        _weaponSystem.Init(_statsSystem, objectPool, _healthSystem);
         _enemyDisposalSystem.Init(_healthSystem);
+        _animationSystem.Init(_healthSystem);
 
         _enemyFacade.Init(
             _experienceSystem,

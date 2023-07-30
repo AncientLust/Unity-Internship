@@ -15,6 +15,7 @@ public class PlayerFacade : MonoBehaviour,
     private PlayerSaveLoadSystem _saveLoadSystem;
     private PlayerEffectsSystem _effectsSystem;
     private PlayerSkillSystem _skillSystem;
+    private PlayerAnimationSystem _animationSystem;
 
     public event Action<int> onAmmoChanged;
     public event Action<EWeaponType> onWeaponChanged;
@@ -22,7 +23,7 @@ public class PlayerFacade : MonoBehaviour,
     public event Action<float> onExperienceProgressChanged;
     public event Action<int> onLevelChanged;
     public event Action<SPlayerStatsMultipliers> onStatsChanged;
-    public event Action onDie;
+    public event Action onDied;
 
     public void Init(
         PlayerExperienceSystem experienceSystem,
@@ -33,7 +34,8 @@ public class PlayerFacade : MonoBehaviour,
         PlayerMovementSystem movementSystem,
         PlayerSaveLoadSystem saveLoadSystem,
         PlayerEffectsSystem effectsSystem,
-        PlayerSkillSystem skillSystem)
+        PlayerSkillSystem skillSystem,
+        PlayerAnimationSystem animationSystem)
     {
         _experienceSystem = experienceSystem;
         _statsSystem = statsSystem;
@@ -44,6 +46,7 @@ public class PlayerFacade : MonoBehaviour,
         _saveLoadSystem = saveLoadSystem;
         _effectsSystem = effectsSystem;
         _skillSystem = skillSystem;
+        _animationSystem = animationSystem;
 
         Subscribe();
     }
@@ -61,7 +64,7 @@ public class PlayerFacade : MonoBehaviour,
         _experienceSystem.onExperienceProgressChanged += progress => onExperienceProgressChanged.Invoke(progress);
         _experienceSystem.onLevelChanged += level => onLevelChanged.Invoke(level);
         _statsSystem.onStatsChanged += statsMultipliers => onStatsChanged.Invoke(statsMultipliers);
-        _healthSystem.onDie += () => onDie.Invoke();
+        _healthSystem.onDied += () => onDied.Invoke();
     }
 
     private void Unsubscribe()
@@ -71,6 +74,7 @@ public class PlayerFacade : MonoBehaviour,
         _experienceSystem.onExperienceProgressChanged -= progress => onExperienceProgressChanged.Invoke(progress);
         _experienceSystem.onLevelChanged -= level => onLevelChanged(level);
         _statsSystem.onStatsChanged -= statsMultipliers => onStatsChanged.Invoke(statsMultipliers);
+        _healthSystem.onDied -= () => onDied.Invoke();
     }
 
     public void TakeExperience(float experience)
@@ -83,19 +87,20 @@ public class PlayerFacade : MonoBehaviour,
         _experienceSystem.SetLevel(1);
         _healthSystem.ResetHealth();
         _movementSystem.ResetPosition();
-        _movementSystem.ResetVelosity();
+        //_movementSystem.ResetVelosity();
         _weaponSystem.ResetWeapons();
         _skillSystem.ResetSkillsCooldown();
         _effectsSystem.StopAllEffects();
 
-        _movementSystem.IsActive = true;
-        _inputSystem.IsActive = true;
+        _movementSystem.SetActive(true);
+        _inputSystem.SetActive(true);
+        _animationSystem.ResetState();
     }
 
-    public void DisableForGameSession()
-    {
-        SetInputHandling(false);
-    }
+    //public void DisableForGameSession()
+    //{
+    //    SetInputHandling(false);
+    //}
 
     public void TakeDamage(float damage)
     {
@@ -104,8 +109,8 @@ public class PlayerFacade : MonoBehaviour,
 
     public void SetInputHandling(bool state)
     {
-        _movementSystem.IsActive = state;
-        _inputSystem.IsActive = state;
+        _movementSystem.SetActive(state);
+        _inputSystem.SetActive(state);
     }
 
     public void Push(Vector3 force)

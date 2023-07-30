@@ -4,21 +4,47 @@ public class PlayerAnimationSystem : MonoBehaviour
 {
     private Animator _animator;
     private Rigidbody _rigidbody;
-    private Vector3 _directionVetor;
+    private PlayerHealthSystem _healthSystem;
+    private float _velocityTreshhold = 1;
 
-    public void Init(Rigidbody rigidbody)
+    public void Init(Rigidbody rigidbody, PlayerHealthSystem healthSystem)
     {
         _animator = GetComponent<Animator>();
         _rigidbody = rigidbody;
+        _healthSystem = healthSystem;
+        Subscribe();
+    }
+
+    private void OnEnable()
+    {
+        Subscribe();
+    }
+
+    private void OnDisable()
+    {
+        Unsubscribe();
+    }
+
+    private void Subscribe()
+    {
+        if (_healthSystem != null) _healthSystem.onDie += PlayerDeath;
+    }
+
+    private void Unsubscribe()
+    {
+        if (_healthSystem != null) _healthSystem.onDie -= PlayerDeath;
     }
 
     private void Update()
     {
+        PlayMove();
+    }
 
-        _directionVetor.x = Input.GetAxisRaw("Horizontal");
-        _directionVetor.z = Input.GetAxisRaw("Vertical");
-
-        if (_directionVetor.x != 0 || _directionVetor.z != 0)
+    private void PlayMove()
+    {
+        var velocity = _rigidbody.velocity;
+        if (Mathf.Abs(velocity.x) >= _velocityTreshhold || 
+            Mathf.Abs(velocity.z) >= _velocityTreshhold)
         {
             _animator.SetBool("isRunning", true);
         }
@@ -26,16 +52,15 @@ public class PlayerAnimationSystem : MonoBehaviour
         {
             _animator.SetBool("isRunning", false);
         }
+    }
 
-        if (Input.GetKeyDown(KeyCode.Z))
-        {
-            _animator.SetTrigger("deathTrigger");
-        }
+    private void PlayerDeath()
+    {
+        _animator.SetTrigger("deathTrigger");
+    }
 
-
-        if (Input.GetKeyDown(KeyCode.X))
-        {
-            _animator.ResetTrigger("deathTrigger");
-        }
+    public void ResetState()
+    {
+        _animator.Play("PistolIdle");
     }
 }

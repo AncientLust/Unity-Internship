@@ -58,7 +58,7 @@ public class GameManager
         _uiRoot.onPauseRestartPressed += RestartGame;
         _uiRoot.onPauseSavePressed += SaveGame;
         _uiRoot.onGameOverRestartPressed += RestartGame;
-        _iPlayerFacade.onDie += GameOver;
+        _iPlayerFacade.onDied += GameOver;
         _levelProgressManager.onLevelGoalReached += (_) => LevelCompleted();
         _uiRoot.onStartNextLevel += StartNextLevel;
     }
@@ -77,7 +77,7 @@ public class GameManager
         _uiRoot.onPauseRestartPressed -= RestartGame;
         _uiRoot.onPauseSavePressed -= SaveGame;
         _uiRoot.onGameOverRestartPressed -= RestartGame;
-        _iPlayerFacade.onDie -= GameOver;
+        _iPlayerFacade.onDied -= GameOver;
         _levelProgressManager.onLevelGoalReached -= (_) => LevelCompleted();
         _uiRoot.onStartNextLevel -= StartNextLevel;
     }
@@ -188,7 +188,6 @@ public class GameManager
 
     private void GameOver()
     {
-        _iPlayerFacade.DisableForGameSession();
         _uiRoot.SetUI(EUI.GameOver);
         _pauseManager.PauseGame();
     }

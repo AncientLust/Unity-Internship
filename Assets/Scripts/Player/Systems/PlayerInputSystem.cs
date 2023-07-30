@@ -4,16 +4,43 @@ using UnityEngine;
 
 public class PlayerInputSystem : MonoBehaviour
 {
+    private bool _isActive;
+    private Vector3 _directionVetor;
+    private PlayerHealthSystem _healthSystem;
+
     public event Action onScrollUp;
     public event Action onScrollDown;
     public event Action onLeftMouseClicked;
     public event Action onReloadPressed;
     public event Action<Vector3> onDirectionAxisPressed;
-
     public event Action<ESkillSlot> onSkill1Clicked;
-    private Vector3 _directionVetor;
 
-    public bool IsActive { get; set; } = false;
+    public void Init(PlayerHealthSystem healthSystem)
+    {
+        _healthSystem = healthSystem;
+        _isActive = false;
+        Subscribe();
+    }
+
+    private void OnEnable()
+    {
+        Subscribe();
+    }
+
+    private void OnDisable()
+    {
+        Unsubsribe();
+    }
+
+    private void Subscribe()
+    {
+        if (_healthSystem != null) _healthSystem.onDie += () => _isActive = false;
+    }
+
+    private void Unsubsribe()
+    {
+        if (_healthSystem != null) _healthSystem.onDie -= () => _isActive = false;
+    }
 
     private void Update()
     {
@@ -22,7 +49,7 @@ public class PlayerInputSystem : MonoBehaviour
 
     private void ReadInputIfGameRunning()
     {
-        if (IsActive)
+        if (_isActive)
         {
             InputHandler();
         }
@@ -86,5 +113,10 @@ public class PlayerInputSystem : MonoBehaviour
         {
             onSkill1Clicked.Invoke(ESkillSlot._3);
         }
+    }
+
+    public void SetActive(bool state)
+    {
+        _isActive = state;
     }
 }

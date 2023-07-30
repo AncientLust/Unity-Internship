@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using Structs;
+using System.Collections;
 
 public class PlayerHealthSystem : MonoBehaviour
 {
@@ -10,6 +11,7 @@ public class PlayerHealthSystem : MonoBehaviour
     private float _health;
     private float _regenPerSecond;
     private bool _isDead;
+    private WaitForSeconds _deathDelay = new WaitForSeconds(1.5f);
 
     private PlayerExperienceSystem _experienceSystem;
     private PlayerStatsSystem _statsSystem;
@@ -17,6 +19,7 @@ public class PlayerHealthSystem : MonoBehaviour
 
     public event Action onDie;
     public event Action onDamaged;
+    public event Action onDied;
 
     public float Health { get { return _health; } set { _health = value; } }
 
@@ -70,10 +73,13 @@ public class PlayerHealthSystem : MonoBehaviour
 
     public void ReduceHealth(float damage)
     {
-        _health -= damage;
-        _healthBar.SetFill(_health / _maxHealth);
-        onDamaged.Invoke();
-        CheckIfDied();
+        if (!_isDead)
+        {
+            _health -= damage;
+            _healthBar.SetFill(_health / _maxHealth);
+            onDamaged.Invoke();
+            CheckIfDied();
+        }
     }
 
     private void CheckIfDied()
@@ -82,6 +88,7 @@ public class PlayerHealthSystem : MonoBehaviour
         {
             _isDead = true;
             onDie.Invoke();
+            StartCoroutine(DelayedDeath());
         }
     }
 
@@ -114,5 +121,11 @@ public class PlayerHealthSystem : MonoBehaviour
         _maxHealth = _baseHealth;
         _regenPerSecond = _baseHealthRegen;
         _healthBar.SetFill(1);
+    }
+
+    public IEnumerator DelayedDeath()
+    {
+        yield return _deathDelay;
+        onDied.Invoke();
     }
 }

@@ -7,16 +7,17 @@ public class EnemyWeaponSystem : MonoBehaviour
 {
     private EnemyStatsSystem _statsSystem;
     private ObjectPool _objectPool;
-
+    private EnemyHealthSystem _healthSystem;
     private List<Weapon> _weapons;
     private Weapon _currentWeapon;
     private Queue<Coroutine> _reloadCoroutines = new Queue<Coroutine>();
     private bool _isInitializated = false;
     
-    public void Init(EnemyStatsSystem statsSystem, ObjectPool objectPool)
+    public void Init(EnemyStatsSystem statsSystem, ObjectPool objectPool, EnemyHealthSystem healthSystem)
     {
         _statsSystem = statsSystem;
         _objectPool = objectPool;
+        _healthSystem = healthSystem;
         _isInitializated = true;
         CacheComponents();
         Subscribe();
@@ -59,11 +60,13 @@ public class EnemyWeaponSystem : MonoBehaviour
     private void Subscribe()
     {
         _statsSystem.onStatsChanged += SetLevelUpMultipliers;
+        _healthSystem.onDie += () => CancelInvoke("ShootHandler");
     }
 
     private void Unsubscribe()
     {
         _statsSystem.onStatsChanged -= SetLevelUpMultipliers;
+        _healthSystem.onDie -= () => CancelInvoke("ShootHandler");
     }
 
     private void SetLevelUpMultipliers(SEnemyStatsMultipliers multipliers)

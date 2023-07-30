@@ -9,22 +9,27 @@ public class PlayerWeaponSystem : MonoBehaviour
 {
     private PlayerInputSystem _playerInputSystem;
     private PlayerStatsSystem _statsSystem;
+    private PlayerHealthSystem _healthSystem;
     private ObjectPool _objectPool;
     
     private List<Weapon> _weapons;
     private Weapon _currentWeapon;
     private int _equippedWeaponIndex;
     private Queue<Coroutine> _reloadCoroutines = new Queue<Coroutine>();
+    private bool _isActive;
 
     public Action<EWeaponType> onWeaponChanged;
     public Action<int> onAmmoChanged;
     public Action<float> onReloadProgressChanged;
     
-    public void Init(PlayerInputSystem inputSystem, PlayerStatsSystem statsSystem, ObjectPool objectPool)
+    public void Init(PlayerInputSystem inputSystem, PlayerStatsSystem statsSystem, ObjectPool objectPool, PlayerHealthSystem healthSystem)
     {
         _playerInputSystem = inputSystem;
         _statsSystem = statsSystem;
+        _healthSystem = healthSystem;
         _objectPool = objectPool;
+
+        _isActive = true;
         SubscribeEvents();
     }
 
@@ -40,6 +45,7 @@ public class PlayerWeaponSystem : MonoBehaviour
 
     public void ResetWeapons()
     {
+        _isActive = true;
         SortWeapons();
         StopAllReloads();
         InitWeapons();
@@ -63,6 +69,7 @@ public class PlayerWeaponSystem : MonoBehaviour
         _playerInputSystem.onLeftMouseClicked += ShootHandler;
         _playerInputSystem.onReloadPressed += ReloadHandler;
         _statsSystem.onStatsChanged += SetLevelUpMultipliers;
+        _healthSystem.onDie += DisableAllWeapons;
     }
 
     private void UnsubscribeEvents()
@@ -72,6 +79,7 @@ public class PlayerWeaponSystem : MonoBehaviour
         _playerInputSystem.onLeftMouseClicked -= ShootHandler;
         _playerInputSystem.onReloadPressed -= ReloadHandler;
         _statsSystem.onStatsChanged -= SetLevelUpMultipliers;
+        _healthSystem.onDie -= DisableAllWeapons;
     }
 
     private void SetLevelUpMultipliers(SPlayerStatsMultipliers multipliers)
@@ -86,24 +94,30 @@ public class PlayerWeaponSystem : MonoBehaviour
 
     private void ShootHandler()
     {
-        if (!_currentWeapon.HasEmptyClip())
+        if (_isActive)
         {
-            _currentWeapon.Shoot();
-            onAmmoChanged.Invoke(_currentWeapon.Ammo);
-        }
-        else
-        {
-            ReloadHandler();
+            if (!_currentWeapon.HasEmptyClip())
+            {
+                _currentWeapon.Shoot();
+                onAmmoChanged.Invoke(_currentWeapon.Ammo);
+            }
+            else
+            {
+                ReloadHandler();
+            }
         }
     }
 
     private void ReloadHandler()
     {
-        if (!_currentWeapon.InReloading)
+        if (_isActive)
         {
-            _currentWeapon.BeginReload();
-            var reloadSession = StartCoroutine(Reload(_currentWeapon));
-            _reloadCoroutines.Enqueue(reloadSession);
+            if (!_currentWeapon.InReloading)
+            {
+                _currentWeapon.BeginReload();
+                var reloadSession = StartCoroutine(Reload(_currentWeapon));
+                _reloadCoroutines.Enqueue(reloadSession);
+            }
         }
     }
 
@@ -188,5 +202,15 @@ public class PlayerWeaponSystem : MonoBehaviour
         {
             onReloadProgressChanged(1f);
         }
+    }
+
+    private void DisableAllWeapons()
+    {
+        for (int i = 0; i < _weapons.Count; i++)
+        {
+            _weapons[i].SetPrefabState(false);
+        }
+
+        _isActive = false;
     }
 }

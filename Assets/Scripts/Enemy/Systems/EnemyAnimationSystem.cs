@@ -1,21 +1,14 @@
-using System.Collections;
 using UnityEngine;
 
 public class EnemyAnimationSystem : MonoBehaviour
 {
     private Animator _animator;
-    private Rigidbody _rigidbody;
     private EnemyHealthSystem _enemyHealthSystem;
 
-    public void Init
-    (
-        //Rigidbody rigidbody,
-        EnemyHealthSystem enemyHealthSystem
-    )
+    public void Init(EnemyHealthSystem enemyHealthSystem)
     {
         _animator = GetComponent<Animator>();
         _enemyHealthSystem = enemyHealthSystem;
-        //_rigidbody = rigidbody;
 
         if (_enemyHealthSystem != null) _enemyHealthSystem.onDie += PlayDeath;
     }

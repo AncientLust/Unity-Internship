@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   type: 2
   damage: 75
-  shootSpeed: 1
+  shootSpeed: 1.5
   reloadTime: 3
   clipCapacity: 5
   pushPower: 10

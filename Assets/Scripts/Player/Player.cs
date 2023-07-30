@@ -9,6 +9,7 @@ public class Player : MonoBehaviour
         ThrowGrenadeSkill throwGrenadeSkill)
     {
         var rigidBody = gameObject.GetComponent<Rigidbody>();
+        var collider = gameObject.GetComponent<CapsuleCollider>();
         var experienceSystem = gameObject.AddComponent<PlayerExperienceSystem>();
         var inputSystem = gameObject.AddComponent<PlayerInputSystem>();
         var statsSystem = gameObject.AddComponent<PlayerStatsSystem>();
@@ -25,14 +26,15 @@ public class Player : MonoBehaviour
         var skills = new ISkill[] { bonusRegenerationSkill, bonusDamageSkill, throwGrenadeSkill };
 
         statsSystem.Init(experienceSystem, bonusRegenerationSkill, bonusDamageSkill);
-        weaponSystem.Init(inputSystem, statsSystem, objectPool);
-        movementSystem.Init(statsSystem, inputSystem, rigidBody);
+        weaponSystem.Init(inputSystem, statsSystem, objectPool, healthSystem);
+        movementSystem.Init(statsSystem, inputSystem, rigidBody, healthSystem, collider);
         healthSystem.Init(statsSystem, experienceSystem);
         saveLoadSystem.Init(experienceSystem, healthSystem);
         skillSystem.Init(inputSystem, skills);
         effectsSystem.Init(healthSystem, experienceSystem, bonusRegenerationSkill, bonusDamageSkill);
         throwSystem.Init(objectPool, throwGrenadeSkill);
-        animationSystem.Init(rigidBody);
+        animationSystem.Init(rigidBody, healthSystem);
+        inputSystem.Init(healthSystem);
 
         playerFacade.Init(
             experienceSystem,
@@ -43,7 +45,8 @@ public class Player : MonoBehaviour
             movementSystem,
             saveLoadSystem,
             effectsSystem,
-            skillSystem
+            skillSystem,
+            animationSystem
         );
     }
 }
