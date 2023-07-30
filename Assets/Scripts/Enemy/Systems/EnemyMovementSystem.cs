@@ -4,6 +4,8 @@ using Structs;
 public class EnemyMovementSystem : MonoBehaviour
 {
     private float _followPlayerDistance;
+    private float _slowDownDistance;
+    private float _slowDownDistanceMultiplicator = 1.25f;
     private float _baseMoveSpeed = 6f;
     private float _moveSpeed;
     private bool _isInitialized;
@@ -32,6 +34,7 @@ public class EnemyMovementSystem : MonoBehaviour
         
         _moveSpeed = _baseMoveSpeed;
         _followPlayerDistance = followPlayerDistance;
+        _slowDownDistance = _followPlayerDistance * _slowDownDistanceMultiplicator;
         _isInitialized = true;
         _isEnabled = true;
         Subscribe();
@@ -77,10 +80,20 @@ public class EnemyMovementSystem : MonoBehaviour
     private void MoveToPlayer()
     {
         var distanceToPlayer = Vector3.Distance(transform.position, _target.position);
-        if (distanceToPlayer > _followPlayerDistance)
+        var direction = (_target.position - transform.position).normalized;
+
+        if (distanceToPlayer > _slowDownDistance)
         {
-            var direction = (_target.position - transform.position).normalized;
             _rigidbody.velocity = direction * _moveSpeed;
+        }
+        else if (distanceToPlayer > _followPlayerDistance)
+        {
+            float slowdownFactor = (distanceToPlayer - _followPlayerDistance) / (_slowDownDistance - _followPlayerDistance);
+            _rigidbody.velocity = direction * _moveSpeed * slowdownFactor;
+        }
+        else
+        {
+            _rigidbody.velocity = Vector3.zero;
         }
     }
 

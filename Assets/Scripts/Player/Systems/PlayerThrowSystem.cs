@@ -5,7 +5,7 @@ public class PlayerThrowSystem : MonoBehaviour
 {
     private ObjectPool _objectPool;
     private ThrowGrenadeSkill _throwGrenadeSkill;
-    private float _throwForce = 7f;
+    private float _throwForce = 10f;
     private Transform _throwPoint;
 
     public void Init(ObjectPool objectPool, ThrowGrenadeSkill throwGrenadeSkill)
