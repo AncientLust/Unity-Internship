@@ -27,7 +27,7 @@ public class Projectile : MonoBehaviour
 
     protected void Start()
     {
-        _renderer = GetComponent<Renderer>();
+        _renderer = GetComponentInChildren<Renderer>();
     }
 
     protected void Update()

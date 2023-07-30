@@ -3,6 +3,7 @@ using UnityEngine;
 public class RangeEnemy : MonoBehaviour
 {
     private Rigidbody _rigidBody;
+    private CapsuleCollider _collider;
     private EnemyExperienceSystem _experienceSystem;
     private EnemyStatsSystem _statsSystem;
     private EnemyMovementSystem _movementSystem;
@@ -17,6 +18,7 @@ public class RangeEnemy : MonoBehaviour
     private void Awake()
     {
         _rigidBody = gameObject.GetComponent<Rigidbody>();
+        _collider = gameObject.GetComponent<CapsuleCollider>();
         _experienceSystem = gameObject.AddComponent<EnemyExperienceSystem>();
         _statsSystem = gameObject.AddComponent<EnemyStatsSystem>();
         _movementSystem = gameObject.AddComponent<EnemyMovementSystem>();
@@ -30,7 +32,7 @@ public class RangeEnemy : MonoBehaviour
     public void Init(ObjectPool objectPool, Transform target)
     {
         _statsSystem.Init(_experienceSystem);
-        _movementSystem.Init(target, _rigidBody, _statsSystem, _followPlayerDistance);
+        _movementSystem.Init(target, _rigidBody, _collider, _statsSystem, _healthSystem, _followPlayerDistance);
         _healthSystem.Init(_statsSystem);
         _effectSystem.Init(_healthSystem);
         _weaponSystem.Init(_statsSystem, objectPool);

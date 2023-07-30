@@ -1,11 +1,14 @@
 using System;
+using System.Collections;
+using Unity.VisualScripting;
+using UnityEngine;
 
 public class LevelProgressManager
 {
     private int _enemiesKilled;
     private int _levelKillGoal;
-    private int _baseLevelKillGoal = 15;
-    private float _levelKillMultiplier = 1.5f;
+    private int _baseLevelKillGoal = 10;
+    private float _levelKillMultiplier = 1.75f;
     private int _gameLevel = 1;
 
     private EnemyDisposalManager _enemyDisposalManager;
@@ -60,6 +63,7 @@ public class LevelProgressManager
     {
         _enemiesKilled = 0;
         _levelKillGoal = (int)(_levelKillGoal * _levelKillMultiplier);
+        _levelKillGoal = Mathf.RoundToInt(_levelKillGoal / 10.0f) * 10;
         onNextLevelGoalChanged.Invoke(_levelKillGoal);
         onKillProgressChnaged.Invoke(_enemiesKilled, _levelKillGoal);
     }

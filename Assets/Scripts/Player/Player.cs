@@ -20,6 +20,7 @@ public class Player : MonoBehaviour
         var skillSystem = gameObject.AddComponent<PlayerSkillSystem>();
         var effectsSystem = gameObject.AddComponent<PlayerEffectsSystem>();
         var throwSystem = gameObject.AddComponent<PlayerThrowSystem>();
+        var animationSystem = gameObject.AddComponent<PlayerAnimationSystem>();
 
         var skills = new ISkill[] { bonusRegenerationSkill, bonusDamageSkill, throwGrenadeSkill };
 
@@ -31,6 +32,7 @@ public class Player : MonoBehaviour
         skillSystem.Init(inputSystem, skills);
         effectsSystem.Init(healthSystem, experienceSystem, bonusRegenerationSkill, bonusDamageSkill);
         throwSystem.Init(objectPool, throwGrenadeSkill);
+        animationSystem.Init(rigidBody);
 
         playerFacade.Init(
             experienceSystem,

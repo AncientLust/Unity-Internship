@@ -6,30 +6,40 @@ public class EnemyMovementSystem : MonoBehaviour
     private float _followPlayerDistance;
     private float _baseMoveSpeed = 6f;
     private float _moveSpeed;
-    private Rigidbody _rigidbody;
-    private EnemyStatsSystem _statsSystem;
-    private Transform _target;
     private bool _isInitialized;
+    private bool _isEnabled;
+    private Rigidbody _rigidbody;
+    private CapsuleCollider _collider;
+    private EnemyStatsSystem _statsSystem;
+    private EnemyHealthSystem _healthSystem;
+    private Transform _target;
 
     public void Init
     (
         Transform target,
-        Rigidbody rigidbody, 
-        EnemyStatsSystem enemyStatsSystem, 
+        Rigidbody rigidbody,
+        CapsuleCollider collider,
+        EnemyStatsSystem enemyStatsSystem,
+        EnemyHealthSystem healthSystem,
         float followPlayerDistance
     )
     {
         _target = target;
         _rigidbody = rigidbody;
+        _collider = collider;
         _statsSystem = enemyStatsSystem;
+        _healthSystem = healthSystem;
+        
         _moveSpeed = _baseMoveSpeed;
         _followPlayerDistance = followPlayerDistance;
         _isInitialized = true;
+        _isEnabled = true;
         Subscribe();
     }
 
     private void OnEnable()
     {
+        StartMoving();
         Subscribe();
     }
 
@@ -41,11 +51,13 @@ public class EnemyMovementSystem : MonoBehaviour
     private void Subscribe()
     {
         if (_statsSystem != null) _statsSystem.onStatsChanged += ApplyLevelUpMultipliers;
+        if (_healthSystem != null) _healthSystem.onDie += StopMoving;
     }
 
     private void Unsubscribe()
     {
         if (_statsSystem != null) _statsSystem.onStatsChanged -= ApplyLevelUpMultipliers;
+        if (_healthSystem != null) _healthSystem.onDie -= StopMoving;
     }
 
     private void FixedUpdate()
@@ -55,7 +67,7 @@ public class EnemyMovementSystem : MonoBehaviour
 
     private void ActPhisically()
     {
-        if (_isInitialized)
+        if (_isInitialized && _isEnabled)
         {
             MoveToPlayer();
             RotateToPlayer();
@@ -90,5 +102,22 @@ public class EnemyMovementSystem : MonoBehaviour
     public void Push(Vector3 force)
     {
         _rigidbody.AddForce(force, ForceMode.Impulse);
+    }
+
+    private void StartMoving()
+    {
+        if (_isInitialized)
+        {
+            _isEnabled = true;
+            _rigidbody.isKinematic = false;
+            _collider.enabled = true;
+        }
+    }
+
+    private void StopMoving()
+    {
+        _isEnabled = false;
+        _rigidbody.isKinematic = true;
+        _collider.enabled = false;
     }
 }

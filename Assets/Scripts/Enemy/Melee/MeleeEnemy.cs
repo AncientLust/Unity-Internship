@@ -3,6 +3,7 @@ using UnityEngine;
 public class MeleeEnemy : MonoBehaviour
 {
     private Rigidbody _rigidBody;
+    private CapsuleCollider _collider;
     private EnemyExperienceSystem _experienceSystem;
     private EnemyStatsSystem _statsSystem;
     private MeleeEnemyAttackSystem _attackSystem;
@@ -11,12 +12,14 @@ public class MeleeEnemy : MonoBehaviour
     private EnemyFacade _enemyFacade;
     private EnemyEffectsSystem _effectSystem;
     private EnemyDisposalSystem _enemyDisposalSystem;
+    private EnemyAnimationSystem _animationSystem;
 
-    private float _followPlayerDistance = 0.5f;
+    private float _followPlayerDistance = 0.75f;
 
     private void Awake()
     {
         _rigidBody = gameObject.GetComponent<Rigidbody>();
+        _collider = gameObject.GetComponent<CapsuleCollider>();
         _experienceSystem = gameObject.AddComponent<EnemyExperienceSystem>();
         _statsSystem = gameObject.AddComponent<EnemyStatsSystem>();
         _attackSystem = gameObject.AddComponent<MeleeEnemyAttackSystem>();
@@ -25,16 +28,18 @@ public class MeleeEnemy : MonoBehaviour
         _enemyFacade = gameObject.AddComponent<EnemyFacade>();
         _effectSystem = gameObject.AddComponent<EnemyEffectsSystem>();
         _enemyDisposalSystem = gameObject.AddComponent<EnemyDisposalSystem>();
+        _animationSystem = gameObject.AddComponent<EnemyAnimationSystem>();
     }
 
     public void Init(Transform target)
     {
         _statsSystem.Init(_experienceSystem);
-        _movementSystem.Init(target, _rigidBody, _statsSystem, _followPlayerDistance);
+        _movementSystem.Init(target, _rigidBody, _collider, _statsSystem, _healthSystem, _followPlayerDistance);
         _healthSystem.Init(_statsSystem);
         _attackSystem.Init(_statsSystem);
         _effectSystem.Init(_healthSystem);
         _enemyDisposalSystem.Init(_healthSystem);
+        _animationSystem.Init(_healthSystem);
 
         _enemyFacade.Init(
             _experienceSystem,

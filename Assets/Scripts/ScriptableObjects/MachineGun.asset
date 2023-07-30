@@ -18,7 +18,7 @@ MonoBehaviour:
   reloadTime: 5
   clipCapacity: 40
   pushPower: 2
-  spreadAngle: 20
+  spreadAngle: 15
   isPenetratable: 0
   projectilesPerShoot: 1
   projectileSpeed: 30
