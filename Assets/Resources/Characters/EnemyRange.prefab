@@ -1031,6 +1031,7 @@ Transform:
   - {fileID: 4769825705758190}
   - {fileID: 4728409289055118}
   - {fileID: 4152896956627734}
+  - {fileID: 1395899314782311632}
   m_Father: {fileID: 4831479725012992}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1498506403430334
@@ -1516,7 +1517,6 @@ Transform:
   - {fileID: 4457854113235456}
   - {fileID: 3357857669338422951}
   - {fileID: 2282917756995578237}
-  - {fileID: 1395899314782311632}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!95 &95631445894488050
@@ -1984,13 +1984,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6521268305334287310}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.6010384, y: 1.6199505, z: 0.20566243}
+  m_LocalRotation: {x: -0.59874403, y: 0.5136432, z: 0.50249434, w: -0.3538019}
+  m_LocalPosition: {x: -0.14479569, y: -0.06243878, z: 0.020239256}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 3062810003215178103}
-  m_Father: {fileID: 4786372315215010}
+  m_Father: {fileID: 4942066581869776}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &299044685189686898
 PrefabInstance:
@@ -2294,15 +2294,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1853345831268967579, guid: 7acfa9cc22fd7bd4eb83fcdb3e4ccd08, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.6010384
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1853345831268967579, guid: 7acfa9cc22fd7bd4eb83fcdb3e4ccd08, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.445
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1853345831268967579, guid: 7acfa9cc22fd7bd4eb83fcdb3e4ccd08, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.58
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1853345831268967579, guid: 7acfa9cc22fd7bd4eb83fcdb3e4ccd08, type: 3}
       propertyPath: m_LocalRotation.w

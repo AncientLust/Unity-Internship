@@ -3,16 +3,16 @@ using UnityEngine.UI;
 
 public class HealthBar : MonoBehaviour 
 {
+    [SerializeField] private GameObject _barElementsContainer;
+    [SerializeField] private RectTransform _barMaskRect;
+    [SerializeField] private RectTransform _edgeRect;
+    [SerializeField] private RawImage _barRawImage;
     [SerializeField] private Gradient _gradient;
-
     private float _barMaskWidth;
-    private RectTransform _barMaskRect;
-    private RectTransform _edgeRect;
-    private RawImage _barRawImage;
 
     public void Awake()
     {
-        CacheComponents();
+        _barMaskWidth = _barMaskRect.sizeDelta.x;
     }
 
     private void Start()
@@ -23,14 +23,6 @@ public class HealthBar : MonoBehaviour
     private void Update() 
     {
         AnimateBar();
-    }
-
-    private void CacheComponents()
-    {
-        _barRawImage = transform.Find("barMask").Find("bar").GetComponent<RawImage>();
-        _edgeRect = transform.Find("edge").GetComponent<RectTransform>();
-        _barMaskRect = transform.Find("barMask").GetComponent<RectTransform>();
-        _barMaskWidth = _barMaskRect.sizeDelta.x;
     }
 
     private void AnimateBar()
@@ -51,5 +43,19 @@ public class HealthBar : MonoBehaviour
         _barRawImage.color = _gradient.Evaluate(fillValue);
         _edgeRect.anchoredPosition = new Vector2(fillValue * _barMaskWidth, 0);
         _edgeRect.gameObject.SetActive(fillValue > 0 && fillValue < 1f);
+
+        HideIfnecessary(fillValue);
+    }
+
+    private void HideIfnecessary(float fillValue)
+    {
+        if (fillValue == 0 || fillValue == 1)
+        {
+            _barElementsContainer.SetActive(false);
+        }
+        else
+        {
+            _barElementsContainer.SetActive(true);
+        }
     }
 }

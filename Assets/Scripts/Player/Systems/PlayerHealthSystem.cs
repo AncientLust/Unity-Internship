@@ -92,14 +92,7 @@ public class PlayerHealthSystem : MonoBehaviour
             _health += _regenPerSecond * Time.deltaTime;
             _health = Mathf.Clamp(_health, 0, _maxHealth);
             _healthBar.SetFill(_health / _maxHealth);
-
-            HideHealthIfHealthy();
         }
-    }
-
-    public void HideHealthIfHealthy()
-    {
-        _healthBar.gameObject.SetActive(_health != _maxHealth);
     }
 
     private void ApplyStatsMultipliers(SPlayerStatsMultipliers stats)
