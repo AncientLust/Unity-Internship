@@ -77,9 +77,11 @@ public class PlayerStatsSystem : MonoBehaviour
     {
         _isBonusDamageActive = true;
         _multipliers.damage *= bonus;
+        _multipliers.reload = 0;
         onStatsChanged.Invoke(_multipliers);
         yield return new WaitForSeconds(duration);
         _multipliers.damage = GetLevelBasedDamage();
+        _multipliers.reload = GetLevelBasedReload();
         onStatsChanged.Invoke(_multipliers);
         _isBonusDamageActive = false;
 

@@ -11,7 +11,7 @@ public class EnemySpawner : MonoBehaviour
     private float _maxEnemySpawnTime = 2;
     private int _minEnemiesToSpawn = 1;
     private int _maxEnemiesToSpawn = 2;
-    private float _meleeEnemySpawnChance = .80f;
+    private float _meleeEnemySpawnChance = .75f;
     private int _baseEnemyLevel = 1;
     private int _enemyLevel;
     private Coroutine _spawnCoroutine;
