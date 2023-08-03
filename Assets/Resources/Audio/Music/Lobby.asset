@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: Lobby
   m_EditorClassIdentifier: 
   clip: {fileID: 8300000, guid: 6f7d346991baf644f988e8b6e8838073, type: 3}
-  volume: 0.75
+  volume: 0.4

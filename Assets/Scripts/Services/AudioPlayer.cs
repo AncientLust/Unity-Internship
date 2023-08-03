@@ -9,11 +9,13 @@ public class AudioPlayer : MonoBehaviour
     private float _musicFadeOutDuration = 1;
     private Dictionary<ESound, AudioClipData> soundClips = new Dictionary<ESound, AudioClipData>();
     private Dictionary<EMusic, AudioClipData> musicClips = new Dictionary<EMusic, AudioClipData>();
-    private AudioSource audioSource;
+    private AudioSource soundSource;
+    private AudioSource musicSource;
 
     private void Awake()
     {
-        audioSource = gameObject.AddComponent<AudioSource>();
+        soundSource = gameObject.AddComponent<AudioSource>();
+        musicSource = gameObject.AddComponent<AudioSource>();
 
         LoadSounds();
         LoadMusic();
@@ -31,7 +33,7 @@ public class AudioPlayer : MonoBehaviour
         foreach (AudioClipData audioData in allSounds)
         {
             ESound soundEnum;
-            if (Enum.TryParse(audioData.name, out soundEnum)) // If the audio file name can be parsed into an ESound enum
+            if (Enum.TryParse(audioData.name, out soundEnum)) 
             {
                 soundClips[soundEnum] = audioData;
             }
@@ -52,15 +54,15 @@ public class AudioPlayer : MonoBehaviour
 
     public void PlaySound(ESound sound)
     {
-        audioSource.PlayOneShot(soundClips[sound].clip, soundClips[sound].volume);
+        soundSource.PlayOneShot(soundClips[sound].clip, soundClips[sound].volume);
     }
 
     public void PlayMusic(EMusic music)
     {
-        audioSource.loop = true;
-        audioSource.clip = musicClips[music].clip;
-        audioSource.volume = musicClips[music].volume;
-        audioSource.Play();
+        musicSource.loop = true;
+        musicSource.clip = musicClips[music].clip;
+        musicSource.volume = musicClips[music].volume;
+        musicSource.Play();
     }
 
     public void FadeOutMusic()
@@ -70,37 +72,18 @@ public class AudioPlayer : MonoBehaviour
 
     private IEnumerator FadeOutMusicCoroutine()
     {
-        float startVolume = audioSource.volume;
+        float startVolume = musicSource.volume;
         float passedTime = 0;
 
-        while (audioSource.volume > 0)
+        while (musicSource.volume > 0)
         {
             passedTime += Time.deltaTime;
-            audioSource.volume -= startVolume * passedTime / _musicFadeOutDuration;
+            musicSource.volume -= startVolume * passedTime / _musicFadeOutDuration;
 
             yield return null;
         }
 
-        audioSource.Stop();
-        audioSource.volume = startVolume;
-    }
-
-    // Test section 
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Z)) 
-        {
-            PlaySound(ESound.PlayerDeath);
-        }
-
-        if (Input.GetKeyDown(KeyCode.X))
-        {
-            PlayMusic(EMusic.Lobby);
-        }
-
-        if (Input.GetKeyDown(KeyCode.C))
-        {
-            PlayMusic(EMusic.Game);
-        }
+        musicSource.Stop();
+        musicSource.volume = startVolume;
     }
 }

@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: Shotgun
   m_EditorClassIdentifier: 
   clip: {fileID: 8300000, guid: 1a9ba1cae54b96d4687035fb8acd26b0, type: 3}
-  volume: 0.5
+  volume: 0.4

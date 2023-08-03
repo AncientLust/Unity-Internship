@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: HealthRegeneration
   m_EditorClassIdentifier: 
   clip: {fileID: 8300000, guid: ed9e095ad80354c49b8e514949ec0479, type: 3}
-  volume: 2
+  volume: 3

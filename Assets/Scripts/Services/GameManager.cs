@@ -204,6 +204,7 @@ public class GameManager
     {
         _pauseManager.PauseGame();
         _uiRoot.SetUI(EUI.LevelCompleted);
+        _audioPlayer.PlaySound(ESound.LevelComplete);
         _audioPlayer.FadeOutMusic();
     }
 

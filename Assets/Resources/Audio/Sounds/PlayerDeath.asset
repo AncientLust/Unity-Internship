@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: PlayerDeath
   m_EditorClassIdentifier: 
   clip: {fileID: 8300000, guid: f05d42e4d4d373a4d8397d460747e75c, type: 3}
-  volume: 1
+  volume: 1.5

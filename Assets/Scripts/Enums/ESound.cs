@@ -4,7 +4,7 @@ namespace Enums
     {
         PlayerDeath,
         EnemyDeath,
-        GrenadeThrow,
+        LevelComplete,
         GrenadeExplosion,
         RageEffect,
         HealthRegeneration,

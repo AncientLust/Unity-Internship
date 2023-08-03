@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: Sniper
   m_EditorClassIdentifier: 
   clip: {fileID: 8300000, guid: 44a6c5a9399eed147a25c41ff9d47362, type: 3}
-  volume: 0.5
+  volume: 0.4

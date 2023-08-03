@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a68ee7ed1ff55b04bb5d20ba44bee474, type: 3}
   m_Name: MachineGun
   m_EditorClassIdentifier: 
-  clip: {fileID: 8300000, guid: bc8f87ede147a6b40b93c39c6fefe22c, type: 3}
-  volume: 0.5
+  clip: {fileID: 8300000, guid: 16dc573132d23a14aad4247da848370f, type: 3}
+  volume: 0.1
