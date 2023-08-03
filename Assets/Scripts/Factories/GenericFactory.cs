@@ -9,7 +9,7 @@ public class GenericFactory : IObjectFactory
     public GenericFactory()
     {
         _prefabDict = new Dictionary<string, GameObject>();
-        var prefabs = Resources.LoadAll<GameObject>("");
+        var prefabs = Resources.LoadAll<GameObject>("Prefabs");
         foreach (var prefab in prefabs)
         {
             _prefabDict[prefab.name] = prefab;

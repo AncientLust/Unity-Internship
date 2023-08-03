@@ -20,7 +20,7 @@ public class EnemySpawner : MonoBehaviour
     private ObjectPool _objectPool;
     private EnemyDisposalManager _disposalManager;
     private LevelProgressManager _levelProgressManager;
-
+     
     public void Init
     (
         Transform playerTransform, 

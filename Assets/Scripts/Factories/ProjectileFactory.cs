@@ -10,7 +10,7 @@ public class ProjectileFactory : IObjectFactory
     public ProjectileFactory()
     {
         _prefabDict = new Dictionary<string, GameObject>();
-        var prefabs = Resources.LoadAll<GameObject>("Projectiles");
+        var prefabs = Resources.LoadAll<GameObject>("Prefabs/Projectiles");
         foreach (var prefab in prefabs)
         {
             _prefabDict[prefab.name] = prefab;

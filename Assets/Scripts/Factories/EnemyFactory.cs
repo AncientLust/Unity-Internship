@@ -5,12 +5,13 @@ using Enums;
 public class EnemyFactory : IObjectFactory
 {
     private readonly Dictionary<string, GameObject> _prefabDict;
+    private AudioPlayer _audioPlayer;
     private ObjectPool _objectPool;
     private Transform _target;
     public EnemyFactory()
     {
         _prefabDict = new Dictionary<string, GameObject>();
-        var prefabs = Resources.LoadAll<GameObject>("Characters");
+        var prefabs = Resources.LoadAll<GameObject>("Prefabs/Characters");
         foreach (var prefab in prefabs)
         {
             _prefabDict[prefab.name] = prefab;
@@ -19,10 +20,12 @@ public class EnemyFactory : IObjectFactory
 
     public void Init
     (
+        AudioPlayer audioPlayer,
         ObjectPool objectPool, 
         Transform target
     )
     {
+        _audioPlayer = audioPlayer;
         _objectPool = objectPool;
         _target = target;
     }
@@ -54,7 +57,7 @@ public class EnemyFactory : IObjectFactory
     {
         var meleeEnemyObj = Object.Instantiate(prefab);
         var meleeEnemy = meleeEnemyObj.GetComponent<MeleeEnemy>();
-        meleeEnemy.Init(_target);
+        meleeEnemy.Init(_audioPlayer, _target);
         return meleeEnemyObj;
     }
 
@@ -62,7 +65,7 @@ public class EnemyFactory : IObjectFactory
     {
         var rangeEnemyObj = Object.Instantiate(prefab);
         var rangeEnemy = rangeEnemyObj.GetComponent<RangeEnemy>();
-        rangeEnemy.Init(_objectPool, _target);
+        rangeEnemy.Init(_audioPlayer, _objectPool, _target);
         return rangeEnemyObj;
     }
 }

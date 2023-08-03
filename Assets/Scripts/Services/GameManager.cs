@@ -13,7 +13,7 @@ public class GameManager
     private CameraController _cameraController;
     private PauseManager _pauseManager;
     private LevelProgressManager _levelProgressManager;
-
+    private AudioPlayer _audioPlayer;
     private EGameSession _eGameSession;
 
     public void Init(UIRoot uiRoot, 
@@ -24,7 +24,8 @@ public class GameManager
         ObjectPool objectPool,
         CameraController cameraController,
         PauseManager pauseManager,
-        LevelProgressManager levelProgressManager)
+        LevelProgressManager levelProgressManager,
+        AudioPlayer audioPlayer)
     {
         _uiRoot = uiRoot;
         _sceneObjectLoader = sceneObjectLoader;
@@ -35,6 +36,7 @@ public class GameManager
         _cameraController = cameraController;
         _pauseManager = pauseManager;
         _levelProgressManager = levelProgressManager;
+        _audioPlayer = audioPlayer;
 
         Subscribe();
     }
@@ -116,6 +118,7 @@ public class GameManager
         _iPlayerFacade.EnableForGameSession();
         _cameraController.MoveToPlayer();
         _levelProgressManager.ResetProgress();
+        _audioPlayer.PlayMusic(EMusic.Game);
     }
 
     private void PauseGame()
@@ -139,6 +142,7 @@ public class GameManager
         _uiRoot.SetUI(EUI.Menu);
         _sceneController.UnloadScene(EScene.Environment);
         _sceneController.UnloadScene(EScene.GameSession);
+        _audioPlayer.PlayMusic(EMusic.Lobby);
     }
 
     private void LoadGameFromMenu()
@@ -150,6 +154,7 @@ public class GameManager
         _iPlayerFacade.EnableForGameSession();
         _iPlayerFacade.LoadState();
         _cameraController.MoveToPlayer();
+        _audioPlayer.PlayMusic(EMusic.Game);
     }
 
     private void LoadGameFromPause()
@@ -164,6 +169,7 @@ public class GameManager
         _uiRoot.SetUI(EUI.HUD);
         _cameraController.MoveToPlayer();
         _pauseManager.ResumeGame();
+        _audioPlayer.PlayMusic(EMusic.Game);
     }
 
     private void SaveGame()
@@ -184,18 +190,21 @@ public class GameManager
         _levelProgressManager.ResetProgress();
         _cameraController.MoveToPlayer();
         _pauseManager.ResumeGame();
+        _audioPlayer.PlayMusic(EMusic.Game);
     }
 
     private void GameOver()
     {
         _uiRoot.SetUI(EUI.GameOver);
         _pauseManager.PauseGame();
+        _audioPlayer.FadeOutMusic();
     }
 
     private void LevelCompleted()
     {
         _pauseManager.PauseGame();
         _uiRoot.SetUI(EUI.LevelCompleted);
+        _audioPlayer.FadeOutMusic();
     }
 
     private void StartNextLevel()

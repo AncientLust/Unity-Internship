@@ -3,7 +3,8 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     public void Init(
-        ObjectPool objectPool, 
+        ObjectPool objectPool,
+        AudioPlayer audioPlayer,
         BonusRegenerationSkill bonusRegenerationSkill, 
         BonusDamageSkill bonusDamageSkill,
         ThrowGrenadeSkill throwGrenadeSkill)
@@ -22,6 +23,7 @@ public class Player : MonoBehaviour
         var effectsSystem = gameObject.AddComponent<PlayerEffectsSystem>();
         var throwSystem = gameObject.AddComponent<PlayerThrowSystem>();
         var animationSystem = gameObject.AddComponent<PlayerAnimationSystem>();
+        var soundSystem = gameObject.AddComponent<PlayerSoundSystem>();
 
         var skills = new ISkill[] { bonusRegenerationSkill, bonusDamageSkill, throwGrenadeSkill };
 
@@ -35,6 +37,7 @@ public class Player : MonoBehaviour
         throwSystem.Init(objectPool, throwGrenadeSkill);
         animationSystem.Init(rigidBody, healthSystem);
         inputSystem.Init(healthSystem);
+        soundSystem.Init(audioPlayer, healthSystem);
 
         playerFacade.Init(
             experienceSystem,

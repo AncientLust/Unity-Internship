@@ -9,6 +9,7 @@ public class Main : MonoBehaviour
     private EnemyFactory _enemyFactory;
     private ObjectPool _objectPool;
     private StandaloneInputModule _eventSystem;
+    private AudioPlayer _audioPlayer;
     private Transform _playerTransform;
     private Player _player;
     private IPlayerFacade _iPlayerFacade;
@@ -47,6 +48,7 @@ public class Main : MonoBehaviour
         _enemyDisposalManager = new EnemyDisposalManager();
 
         _eventSystem = new GameObject("EventSystem").AddComponent<StandaloneInputModule>();
+        _audioPlayer = new GameObject("AudioPlayer").AddComponent<AudioPlayer>();
         _cameraController = _genericFactory.Instantiate(EResource.MainCamera).GetComponent<CameraController>();
         _uiRoot = _genericFactory.Instantiate(EResource.UIRoot).GetComponent<UIRoot>();
         _hud = _uiRoot.GetComponentInChildren<HUD>(true);
@@ -56,6 +58,7 @@ public class Main : MonoBehaviour
         _player = _genericFactory.Instantiate(EResource.Player).GetComponent<Player>();
         _player.Init(
             _objectPool,
+            _audioPlayer,
             _uiRoot.GetComponentInChildren<BonusRegenerationSkill>(true),
             _uiRoot.GetComponentInChildren<BonusDamageSkill>(true),
             _uiRoot.GetComponentInChildren<ThrowGrenadeSkill>(true)
@@ -80,7 +83,7 @@ public class Main : MonoBehaviour
 
         _objectPool.Init(_projectileFactory, _enemyFactory);
         _projectileFactory.Init(_objectPool);
-        _enemyFactory.Init(_objectPool, _playerTransform);
+        _enemyFactory.Init(_audioPlayer, _objectPool, _playerTransform);
 
         _gameManager.Init(
             _uiRoot, 
@@ -91,7 +94,8 @@ public class Main : MonoBehaviour
             _objectPool, 
             _cameraController, 
             _pauseManager,
-            _levelProgressManager
+            _levelProgressManager,
+            _audioPlayer
         );
     }
 }
