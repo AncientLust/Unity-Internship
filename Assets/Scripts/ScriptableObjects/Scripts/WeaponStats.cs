@@ -1,7 +1,7 @@
 ﻿using Enums;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "New Weapon", menuName = "Weapon")]
+[CreateAssetMenu(fileName = "New Weapon", menuName = "ScriptableObjects/Weapon")]
 public class WeaponStats : ScriptableObject
 {
     public EWeaponType type;

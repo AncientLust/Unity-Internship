@@ -6,8 +6,8 @@ using UnityEngine;
 public class AudioPlayer : MonoBehaviour
 {
     private float _musicFadeOutDuration = 1;
-    private Dictionary<ESound, AudioClip> soundClips = new Dictionary<ESound, AudioClip>();
-    private Dictionary<EMusic, AudioClip> musicClips = new Dictionary<EMusic, AudioClip>();
+    private Dictionary<ESound, AudioClipData> soundClips = new Dictionary<ESound, AudioClipData>();
+    private Dictionary<EMusic, AudioClipData> musicClips = new Dictionary<EMusic, AudioClipData>();
     private AudioSource audioSource;
 
     private void Awake()
@@ -27,7 +27,7 @@ public class AudioPlayer : MonoBehaviour
     {
         foreach (ESound sound in System.Enum.GetValues(typeof(ESound)))
         {
-            soundClips[sound] = Resources.Load<AudioClip>($"Audio/Sounds/{sound}");
+            soundClips[sound] = Resources.Load<AudioClipData>($"Audio/Sounds/{sound}");
         }
     }
 
@@ -35,19 +35,20 @@ public class AudioPlayer : MonoBehaviour
     {
         foreach (EMusic music in System.Enum.GetValues(typeof(EMusic)))
         {
-            musicClips[music] = Resources.Load<AudioClip>($"Audio/Music/{music}");
+            musicClips[music] = Resources.Load<AudioClipData>($"Audio/Music/{music}");
         }
     }
 
     public void PlaySound(ESound sound)
     {
-        audioSource.PlayOneShot(soundClips[sound]);
+        audioSource.PlayOneShot(soundClips[sound].clip, soundClips[sound].volume);
     }
 
     public void PlayMusic(EMusic music)
     {
         audioSource.loop = true;
-        audioSource.clip = musicClips[music];
+        audioSource.clip = musicClips[music].clip;
+        audioSource.volume = musicClips[music].volume;
         audioSource.Play();
     }
 
