@@ -37,7 +37,7 @@ public class Player : MonoBehaviour
         throwSystem.Init(objectPool, throwGrenadeSkill);
         animationSystem.Init(rigidBody, healthSystem);
         inputSystem.Init(healthSystem);
-        soundSystem.Init(audioPlayer, healthSystem, bonusDamageSkill, bonusRegenerationSkill, throwGrenadeSkill);
+        soundSystem.Init(audioPlayer, healthSystem, bonusDamageSkill, bonusRegenerationSkill, throwGrenadeSkill, weaponSystem);
 
         playerFacade.Init(
             experienceSystem,

@@ -8,6 +8,7 @@ public class PlayerSoundSystem : MonoBehaviour
     private BonusDamageSkill _bonusDamageSkill;
     private BonusRegenerationSkill _bonusRegenerationSkill;
     private ThrowGrenadeSkill _throwGrenadeSkill;
+    private PlayerWeaponSystem _weaponSystem;
 
     public void Init
     (
@@ -15,13 +16,15 @@ public class PlayerSoundSystem : MonoBehaviour
         PlayerHealthSystem healthSystem,
         BonusDamageSkill bonusDamageSkill,
         BonusRegenerationSkill bonusRegenerationSkill,
-        ThrowGrenadeSkill throwGrenadeSkill)
+        ThrowGrenadeSkill throwGrenadeSkill,
+        PlayerWeaponSystem weaponSystem)
     {
         _audioPlayer = audioPlayer;
         _healthSystem = healthSystem;
         _bonusDamageSkill = bonusDamageSkill;
         _bonusRegenerationSkill = bonusRegenerationSkill;
         _throwGrenadeSkill = throwGrenadeSkill;
+        _weaponSystem = weaponSystem;
 
         Subscribe();
     }
@@ -42,6 +45,8 @@ public class PlayerSoundSystem : MonoBehaviour
         if (_bonusDamageSkill != null) _bonusDamageSkill.onActivation += (_, _) => _audioPlayer.PlaySound(ESound.RageEffect);
         if (_bonusRegenerationSkill != null) _bonusRegenerationSkill.onActivation += (_, _) => _audioPlayer.PlaySound(ESound.HealthRegeneration);
         if (_throwGrenadeSkill != null) _throwGrenadeSkill.onActivation += () => _audioPlayer.PlaySound(ESound.GrenadeThrow);
+        if (_weaponSystem != null) _weaponSystem.onReload += () => _audioPlayer.PlaySound(ESound.Reload);
+
     }
 
     private void Unsubscribe()
@@ -50,5 +55,6 @@ public class PlayerSoundSystem : MonoBehaviour
         if (_bonusDamageSkill != null) _bonusDamageSkill.onActivation -= (_, _) => _audioPlayer.PlaySound(ESound.RageEffect);
         if (_bonusRegenerationSkill != null) _bonusRegenerationSkill.onActivation -= (_, _) => _audioPlayer.PlaySound(ESound.HealthRegeneration);
         if (_throwGrenadeSkill != null) _throwGrenadeSkill.onActivation -= () => _audioPlayer.PlaySound(ESound.GrenadeThrow);
+        if (_weaponSystem != null) _weaponSystem.onReload -= () => _audioPlayer.PlaySound(ESound.Reload);
     }
 }

@@ -7,6 +7,10 @@ namespace Enums
         GrenadeThrow,
         GrenadeExplosion,
         RageEffect,
-        HealthRegeneration
+        HealthRegeneration,
+        Reload,
+        Pistol,
+        MachineGun,
+        Sniper
     }
 }

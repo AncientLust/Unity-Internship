@@ -18,6 +18,7 @@ public class PlayerWeaponSystem : MonoBehaviour
     private Queue<Coroutine> _reloadCoroutines = new Queue<Coroutine>();
     private bool _isActive;
 
+    public Action onReload;
     public Action<EWeaponType> onWeaponChanged;
     public Action<int> onAmmoChanged;
     public Action<float> onReloadProgressChanged;
@@ -117,6 +118,7 @@ public class PlayerWeaponSystem : MonoBehaviour
                 _currentWeapon.BeginReload();
                 var reloadSession = StartCoroutine(Reload(_currentWeapon));
                 _reloadCoroutines.Enqueue(reloadSession);
+                onReload.Invoke();
             }
         }
     }
