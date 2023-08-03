@@ -16,6 +16,7 @@ public class Weapon : MonoBehaviour
     public bool InReloading { get; private set; } = false;
     public int Ammo { get; private set; }
     public EWeaponType Type { get { return _stats.type; } }
+    public ESound ShootSound { get { return _stats.shootSound; } }
 
     public void Init(ObjectPool objectPool)
     {
@@ -114,6 +115,11 @@ public class Weapon : MonoBehaviour
     public bool HasEmptyClip()
     {
         return Ammo == 0;
+    }
+
+    public bool IsInDowntime()
+    {
+        return _inDowntime;
     }
 
     public void SetPrefabState(bool state)

@@ -19,6 +19,7 @@ public class PlayerWeaponSystem : MonoBehaviour
     private bool _isActive;
 
     public Action onReload;
+    public Action<ESound> onShoot;
     public Action<EWeaponType> onWeaponChanged;
     public Action<int> onAmmoChanged;
     public Action<float> onReloadProgressChanged;
@@ -97,12 +98,13 @@ public class PlayerWeaponSystem : MonoBehaviour
     {
         if (_isActive)
         {
-            if (!_currentWeapon.HasEmptyClip())
+            if (!_currentWeapon.HasEmptyClip() && !_currentWeapon.IsInDowntime())
             {
                 _currentWeapon.Shoot();
+                onShoot.Invoke(_currentWeapon.ShootSound);
                 onAmmoChanged.Invoke(_currentWeapon.Ammo);
             }
-            else
+            else if (_currentWeapon.HasEmptyClip())
             {
                 ReloadHandler();
             }

@@ -10,6 +10,8 @@ namespace Enums
         HealthRegeneration,
         Reload,
         Pistol,
+        Automate,
+        Shotgun,
         MachineGun,
         Sniper
     }

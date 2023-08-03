@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Enums;
@@ -25,9 +26,19 @@ public class AudioPlayer : MonoBehaviour
 
     private void LoadSounds()
     {
-        foreach (ESound sound in System.Enum.GetValues(typeof(ESound)))
+        AudioClipData[] allSounds = Resources.LoadAll<AudioClipData>("Audio/Sounds");
+
+        foreach (AudioClipData audioData in allSounds)
         {
-            soundClips[sound] = Resources.Load<AudioClipData>($"Audio/Sounds/{sound}");
+            ESound soundEnum;
+            if (Enum.TryParse(audioData.name, out soundEnum)) // If the audio file name can be parsed into an ESound enum
+            {
+                soundClips[soundEnum] = audioData;
+            }
+            else
+            {
+                Debug.LogError($"Audio file {audioData.name} does not correspond to an ESound enum value");
+            }
         }
     }
 

@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a68ee7ed1ff55b04bb5d20ba44bee474, type: 3}
-  m_Name: Lobby
+  m_Name: Shotgun
   m_EditorClassIdentifier: 
-  clip: {fileID: 8300000, guid: 6f7d346991baf644f988e8b6e8838073, type: 3}
-  volume: 0.75
+  clip: {fileID: 8300000, guid: 1a9ba1cae54b96d4687035fb8acd26b0, type: 3}
+  volume: 0.5

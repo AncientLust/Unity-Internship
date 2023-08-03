@@ -46,7 +46,7 @@ public class PlayerSoundSystem : MonoBehaviour
         if (_bonusRegenerationSkill != null) _bonusRegenerationSkill.onActivation += (_, _) => _audioPlayer.PlaySound(ESound.HealthRegeneration);
         if (_throwGrenadeSkill != null) _throwGrenadeSkill.onActivation += () => _audioPlayer.PlaySound(ESound.GrenadeThrow);
         if (_weaponSystem != null) _weaponSystem.onReload += () => _audioPlayer.PlaySound(ESound.Reload);
-
+        if (_weaponSystem != null) _weaponSystem.onShoot += (shootSound) => _audioPlayer.PlaySound(shootSound);
     }
 
     private void Unsubscribe()
@@ -56,5 +56,6 @@ public class PlayerSoundSystem : MonoBehaviour
         if (_bonusRegenerationSkill != null) _bonusRegenerationSkill.onActivation -= (_, _) => _audioPlayer.PlaySound(ESound.HealthRegeneration);
         if (_throwGrenadeSkill != null) _throwGrenadeSkill.onActivation -= () => _audioPlayer.PlaySound(ESound.GrenadeThrow);
         if (_weaponSystem != null) _weaponSystem.onReload -= () => _audioPlayer.PlaySound(ESound.Reload);
+        if (_weaponSystem != null) _weaponSystem.onShoot -= (shootSound) => _audioPlayer.PlaySound(shootSound);
     }
 }

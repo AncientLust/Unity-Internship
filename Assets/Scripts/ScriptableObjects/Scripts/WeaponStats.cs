@@ -15,4 +15,5 @@ public class WeaponStats : ScriptableObject
     public int projectilesPerShoot;
     public int projectileSpeed;
     public EProjectileType projectileType;
+    public ESound shootSound;
 }
