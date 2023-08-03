@@ -216,6 +216,7 @@ public class GameManager
         _enemySpawner.StartSpawn();
         _cameraController.MoveToPlayer();
         _uiRoot.SetUI(EUI.HUD);
+        _audioPlayer.PlayMusic(EMusic.Game);
     }
 
     private void QuitGame()
