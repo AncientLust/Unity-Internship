@@ -10,6 +10,7 @@ public class Main : MonoBehaviour
     private ObjectPool _objectPool;
     private StandaloneInputModule _eventSystem;
     private AudioPlayer _audioPlayer;
+    private IAudioPlayer _iAudioPlayer;
     private Transform _playerTransform;
     private Player _player;
     private IPlayerFacade _iPlayerFacade;
@@ -26,11 +27,14 @@ public class Main : MonoBehaviour
     private PauseManager _pauseManager;
     private EnemyDisposalManager _enemyDisposalManager;
     private LevelCompletedUI _levelCompletedUI;
+    private BonusRegenerationSkill _bonusRegenerationSkill;
+    private BonusDamageSkill _bonusDamageSkill;
+    private ThrowGrenadeSkill _throwGrenadeSkill;
 
     void Awake()
     {
         CreateObjects();
-        LinkObjects();
+        InitObjects();
     }
 
     private void CreateObjects()
@@ -49,19 +53,25 @@ public class Main : MonoBehaviour
 
         _eventSystem = new GameObject("EventSystem").AddComponent<StandaloneInputModule>();
         _audioPlayer = new GameObject("AudioPlayer").AddComponent<AudioPlayer>();
+        _iAudioPlayer = _audioPlayer.GetComponent<IAudioPlayer>();
+        
         _cameraController = _genericFactory.Instantiate(EResource.MainCamera).GetComponent<CameraController>();
         _uiRoot = _genericFactory.Instantiate(EResource.UIRoot).GetComponent<UIRoot>();
         _hud = _uiRoot.GetComponentInChildren<HUD>(true);
         _levelCompletedUI = _uiRoot.GetComponentInChildren<LevelCompletedUI>(true);
         _enemySpawner = _genericFactory.Instantiate(EResource.EnemySpawner).GetComponent<EnemySpawner>();
 
+        _bonusRegenerationSkill = _uiRoot.GetComponentInChildren<BonusRegenerationSkill>(true);
+        _bonusDamageSkill = _uiRoot.GetComponentInChildren<BonusDamageSkill>(true);
+        _throwGrenadeSkill = _uiRoot.GetComponentInChildren<ThrowGrenadeSkill>(true);
+
         _player = _genericFactory.Instantiate(EResource.Player).GetComponent<Player>();
         _player.Init(
             _objectPool,
-            _audioPlayer,
-            _uiRoot.GetComponentInChildren<BonusRegenerationSkill>(true),
-            _uiRoot.GetComponentInChildren<BonusDamageSkill>(true),
-            _uiRoot.GetComponentInChildren<ThrowGrenadeSkill>(true)
+            _iAudioPlayer,
+            _bonusRegenerationSkill,
+            _bonusDamageSkill,
+            _throwGrenadeSkill
         );
 
         _iHUDCompatible = _player.GetComponent<IHUDCompatible>();
@@ -71,7 +81,7 @@ public class Main : MonoBehaviour
         _iExperienceTaker = _player.GetComponent<IExperienceTaker>();
     }
 
-    private void LinkObjects()
+    private void InitObjects()
     {
         _hud.Init(_iHUDCompatible, _levelProgressManager);
         _sceneObjectBuilder.Init(_genericFactory);
@@ -84,6 +94,10 @@ public class Main : MonoBehaviour
         _objectPool.Init(_projectileFactory, _enemyFactory);
         _projectileFactory.Init(_objectPool);
         _enemyFactory.Init(_audioPlayer, _objectPool, _playerTransform);
+
+        _bonusRegenerationSkill.Init(_iAudioPlayer);
+        _bonusDamageSkill.Init(_iAudioPlayer);
+        _throwGrenadeSkill.Init(_iAudioPlayer);
 
         _gameManager.Init(
             _uiRoot, 

@@ -2,6 +2,7 @@ using System;
 using UnityEngine;
 using Structs;
 using System.Collections;
+using Enums;
 
 public class PlayerHealthSystem : MonoBehaviour
 {
@@ -16,6 +17,7 @@ public class PlayerHealthSystem : MonoBehaviour
     private PlayerExperienceSystem _experienceSystem;
     private PlayerStatsSystem _statsSystem;
     private HealthBar _healthBar;
+    private IAudioPlayer _iAudioPlayer;
 
     public event Action onDie;
     public event Action onDamaged;
@@ -23,10 +25,11 @@ public class PlayerHealthSystem : MonoBehaviour
 
     public float Health { get { return _health; } set { _health = value; } }
 
-    public void Init(PlayerStatsSystem statsSystem, PlayerExperienceSystem experienceSystem)
+    public void Init(PlayerStatsSystem statsSystem, PlayerExperienceSystem experienceSystem, IAudioPlayer iAudioPlayer)
     {
         _statsSystem = statsSystem;
         _experienceSystem = experienceSystem;
+        _iAudioPlayer = iAudioPlayer;
         Subscribe();
     }
 
@@ -57,7 +60,6 @@ public class PlayerHealthSystem : MonoBehaviour
     {
         _statsSystem.onStatsChanged += ApplyStatsMultipliers;
         _experienceSystem.onLevelChanged += (_) => RestoreHealth();
-    
     }
 
     private void Unsubscribe()
@@ -87,6 +89,7 @@ public class PlayerHealthSystem : MonoBehaviour
         if (_health <= 0)
         {
             _isDead = true;
+            _iAudioPlayer.PlaySound(ESound.PlayerDeath);
             onDie.Invoke();
             StartCoroutine(DelayedDeath());
         }

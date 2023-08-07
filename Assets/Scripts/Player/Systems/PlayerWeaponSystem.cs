@@ -11,25 +11,25 @@ public class PlayerWeaponSystem : MonoBehaviour
     private PlayerStatsSystem _statsSystem;
     private PlayerHealthSystem _healthSystem;
     private ObjectPool _objectPool;
-    
+    private IAudioPlayer _iAudioPlayer;
+
     private List<Weapon> _weapons;
     private Weapon _currentWeapon;
     private int _equippedWeaponIndex;
     private Queue<Coroutine> _reloadCoroutines = new Queue<Coroutine>();
     private bool _isActive;
 
-    public Action onReload;
-    public Action<ESound> onShoot;
     public Action<EWeaponType> onWeaponChanged;
     public Action<int> onAmmoChanged;
     public Action<float> onReloadProgressChanged;
     
-    public void Init(PlayerInputSystem inputSystem, PlayerStatsSystem statsSystem, ObjectPool objectPool, PlayerHealthSystem healthSystem)
+    public void Init(PlayerInputSystem inputSystem, PlayerStatsSystem statsSystem, ObjectPool objectPool, PlayerHealthSystem healthSystem, IAudioPlayer iAudioPlayer)
     {
         _playerInputSystem = inputSystem;
         _statsSystem = statsSystem;
         _healthSystem = healthSystem;
         _objectPool = objectPool;
+        _iAudioPlayer = iAudioPlayer;
 
         _isActive = true;
         SubscribeEvents();
@@ -98,10 +98,10 @@ public class PlayerWeaponSystem : MonoBehaviour
     {
         if (_isActive)
         {
-            if (!_currentWeapon.HasEmptyClip() && !_currentWeapon.IsInDowntime())
+            if (!_currentWeapon.HasEmptyClip() && !_currentWeapon.IsInDowntime() && !_currentWeapon.InReloading)
             {
                 _currentWeapon.Shoot();
-                onShoot.Invoke(_currentWeapon.ShootSound);
+                _iAudioPlayer.PlaySound(_currentWeapon.ShootSound);
                 onAmmoChanged.Invoke(_currentWeapon.Ammo);
             }
             else if (_currentWeapon.HasEmptyClip())
@@ -117,10 +117,10 @@ public class PlayerWeaponSystem : MonoBehaviour
         {
             if (!_currentWeapon.InReloading)
             {
+                _iAudioPlayer.PlaySound(ESound.Reload);
                 _currentWeapon.BeginReload();
                 var reloadSession = StartCoroutine(Reload(_currentWeapon));
                 _reloadCoroutines.Enqueue(reloadSession);
-                onReload.Invoke();
             }
         }
     }

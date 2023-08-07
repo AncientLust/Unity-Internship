@@ -1,3 +1,4 @@
+using Enums;
 using System;
 using System.Collections;
 using TMPro;
@@ -12,8 +13,13 @@ public class ThrowGrenadeSkill : MonoBehaviour, ISkill
     private float _cooldownDuration = 2;
     private float _cooldownLeft = 0;
     private bool _isReady = true;
-
+    private IAudioPlayer _iAudioPlayer;
     public event Action onActivation;
+
+    public void Init(IAudioPlayer iAudioPlayer)
+    {
+        _iAudioPlayer = iAudioPlayer;
+    }
 
     private void Start()
     {
@@ -40,6 +46,7 @@ public class ThrowGrenadeSkill : MonoBehaviour, ISkill
             
             StartCoroutine(Cooldown());
             onActivation.Invoke();
+            _iAudioPlayer.PlaySound(ESound.GrenadeExplosion);
         }
     }
 

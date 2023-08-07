@@ -1,3 +1,4 @@
+using Enums;
 using System;
 using System.Collections;
 using TMPro;
@@ -12,11 +13,15 @@ public class BonusRegenerationSkill : MonoBehaviour, ISkill
     private float _cooldownDuration = 10;
     private float _cooldownLeft = 0;
     private bool _isReady = true;
-
     private float _skillDuration = 5;
     private float _regenerationMultiplier = 6;
-
+    private IAudioPlayer _iAudioPlayer;
     public event Action<float, float> onActivation;
+
+    public void Init(IAudioPlayer iAudioPlayer)
+    {
+        _iAudioPlayer = iAudioPlayer;
+    }
 
     private void Start()
     {
@@ -43,6 +48,7 @@ public class BonusRegenerationSkill : MonoBehaviour, ISkill
             
             StartCoroutine(Cooldown());
             onActivation.Invoke(_skillDuration, _regenerationMultiplier);
+            _iAudioPlayer.PlaySound(ESound.HealthRegeneration);
         }
     }
 

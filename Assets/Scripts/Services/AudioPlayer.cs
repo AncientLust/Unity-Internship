@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using Enums;
 using UnityEngine;
 
-public class AudioPlayer : MonoBehaviour
+public class AudioPlayer : MonoBehaviour, IAudioPlayer
 {
     private float _musicFadeOutDuration = 1;
     private Dictionary<ESound, AudioClipData> soundClips = new Dictionary<ESound, AudioClipData>();

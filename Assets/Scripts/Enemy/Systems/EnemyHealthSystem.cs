@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using Structs;
+using Enums;
 
 public class EnemyHealthSystem : MonoBehaviour
 {
@@ -14,13 +15,15 @@ public class EnemyHealthSystem : MonoBehaviour
 
     private EnemyStatsSystem _statsSystem;
     private HealthBar _healthBar;
+    private IAudioPlayer _iAudioPlayer;
 
     public event Action onDamaged;
     public event Action onDie;
     
-    public void Init(EnemyStatsSystem statsSystem)
+    public void Init(EnemyStatsSystem statsSystem, IAudioPlayer iAudioPlayer)
     {
-        _statsSystem = statsSystem;        
+        _statsSystem = statsSystem;
+        _iAudioPlayer = iAudioPlayer;
         CacheComponents();
         Subscribe();
 
@@ -75,6 +78,7 @@ public class EnemyHealthSystem : MonoBehaviour
         if (_health <= 0)
         {
             _isDead = true;
+            _iAudioPlayer.PlaySound(ESound.EnemyDeath);
             onDie.Invoke();
         }
     }

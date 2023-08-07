@@ -4,7 +4,7 @@ public class Player : MonoBehaviour
 {
     public void Init(
         ObjectPool objectPool,
-        AudioPlayer audioPlayer,
+        IAudioPlayer audioPlayer,
         BonusRegenerationSkill bonusRegenerationSkill, 
         BonusDamageSkill bonusDamageSkill,
         ThrowGrenadeSkill throwGrenadeSkill)
@@ -23,21 +23,19 @@ public class Player : MonoBehaviour
         var effectsSystem = gameObject.AddComponent<PlayerEffectsSystem>();
         var throwSystem = gameObject.AddComponent<PlayerThrowSystem>();
         var animationSystem = gameObject.AddComponent<PlayerAnimationSystem>();
-        var soundSystem = gameObject.AddComponent<PlayerSoundSystem>();
 
         var skills = new ISkill[] { bonusRegenerationSkill, bonusDamageSkill, throwGrenadeSkill };
 
         statsSystem.Init(experienceSystem, bonusRegenerationSkill, bonusDamageSkill);
-        weaponSystem.Init(inputSystem, statsSystem, objectPool, healthSystem);
+        weaponSystem.Init(inputSystem, statsSystem, objectPool, healthSystem, audioPlayer);
         movementSystem.Init(statsSystem, inputSystem, rigidBody, healthSystem, collider);
-        healthSystem.Init(statsSystem, experienceSystem);
+        healthSystem.Init(statsSystem, experienceSystem, audioPlayer);
         saveLoadSystem.Init(experienceSystem, healthSystem);
         skillSystem.Init(inputSystem, skills);
         effectsSystem.Init(healthSystem, experienceSystem, bonusRegenerationSkill, bonusDamageSkill);
         throwSystem.Init(objectPool, throwGrenadeSkill);
         animationSystem.Init(rigidBody, healthSystem);
         inputSystem.Init(healthSystem);
-        soundSystem.Init(audioPlayer, healthSystem, bonusDamageSkill, bonusRegenerationSkill, throwGrenadeSkill, weaponSystem);
 
         playerFacade.Init(
             experienceSystem,

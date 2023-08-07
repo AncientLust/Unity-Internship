@@ -3,6 +3,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using Enums;
 
 public class BonusDamageSkill : MonoBehaviour, ISkill
 {
@@ -12,11 +13,15 @@ public class BonusDamageSkill : MonoBehaviour, ISkill
     private float _cooldownDuration = 10;
     private float _cooldownLeft = 0;
     private bool _isReady = true;
-
     private float _skillDuration = 5;
     private float _damageMultiplier = 2;
-
+    private IAudioPlayer _iAudioPlayer;
     public event Action<float, float> onActivation;
+
+    public void Init(IAudioPlayer iAudioPlayer)
+    {
+        _iAudioPlayer = iAudioPlayer;
+    }
 
     private void Start()
     {
@@ -42,6 +47,7 @@ public class BonusDamageSkill : MonoBehaviour, ISkill
             _coolDownText.enabled = true;
             StartCoroutine(Cooldown());
             onActivation.Invoke(_skillDuration, _damageMultiplier);
+            _iAudioPlayer.PlaySound(ESound.RageEffect);
         }
     }
 
