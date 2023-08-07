@@ -12,17 +12,20 @@ public class PlayerEffectsSystem : MonoBehaviour
     private PlayerExperienceSystem _experienceSystem;
     private BonusRegenerationSkill _bonusRegenerationSkill;
     private BonusDamageSkill _bonusDamageSkill;
+    private GameSettings _gameSettings;
 
     public void Init(
         PlayerHealthSystem healthSystem, 
         PlayerExperienceSystem experienceSystem,
         BonusRegenerationSkill bonusRegenerationSkill,
-        BonusDamageSkill bonusDamageSkill)
+        BonusDamageSkill bonusDamageSkill,
+        GameSettings gameSettings)
     {
         _healthSystem = healthSystem;
         _experienceSystem = experienceSystem;
         _bonusRegenerationSkill = bonusRegenerationSkill;
         _bonusDamageSkill = bonusDamageSkill;
+        _gameSettings = gameSettings;
         CacheComponents();
         Subscribe();
     }
@@ -68,15 +71,18 @@ public class PlayerEffectsSystem : MonoBehaviour
 
     private void PlayBloodSplat()
     {
-        if (!_bloodSplat.isPlaying) // Ask SettingsSystem if enabled
+        if (_gameSettings.IsBloodEffectEnabled)
         {
-            _bloodSplat.Play();
+            if (!_bloodSplat.isPlaying)
+            {
+                _bloodSplat.Play();
+            }
         }
     }
 
     private void PlayerLevelUp(int level)
     {
-        if (level != 1) // Ask SettingsSystem if enabled
+        if (level != 1)
         {
             _levelUp.Play();
         }

@@ -17,6 +17,7 @@ public class Main : MonoBehaviour
     private IHUDCompatible _iHUDCompatible;
     private CameraController _cameraController;
     private UIRoot _uiRoot;
+    private GameSettings _gameSettings;
     private HUD _hud;
     private EnemySpawner _enemySpawner;
     private SceneController _sceneLoader;
@@ -58,6 +59,7 @@ public class Main : MonoBehaviour
         _cameraController = _genericFactory.Instantiate(EResource.MainCamera).GetComponent<CameraController>();
         _uiRoot = _genericFactory.Instantiate(EResource.UIRoot).GetComponent<UIRoot>();
         _hud = _uiRoot.GetComponentInChildren<HUD>(true);
+        _gameSettings = _uiRoot.GetComponentInChildren<GameSettings>(true);
         _levelCompletedUI = _uiRoot.GetComponentInChildren<LevelCompletedUI>(true);
         _enemySpawner = _genericFactory.Instantiate(EResource.EnemySpawner).GetComponent<EnemySpawner>();
 
@@ -71,7 +73,8 @@ public class Main : MonoBehaviour
             _iAudioPlayer,
             _bonusRegenerationSkill,
             _bonusDamageSkill,
-            _throwGrenadeSkill
+            _throwGrenadeSkill,
+            _gameSettings
         );
 
         _iHUDCompatible = _player.GetComponent<IHUDCompatible>();
@@ -90,10 +93,11 @@ public class Main : MonoBehaviour
         _enemyDisposalManager.Init(_iExperienceTaker, _objectPool);
         _levelCompletedUI.Init(_levelProgressManager);
         _levelProgressManager.Init(_enemyDisposalManager);
+        _audioPlayer.Init(_gameSettings);
 
         _objectPool.Init(_projectileFactory, _enemyFactory);
         _projectileFactory.Init(_objectPool);
-        _enemyFactory.Init(_audioPlayer, _objectPool, _playerTransform);
+        _enemyFactory.Init(_audioPlayer, _gameSettings, _objectPool, _playerTransform);
 
         _bonusRegenerationSkill.Init(_iAudioPlayer);
         _bonusDamageSkill.Init(_iAudioPlayer);

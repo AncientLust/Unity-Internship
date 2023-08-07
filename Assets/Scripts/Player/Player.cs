@@ -7,7 +7,8 @@ public class Player : MonoBehaviour
         IAudioPlayer audioPlayer,
         BonusRegenerationSkill bonusRegenerationSkill, 
         BonusDamageSkill bonusDamageSkill,
-        ThrowGrenadeSkill throwGrenadeSkill)
+        ThrowGrenadeSkill throwGrenadeSkill,
+        GameSettings gameSettings)
     {
         var rigidBody = gameObject.GetComponent<Rigidbody>();
         var collider = gameObject.GetComponent<CapsuleCollider>();
@@ -32,7 +33,7 @@ public class Player : MonoBehaviour
         healthSystem.Init(statsSystem, experienceSystem, audioPlayer);
         saveLoadSystem.Init(experienceSystem, healthSystem);
         skillSystem.Init(inputSystem, skills);
-        effectsSystem.Init(healthSystem, experienceSystem, bonusRegenerationSkill, bonusDamageSkill);
+        effectsSystem.Init(healthSystem, experienceSystem, bonusRegenerationSkill, bonusDamageSkill, gameSettings);
         throwSystem.Init(objectPool, throwGrenadeSkill);
         animationSystem.Init(rigidBody, healthSystem);
         inputSystem.Init(healthSystem);

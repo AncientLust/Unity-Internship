@@ -31,12 +31,12 @@ public class RangeEnemy : MonoBehaviour
         _animationSystem = gameObject.AddComponent<EnemyAnimationSystem>();
     }
 
-    public void Init(IAudioPlayer iAudioPlayer, ObjectPool objectPool, Transform target)
+    public void Init(IAudioPlayer iAudioPlayer, ObjectPool objectPool, Transform target, GameSettings gameSettings)
     {
         _statsSystem.Init(_experienceSystem);
         _movementSystem.Init(target, _rigidBody, _collider, _statsSystem, _healthSystem, _followPlayerDistance);
         _healthSystem.Init(_statsSystem, iAudioPlayer);
-        _effectSystem.Init(_healthSystem);
+        _effectSystem.Init(_healthSystem, gameSettings);
         _weaponSystem.Init(_statsSystem, objectPool, _healthSystem);
         _enemyDisposalSystem.Init(_healthSystem);
         _animationSystem.Init(_healthSystem);

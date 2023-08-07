@@ -7,18 +7,48 @@ using UnityEngine;
 public class AudioPlayer : MonoBehaviour, IAudioPlayer
 {
     private float _musicFadeOutDuration = 1;
+    private float _currentMusicVolume;
     private Dictionary<ESound, AudioClipData> soundClips = new Dictionary<ESound, AudioClipData>();
     private Dictionary<EMusic, AudioClipData> musicClips = new Dictionary<EMusic, AudioClipData>();
     private AudioSource soundSource;
     private AudioSource musicSource;
+    private GameSettings _gameSettings;
+    private bool _isInitialized;
 
-    private void Awake()
+    public void Init(GameSettings gameSettings)
     {
+        _gameSettings = gameSettings;
+        _isInitialized = true;
+
         soundSource = gameObject.AddComponent<AudioSource>();
         musicSource = gameObject.AddComponent<AudioSource>();
 
         LoadSounds();
         LoadMusic();
+        Subscribe();
+    }
+
+    private void OnEnable()
+    {
+        if (_isInitialized)
+        {
+            Subscribe();
+        }  
+    }
+
+    private void OnDisable()
+    {
+        Unsubscribe();
+    }
+
+    private void Subscribe()
+    {
+        _gameSettings.onMusicVolumeChanged += SetMusicVolume;
+    }
+
+    private void Unsubscribe() 
+    {
+        _gameSettings.onMusicVolumeChanged -= SetMusicVolume;
     }
 
     private void Start()
@@ -46,7 +76,7 @@ public class AudioPlayer : MonoBehaviour, IAudioPlayer
 
     private void LoadMusic()
     {
-        foreach (EMusic music in System.Enum.GetValues(typeof(EMusic)))
+        foreach (EMusic music in Enum.GetValues(typeof(EMusic)))
         {
             musicClips[music] = Resources.Load<AudioClipData>($"Audio/Music/{music}");
         }
@@ -54,20 +84,27 @@ public class AudioPlayer : MonoBehaviour, IAudioPlayer
 
     public void PlaySound(ESound sound)
     {
-        soundSource.PlayOneShot(soundClips[sound].clip, soundClips[sound].volume);
+        var soundVolume = soundClips[sound].volume * _gameSettings.SoundVolume;
+        soundSource.PlayOneShot(soundClips[sound].clip, soundVolume);
     }
 
     public void PlayMusic(EMusic music)
     {
         musicSource.loop = true;
         musicSource.clip = musicClips[music].clip;
-        musicSource.volume = musicClips[music].volume;
+        musicSource.volume = musicClips[music].volume * _gameSettings.MusicVolume;
         musicSource.Play();
+        _currentMusicVolume = musicClips[music].volume;
     }
 
     public void FadeOutMusic()
     {
         StartCoroutine(FadeOutMusicCoroutine());
+    }
+
+    private void SetMusicVolume(float volume)
+    {
+        musicSource.volume = _currentMusicVolume * volume;
     }
 
     private IEnumerator FadeOutMusicCoroutine()

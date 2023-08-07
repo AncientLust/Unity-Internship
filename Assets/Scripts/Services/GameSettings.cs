@@ -1,36 +1,56 @@
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class GameSettings : Singleton<GameSettings>
+public class GameSettings : MonoBehaviour
 {
-    public bool BloodEffect { get; private set; } = true;
+    [SerializeField] Toggle _bloodEffectToggle;
+    [SerializeField] Slider _musicSlider;
+    [SerializeField] Slider _soundSlider;
 
-    private void Awake()
+    public bool IsBloodEffectEnabled { get; private set; } = true;
+    public float MusicVolume { get; private set; } = 1;
+    public float SoundVolume { get; private set; } = 1;
+
+    public event Action<float> onMusicVolumeChanged;
+
+    private void OnEnable()
     {
-        ApplyDontDestroyOnLoad();
+        Subscribe();
     }
 
-    private void ApplyDontDestroyOnLoad()
+    private void OnDisable()
     {
-        if (Instance != this)
-        {
-            Destroy(gameObject);
-            return;
-        }
-        else
-        {
-            DontDestroyOnLoad(gameObject);
-        }
+        Unsubscribe();
     }
 
-    public void InitializeBloodEffectToggle(Toggle toggle)
+    private void Subscribe()
     {
-        toggle.isOn = BloodEffect;
-        toggle.onValueChanged.AddListener(BloodEffectToggleValueChanged);
+        _bloodEffectToggle.onValueChanged.AddListener(EffectsToggleValueChanged);
+        _musicSlider.onValueChanged.AddListener(MusicValueChanged);
+        _soundSlider.onValueChanged.AddListener(SoundValueChanged);
     }
 
-    void BloodEffectToggleValueChanged(bool state)
+    private void Unsubscribe()
     {
-        BloodEffect = state;
+        _bloodEffectToggle.onValueChanged.RemoveListener(EffectsToggleValueChanged);
+        _musicSlider.onValueChanged.AddListener(MusicValueChanged);
+        _soundSlider.onValueChanged.AddListener(SoundValueChanged);
+    }
+
+    void EffectsToggleValueChanged(bool state)
+    {
+        IsBloodEffectEnabled = state;
+    }
+
+    private void MusicValueChanged(float value)
+    {
+        MusicVolume = value;
+        onMusicVolumeChanged.Invoke(value);
+    }
+
+    private void SoundValueChanged(float value)
+    {
+        SoundVolume = value;
     }
 }

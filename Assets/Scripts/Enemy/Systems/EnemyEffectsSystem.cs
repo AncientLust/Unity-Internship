@@ -4,21 +4,24 @@ public class EnemyEffectsSystem : MonoBehaviour
 {
     private ParticleSystem _bloodSplat;
     private EnemyHealthSystem _healthSystem;
-
+    private GameSettings _gameSettings;
     private bool _isInitialized = false;
 
-    public void Init(EnemyHealthSystem healthSystem)
+    public void Init(EnemyHealthSystem healthSystem, GameSettings gameSettings)
     {
         _healthSystem = healthSystem;
+        _gameSettings = gameSettings;
+        _isInitialized = true;
         CacheComponents();
         Subscribe();
-
-        _isInitialized = true;
     }
 
     private void OnEnable()
     {
-        Subscribe();
+        if (_isInitialized)
+        {
+            Subscribe();
+        }
     }
 
     private void OnDisable()
@@ -33,23 +36,12 @@ public class EnemyEffectsSystem : MonoBehaviour
 
     private void Subscribe()
     {
-        if (_healthSystem != null)
-        {
-            _healthSystem.onDamaged += PlayBloodSplat;
-        }
-
-        if (_isInitialized && _healthSystem == null)
-        {
-            Debug.LogError("Empty");
-        }
+        _healthSystem.onDamaged += PlayBloodSplat;
     }
 
     private void Unsubscribe()
     {
-        if (_healthSystem != null)
-        {
-            _healthSystem.onDamaged -= PlayBloodSplat;
-        }
+        _healthSystem.onDamaged -= PlayBloodSplat;
     }
 
     public void StopAllEffects()
@@ -60,9 +52,12 @@ public class EnemyEffectsSystem : MonoBehaviour
 
     private void PlayBloodSplat()
     {
-        if (!_bloodSplat.isPlaying) // Ask SettingsSystem if enabled
+        if (_gameSettings.IsBloodEffectEnabled)
         {
-            _bloodSplat.Play();
+            if (!_bloodSplat.isPlaying)
+            {
+                _bloodSplat.Play();
+            }
         }
     }
 }

@@ -6,6 +6,7 @@ public class EnemyFactory : IObjectFactory
 {
     private readonly Dictionary<string, GameObject> _prefabDict;
     private AudioPlayer _audioPlayer;
+    private GameSettings _gameSettings;
     private ObjectPool _objectPool;
     private Transform _target;
     public EnemyFactory()
@@ -21,11 +22,13 @@ public class EnemyFactory : IObjectFactory
     public void Init
     (
         AudioPlayer audioPlayer,
+        GameSettings gameSettings,
         ObjectPool objectPool, 
         Transform target
     )
     {
         _audioPlayer = audioPlayer;
+        _gameSettings = gameSettings;
         _objectPool = objectPool;
         _target = target;
     }
@@ -57,7 +60,7 @@ public class EnemyFactory : IObjectFactory
     {
         var meleeEnemyObj = Object.Instantiate(prefab);
         var meleeEnemy = meleeEnemyObj.GetComponent<MeleeEnemy>();
-        meleeEnemy.Init(_audioPlayer, _target);
+        meleeEnemy.Init(_audioPlayer, _target, _gameSettings);
         return meleeEnemyObj;
     }
 
@@ -65,7 +68,7 @@ public class EnemyFactory : IObjectFactory
     {
         var rangeEnemyObj = Object.Instantiate(prefab);
         var rangeEnemy = rangeEnemyObj.GetComponent<RangeEnemy>();
-        rangeEnemy.Init(_audioPlayer, _objectPool, _target);
+        rangeEnemy.Init(_audioPlayer, _objectPool, _target, _gameSettings);
         return rangeEnemyObj;
     }
 }

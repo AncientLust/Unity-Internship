@@ -31,13 +31,13 @@ public class MeleeEnemy : MonoBehaviour
         _animationSystem = gameObject.AddComponent<EnemyAnimationSystem>();
     }
 
-    public void Init(IAudioPlayer iAudioPlayer, Transform target)
+    public void Init(IAudioPlayer iAudioPlayer, Transform target, GameSettings gameSettings)
     {
         _statsSystem.Init(_experienceSystem);
         _movementSystem.Init(target, _rigidBody, _collider, _statsSystem, _healthSystem, _followPlayerDistance);
         _healthSystem.Init(_statsSystem, iAudioPlayer);
         _attackSystem.Init(_statsSystem);
-        _effectSystem.Init(_healthSystem);
+        _effectSystem.Init(_healthSystem, gameSettings);
         _enemyDisposalSystem.Init(_healthSystem);
         _animationSystem.Init(_healthSystem);
 
