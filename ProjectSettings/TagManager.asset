@@ -9,7 +9,9 @@ TagManager:
   - EnemyMelee
   - EnemyRange
   - Bullet
+  - Undefined
   - Rocket
+  - Explosion
   layers:
   - Default
   - TransparentFX

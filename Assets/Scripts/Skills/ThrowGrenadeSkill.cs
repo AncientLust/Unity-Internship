@@ -46,7 +46,6 @@ public class ThrowGrenadeSkill : MonoBehaviour, ISkill
             
             StartCoroutine(Cooldown());
             onActivation.Invoke();
-            _iAudioPlayer.PlaySound(ESound.GrenadeExplosion);
         }
     }
 

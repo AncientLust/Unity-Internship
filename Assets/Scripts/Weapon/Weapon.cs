@@ -67,7 +67,7 @@ public class Weapon : MonoBehaviour
 
     private void InitProjectile(Projectile projectile)
     {
-        projectile.Init(_objectPool, _stats.projectileSpeed, _stats.damage * DamageMultiplier, _stats.pushPower);
+        projectile.Launch(_stats.projectileSpeed, _stats.damage * DamageMultiplier, _stats.pushPower);
         projectile.transform.position = _shootPoint.position;
 
         var semiSpread = _stats.spreadAngle / 2;

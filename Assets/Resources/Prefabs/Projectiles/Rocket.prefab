@@ -4930,6 +4930,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6612817074376753292}
+  - {fileID: 719816677179968077}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!64 &2246031989681712037
@@ -4966,6 +4967,38 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 87480bbd14b6b2e4581368d27463e48d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _explosionPoint: {fileID: 719816677179968077}
+--- !u!1 &6365067443906104982
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 719816677179968077}
+  m_Layer: 0
+  m_Name: ExplosionPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &719816677179968077
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6365067443906104982}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0.995}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8592802102671844254}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &9029391152332200276
 GameObject:
   m_ObjectHideFlags: 0
@@ -4978,7 +5011,7 @@ GameObject:
   - component: {fileID: 3000793643422125687}
   - component: {fileID: 5547314384160973677}
   m_Layer: 0
-  m_Name: Rocket
+  m_Name: RocketObj
   m_TagString: Rocket
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

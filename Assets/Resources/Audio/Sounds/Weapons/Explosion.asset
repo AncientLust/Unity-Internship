@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a68ee7ed1ff55b04bb5d20ba44bee474, type: 3}
-  m_Name: GrenadeExplosion
+  m_Name: Explosion
   m_EditorClassIdentifier: 
   clip: {fileID: 8300000, guid: 0ff68e807deb4ef488a3f6a5d43d3dc0, type: 3}
   volume: 1.5

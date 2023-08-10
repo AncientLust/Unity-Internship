@@ -1,33 +1,34 @@
+using Enums;
 using System.Collections;
 using UnityEngine;
 
 public class Grenade : MonoBehaviour
 {
-    [SerializeField] private ParticleSystem _explosionEffect;
-
     private float _damage = 50;
     private float _explosionRadius = 3;
-    private float _explosionDelay = 0.25f;
-    private float _disappearDelay = 2;
+    private WaitForSeconds _detonationDelay = new WaitForSeconds(0.25f);
 
     private ObjectPool _objectPool;
+    private AudioPlayer _audioPlayer;
     private Rigidbody _rigidbody;
     private MeshCollider _meshCollider;
     private MeshRenderer _meshRenderer;
 
-    public void Init(ObjectPool objectPool, Vector3 position)
+    public void Init(ObjectPool objectPool, AudioPlayer audioPlayer)
     {
+        _audioPlayer = audioPlayer;
         _objectPool = objectPool;
+    }
+
+    public void Throw(Vector3 position, Vector3 throwDirection, float throwForce)
+    {
         _rigidbody.isKinematic = false;
         _meshRenderer.enabled = true;
         _meshCollider.enabled = true;
-        transform.position = position;
-    }
 
-    public void Throw(Vector3 throwDirection, float throwForce)
-    {
+        _rigidbody.position = position;
         _rigidbody.AddForce(throwDirection * throwForce, ForceMode.Impulse);
-        StartCoroutine(DelayedExplosion());
+        StartCoroutine(DelayedDetonation());
     }
 
     public void Awake()
@@ -42,27 +43,24 @@ public class Grenade : MonoBehaviour
         _meshCollider = GetComponent<MeshCollider>();
     }
 
-    private IEnumerator DelayedExplosion()
+    private IEnumerator DelayedDetonation()
     {
-        yield return new WaitForSeconds(_explosionDelay);
+        yield return _detonationDelay;
         Explosion();
         ApplyDamage();
-        StartCoroutine(DelayedReturnToPool());
-    }
-
-    private IEnumerator DelayedReturnToPool()
-    {
-        yield return new WaitForSeconds(_disappearDelay);
         _objectPool.Return(gameObject);
     }
 
     private void Explosion()
     {
-        _explosionEffect.transform.rotation = Quaternion.Euler(-90, 0, 0);
-        _explosionEffect.Play();
         _rigidbody.isKinematic = true;
         _meshRenderer.enabled = false;
         _meshCollider.enabled = false;
+
+        _audioPlayer.PlaySound(ESound.Explosion);
+        var explosion = _objectPool.Get(EResource.Explosion).GetComponent<Effect>();
+        explosion.transform.position = transform.position;
+        explosion.Play();
     }
 
     private void ApplyDamage()

@@ -4,6 +4,7 @@ public class Projectile : MonoBehaviour
 {
     protected Renderer _renderer;
     protected ObjectPool _objectPool;
+    protected AudioPlayer _audioPlayer;
 
     protected float _speed;
     protected float _damage;
@@ -11,15 +12,14 @@ public class Projectile : MonoBehaviour
 
     public bool IsPenetratiable { get; set; } = false;
 
-    public void Init
-    (
-        ObjectPool objectPool,
-        float speed,
-        float damage, 
-        float pushPower
-    )
+    public void Init(ObjectPool objectPool, AudioPlayer audioPlayer)
     {
         _objectPool = objectPool;
+        _audioPlayer = audioPlayer;
+    }
+
+    public void Launch(float speed, float damage, float pushPower)
+    {
         _speed = speed;
         _damage = damage;
         _pushPower = pushPower;

@@ -87,7 +87,6 @@ public class PlayerFacade : MonoBehaviour,
         _experienceSystem.SetLevel(1);
         _healthSystem.ResetHealth();
         _movementSystem.ResetPosition();
-        //_movementSystem.ResetVelosity();
         _weaponSystem.ResetWeapons();
         _skillSystem.ResetSkillsCooldown();
         _effectsSystem.StopAllEffects();
@@ -96,11 +95,6 @@ public class PlayerFacade : MonoBehaviour,
         _inputSystem.SetActive(true);
         _animationSystem.ResetState();
     }
-
-    //public void DisableForGameSession()
-    //{
-    //    SetInputHandling(false);
-    //}
 
     public void TakeDamage(float damage)
     {

@@ -11,7 +11,7 @@ public class EnemySpawner : MonoBehaviour
     private float _maxEnemySpawnTime = 2;
     private int _minEnemiesToSpawn = 1;
     private int _maxEnemiesToSpawn = 2;
-    private float _meleeEnemySpawnChance = .75f;
+    private float _meleeEnemySpawnChance = .075f;
     private int _baseEnemyLevel = 1;
     private int _enemyLevel;
     private Coroutine _spawnCoroutine;
@@ -33,7 +33,7 @@ public class EnemySpawner : MonoBehaviour
         _objectPool = objectPool;
         _disposalManager = disposalManager;
         _levelProgressManager = levelProgressManager;
-
+        //Time.timeScale = 0.5f;
         _enemyLevel = _baseEnemyLevel;
         _levelProgressManager.onGameLevelChanged += SetEnemyLevel;
     }

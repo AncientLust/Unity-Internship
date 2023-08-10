@@ -14,6 +14,8 @@ namespace Enums
         EnemyRange,
         Bullet,
         Rocket,
-        Grenade
+        Grenade,
+        Explosion,
+        BloodSplat
     }
 }

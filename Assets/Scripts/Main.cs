@@ -7,6 +7,8 @@ public class Main : MonoBehaviour
     private GenericFactory _genericFactory;
     private ProjectileFactory _projectileFactory;
     private EnemyFactory _enemyFactory;
+    private EffectFactory _effectFactory;
+    private GrenadeFactory _grenadeFactory;
     private ObjectPool _objectPool;
     private StandaloneInputModule _eventSystem;
     private AudioPlayer _audioPlayer;
@@ -43,6 +45,8 @@ public class Main : MonoBehaviour
         _genericFactory = new GenericFactory();
         _projectileFactory = new ProjectileFactory();
         _enemyFactory = new EnemyFactory();
+        _effectFactory = new EffectFactory();
+        _grenadeFactory = new GrenadeFactory();
         _objectPool = new ObjectPool();
         
         _pauseManager = new PauseManager();
@@ -95,9 +99,11 @@ public class Main : MonoBehaviour
         _levelProgressManager.Init(_enemyDisposalManager);
         _audioPlayer.Init(_gameSettings);
 
-        _objectPool.Init(_projectileFactory, _enemyFactory);
-        _projectileFactory.Init(_objectPool);
+        _objectPool.Init(_projectileFactory, _enemyFactory, _effectFactory, _grenadeFactory);
+        _projectileFactory.Init(_objectPool, _audioPlayer);
         _enemyFactory.Init(_audioPlayer, _gameSettings, _objectPool, _playerTransform);
+        _effectFactory.Init(_objectPool);
+        _grenadeFactory.Init(_objectPool, _audioPlayer);
 
         _bonusRegenerationSkill.Init(_iAudioPlayer);
         _bonusDamageSkill.Init(_iAudioPlayer);

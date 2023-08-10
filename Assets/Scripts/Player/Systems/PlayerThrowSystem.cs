@@ -34,7 +34,6 @@ public class PlayerThrowSystem : MonoBehaviour
     private void ThrowGrenade()
     {
         var grenade = _objectPool.Get(EResource.Grenade).GetComponent<Grenade>();
-        grenade.Init(_objectPool, _throwPoint.position);
-        grenade.Throw(_throwPoint.forward, _throwForce);
+        grenade.Throw(_throwPoint.position, _throwPoint.forward, _throwForce);
     }
 }
