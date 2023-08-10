@@ -98,7 +98,9 @@ public class PlayerWeaponSystem : MonoBehaviour
     {
         if (_isActive)
         {
-            if (!_currentWeapon.HasEmptyClip() && !_currentWeapon.IsInDowntime() && !_currentWeapon.InReloading)
+            if (!_currentWeapon.HasEmptyClip() && 
+                !_currentWeapon.IsInDowntime() && 
+                !_currentWeapon.InReloading)
             {
                 _currentWeapon.Shoot();
                 _iAudioPlayer.PlaySound(_currentWeapon.ShootSound);

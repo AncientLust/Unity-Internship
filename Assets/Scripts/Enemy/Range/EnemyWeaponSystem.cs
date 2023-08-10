@@ -5,24 +5,29 @@ using Structs;
 
 public class EnemyWeaponSystem : MonoBehaviour
 {
+    private float _firstShootDelay = 3;
+    private float _shootRepeatTime = 3;
     private EnemyStatsSystem _statsSystem;
     private ObjectPool _objectPool;
     private EnemyHealthSystem _healthSystem;
     private List<Weapon> _weapons;
     private Weapon _currentWeapon;
     private Queue<Coroutine> _reloadCoroutines = new Queue<Coroutine>();
+    private IAudioPlayer _iAudioPlayer;
     private bool _isInitializated = false;
     
-    public void Init(EnemyStatsSystem statsSystem, ObjectPool objectPool, EnemyHealthSystem healthSystem)
+    public void Init(EnemyStatsSystem statsSystem, ObjectPool objectPool, EnemyHealthSystem healthSystem, IAudioPlayer iAudioPlayer)
     {
         _statsSystem = statsSystem;
         _objectPool = objectPool;
         _healthSystem = healthSystem;
+        _iAudioPlayer = iAudioPlayer;
         _isInitializated = true;
+        
         CacheComponents();
         Subscribe();
         ResetWeapons();
-        InvokeRepeating("ShootHandler", 0, 1);
+        InvokeRepeating("ShootHandler", _firstShootDelay, _shootRepeatTime);
     }
 
     private void OnEnable()
@@ -31,7 +36,7 @@ public class EnemyWeaponSystem : MonoBehaviour
         {
             Subscribe();
             ResetWeapons();
-            InvokeRepeating("ShootHandler", 0, 1);
+            InvokeRepeating("ShootHandler", _firstShootDelay, _shootRepeatTime);
         }
     }
 
@@ -43,13 +48,10 @@ public class EnemyWeaponSystem : MonoBehaviour
 
     public void ResetWeapons()
     {
-        if (_isInitializated)
-        {
-            SortWeapons();
-            StopAllReloads();
-            InitWeapons();
-            EquipWeapon(0);
-        }
+        SortWeapons();
+        StopAllReloads();
+        InitWeapons();
+        EquipWeapon(0);
     }
 
     private void CacheComponents()
@@ -81,9 +83,12 @@ public class EnemyWeaponSystem : MonoBehaviour
 
     private void ShootHandler()
     {
-        if (!_currentWeapon.HasEmptyClip())
+        if (!_currentWeapon.HasEmptyClip() &&
+            !_currentWeapon.IsInDowntime() &&
+            !_currentWeapon.InReloading)
         {
             _currentWeapon.Shoot();
+            _iAudioPlayer.PlaySound(_currentWeapon.ShootSound);
         }
         else
         {
