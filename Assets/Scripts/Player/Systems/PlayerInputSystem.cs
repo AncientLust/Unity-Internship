@@ -7,6 +7,7 @@ public class PlayerInputSystem : MonoBehaviour
     private bool _isActive;
     private Vector3 _directionVetor;
     private PlayerHealthSystem _healthSystem;
+    private bool _isInitialized;
 
     public event Action onScrollUp;
     public event Action onScrollDown;
@@ -19,12 +20,16 @@ public class PlayerInputSystem : MonoBehaviour
     {
         _healthSystem = healthSystem;
         _isActive = false;
+        _isInitialized = true;
         Subscribe();
     }
 
     private void OnEnable()
     {
-        Subscribe();
+        if (_isInitialized)
+        {
+            Subscribe();
+        }
     }
 
     private void OnDisable()
@@ -34,12 +39,12 @@ public class PlayerInputSystem : MonoBehaviour
 
     private void Subscribe()
     {
-        if (_healthSystem != null) _healthSystem.onDie += () => _isActive = false;
+        _healthSystem.onDie += () => _isActive = false;
     }
 
     private void Unsubsribe()
     {
-        if (_healthSystem != null) _healthSystem.onDie -= () => _isActive = false;
+        _healthSystem.onDie -= () => _isActive = false;
     }
 
     private void Update()

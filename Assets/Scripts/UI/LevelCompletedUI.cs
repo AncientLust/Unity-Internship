@@ -7,28 +7,38 @@ public class LevelCompletedUI : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _nextLevelGoal;
 
     private LevelProgressManager _levelProgressManager;
+    private bool _isInitialized;
 
     public void Init(LevelProgressManager levelProgressManager)
     {
         _levelProgressManager = levelProgressManager;
+        _isInitialized = true;
+        Subscribe();
     }
 
     private void OnEnable()
     {
-        if (_levelProgressManager != null)
+        if (_isInitialized)
         {
-            _levelProgressManager.onGameLevelChanged += SetCompletedLevelNumber;
-            _levelProgressManager.onNextLevelGoalChanged += SetNextLevelGoal;
+            Subscribe();
         }
     }
 
     private void OnDisable()
     {
-        if (_levelProgressManager != null)
-        {
-            _levelProgressManager.onGameLevelChanged -= SetCompletedLevelNumber;
-            _levelProgressManager.onNextLevelGoalChanged -= SetNextLevelGoal;
-        }
+        Unsubscribe();
+    }
+
+    private void Subscribe()
+    {
+        _levelProgressManager.onGameLevelChanged += SetCompletedLevelNumber;
+        _levelProgressManager.onNextLevelGoalChanged += SetNextLevelGoal;
+    }
+
+    private void Unsubscribe()
+    {
+        _levelProgressManager.onGameLevelChanged -= SetCompletedLevelNumber;
+        _levelProgressManager.onNextLevelGoalChanged -= SetNextLevelGoal;
     }
 
     public void SetCompletedLevelNumber(int level)

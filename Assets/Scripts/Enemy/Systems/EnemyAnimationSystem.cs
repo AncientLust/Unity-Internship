@@ -4,23 +4,38 @@ public class EnemyAnimationSystem : MonoBehaviour
 {
     private Animator _animator;
     private EnemyHealthSystem _enemyHealthSystem;
+    private bool _isInitialized;
 
     public void Init(EnemyHealthSystem enemyHealthSystem)
     {
         _animator = GetComponent<Animator>();
         _enemyHealthSystem = enemyHealthSystem;
+        _isInitialized = true;
 
-        if (_enemyHealthSystem != null) _enemyHealthSystem.onDie += PlayDeath;
+        Subscribe();
     }
 
     private void OnEnable()
     {
-        if (_enemyHealthSystem != null) _enemyHealthSystem.onDie += PlayDeath;
+        if (_isInitialized)
+        {
+            Subscribe();
+        }
     }
 
     private void OnDisable()
     {
-        if (_enemyHealthSystem != null) _enemyHealthSystem.onDie -= PlayDeath;
+        Unsubscribe();
+    }
+
+    private void Subscribe()
+    {
+        _enemyHealthSystem.onDie += PlayDeath;
+    }
+
+    private void Unsubscribe()
+    {
+        _enemyHealthSystem.onDie -= PlayDeath;
     }
 
     private void PlayDeath()

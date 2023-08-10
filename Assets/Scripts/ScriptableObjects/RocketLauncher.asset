@@ -23,4 +23,4 @@ MonoBehaviour:
   projectilesPerShoot: 1
   projectileSpeed: 8
   projectileType: 1
-  shootSound: 3
+  shootSound: 12

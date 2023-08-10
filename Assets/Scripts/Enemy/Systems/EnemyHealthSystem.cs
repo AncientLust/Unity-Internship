@@ -12,6 +12,7 @@ public class EnemyHealthSystem : MonoBehaviour
     private float _health;
     private float _regenPerSecond;
     private bool _isDead;
+    private bool _isInitialized;
 
     private EnemyStatsSystem _statsSystem;
     private HealthBar _healthBar;
@@ -36,7 +37,10 @@ public class EnemyHealthSystem : MonoBehaviour
 
     private void OnEnable()
     {
-        Subscribe();
+        if (_isInitialized)
+        {
+            Subscribe();
+        }
     }
 
     private void OnDisable()
@@ -46,12 +50,12 @@ public class EnemyHealthSystem : MonoBehaviour
 
     private void Subscribe()
     {
-        if (_statsSystem != null) _statsSystem.onStatsChanged += ApplyLevelUpMultipliers;
+        _statsSystem.onStatsChanged += ApplyLevelUpMultipliers;
     }
 
     private void Unsubscribe()
     {
-        if (_statsSystem != null) _statsSystem.onStatsChanged -= ApplyLevelUpMultipliers;
+        _statsSystem.onStatsChanged -= ApplyLevelUpMultipliers;
     }
 
     private void Update()

@@ -6,18 +6,23 @@ public class PlayerAnimationSystem : MonoBehaviour
     private Rigidbody _rigidbody;
     private PlayerHealthSystem _healthSystem;
     private float _velocityTreshhold = 1;
+    private bool _isInitialized;
 
     public void Init(Rigidbody rigidbody, PlayerHealthSystem healthSystem)
     {
         _animator = GetComponent<Animator>();
         _rigidbody = rigidbody;
         _healthSystem = healthSystem;
+        _isInitialized = true;
         Subscribe();
     }
 
     private void OnEnable()
     {
-        Subscribe();
+        if (_isInitialized)
+        {
+            Subscribe();
+        }
     }
 
     private void OnDisable()
@@ -27,12 +32,12 @@ public class PlayerAnimationSystem : MonoBehaviour
 
     private void Subscribe()
     {
-        if (_healthSystem != null) _healthSystem.onDie += PlayerDeath;
+        _healthSystem.onDie += PlayerDeath;
     }
 
     private void Unsubscribe()
     {
-        if (_healthSystem != null) _healthSystem.onDie -= PlayerDeath;
+        _healthSystem.onDie -= PlayerDeath;
     }
 
     private void Update()

@@ -12,6 +12,7 @@ public class EnemyEffectsSystem : MonoBehaviour
         _healthSystem = healthSystem;
         _gameSettings = gameSettings;
         _isInitialized = true;
+
         CacheComponents();
         Subscribe();
     }

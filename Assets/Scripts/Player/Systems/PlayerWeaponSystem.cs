@@ -32,7 +32,7 @@ public class PlayerWeaponSystem : MonoBehaviour
         _iAudioPlayer = iAudioPlayer;
 
         _isActive = true;
-        SubscribeEvents();
+        Subscribe();
     }
 
     private void Awake()
@@ -56,7 +56,7 @@ public class PlayerWeaponSystem : MonoBehaviour
 
     private void OnDisable()
     {
-        UnsubscribeEvents();
+        Unsubscribe();
     }
 
     private void CacheComponents()
@@ -64,7 +64,7 @@ public class PlayerWeaponSystem : MonoBehaviour
         _weapons = new List<Weapon>(GetComponentsInChildren<Weapon>(true));
     }
 
-    private void SubscribeEvents()
+    private void Subscribe()
     {
         _playerInputSystem.onScrollUp += EquipNextWeapon;
         _playerInputSystem.onScrollDown += EquipPreviousWeapon;
@@ -74,7 +74,7 @@ public class PlayerWeaponSystem : MonoBehaviour
         _healthSystem.onDie += DisableAllWeapons;
     }
 
-    private void UnsubscribeEvents()
+    private void Unsubscribe()
     {
         _playerInputSystem.onScrollUp -= EquipNextWeapon;
         _playerInputSystem.onScrollDown -= EquipPreviousWeapon;

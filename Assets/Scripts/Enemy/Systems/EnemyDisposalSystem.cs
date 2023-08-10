@@ -1,24 +1,28 @@
 using System;
 using System.Collections;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class EnemyDisposalSystem : MonoBehaviour
 {
     private EnemyHealthSystem _healthSystem;
-    private WaitForSeconds _disposalDelay = new WaitForSeconds(2.5f);
+    private WaitForSeconds _disposalDelay = new (2.5f);
+    private bool _isInitialized;
 
     public Action<GameObject> onDisposal;
 
     public void Init(EnemyHealthSystem healthSystem)
     {
         _healthSystem = healthSystem;
+        _isInitialized = true;
         Subscribe();
     }
 
     private void OnEnable()
     {
-        Subscribe();
+        if (_isInitialized)
+        {
+            Subscribe();
+        }
     }
 
     private void OnDisable()
@@ -28,12 +32,12 @@ public class EnemyDisposalSystem : MonoBehaviour
 
     private void Subscribe()
     {
-        if (_healthSystem != null) _healthSystem.onDie += () => StartCoroutine(OnDieHandler());
+        _healthSystem.onDie += () => StartCoroutine(OnDieHandler());
     }
 
     private void Unsubscribe()
     {
-        if (_healthSystem != null) _healthSystem.onDie -= () => StartCoroutine(OnDieHandler());
+        _healthSystem.onDie -= () => StartCoroutine(OnDieHandler());
     }
 
     private IEnumerator OnDieHandler()

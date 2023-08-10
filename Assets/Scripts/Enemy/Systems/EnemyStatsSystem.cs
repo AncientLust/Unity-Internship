@@ -6,7 +6,8 @@ public class EnemyStatsSystem : MonoBehaviour
 {
     private EnemyExperienceSystem _experienceSystem;
     private SEnemyStatsMultipliers _multipliers;
-    
+    private bool _isInitialized;
+
     private struct _levelUpGrowth
     {
         public const float damage = .05f;
@@ -22,12 +23,16 @@ public class EnemyStatsSystem : MonoBehaviour
     public void Init(EnemyExperienceSystem levelsystem)
     {
         _experienceSystem = levelsystem;
+        _isInitialized = true;
         Subscribe();
     }
 
     private void OnEnable()
     {
-        Subscribe();
+        if (_isInitialized)
+        {
+            Subscribe();
+        }
     }
 
     private void OnDisable()
@@ -37,12 +42,12 @@ public class EnemyStatsSystem : MonoBehaviour
 
     private void Subscribe()
     {
-        if (_experienceSystem != null) _experienceSystem.OnLevelChanged += SetLevelStats;
+        _experienceSystem.OnLevelChanged += SetLevelStats;
     }
 
     private void Unsubsribe()
     {
-        if (_experienceSystem != null) _experienceSystem.OnLevelChanged -= SetLevelStats;
+        _experienceSystem.OnLevelChanged -= SetLevelStats;
     }
 
     private void SetLevelStats(int level)

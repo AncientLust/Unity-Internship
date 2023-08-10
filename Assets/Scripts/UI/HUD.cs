@@ -14,17 +14,23 @@ public class HUD : MonoBehaviour
 
     private IHUDCompatible _iHUDCompatible;
     private LevelProgressManager _levelProgressManager;
+    private bool _isInitialized;
 
     public void Init(IHUDCompatible iHUDCompatible, LevelProgressManager levelProgressManager)
     {
         _iHUDCompatible = iHUDCompatible;
         _levelProgressManager = levelProgressManager;
+        _isInitialized = true;
+
         SubscribeEvents();
     }
 
     private void OnEnable()
     {
-        SubscribeEvents();
+        if (_isInitialized)
+        {
+            SubscribeEvents();
+        }
     }
 
     private void OnDisable()
@@ -34,39 +40,27 @@ public class HUD : MonoBehaviour
 
     private void SubscribeEvents()
     {
-        if (_iHUDCompatible != null)
-        {
-            _iHUDCompatible.onWeaponChanged += UpdateEquippedWeapon;
-            _iHUDCompatible.onAmmoChanged += UpdateAmmo;
-            _iHUDCompatible.onReloadProgressChanged += SetReloadBarValue;
-            _iHUDCompatible.onLevelChanged += UpdatePlayerLevel;
-            _iHUDCompatible.onExperienceProgressChanged += UpdateExperienceProgress;
-            _iHUDCompatible.onStatsChanged += UpdateStats;   
-        }
+        _iHUDCompatible.onWeaponChanged += UpdateEquippedWeapon;
+        _iHUDCompatible.onAmmoChanged += UpdateAmmo;
+        _iHUDCompatible.onReloadProgressChanged += SetReloadBarValue;
+        _iHUDCompatible.onLevelChanged += UpdatePlayerLevel;
+        _iHUDCompatible.onExperienceProgressChanged += UpdateExperienceProgress;
+        _iHUDCompatible.onStatsChanged += UpdateStats;
 
-        if (_levelProgressManager != null)
-        {
-            _levelProgressManager.onKillProgressChnaged += UpdateLevelKillProgress;
-            _levelProgressManager.onGameLevelChanged += SetGameLevel;
-        }
+        _levelProgressManager.onKillProgressChnaged += UpdateLevelKillProgress;
+        _levelProgressManager.onGameLevelChanged += SetGameLevel;
     }
 
     private void UnsubscribeEvents()
     {
-        if (_iHUDCompatible != null)
-        {
-            _iHUDCompatible.onWeaponChanged -= UpdateEquippedWeapon;
-            _iHUDCompatible.onAmmoChanged -= UpdateAmmo;
-            _iHUDCompatible.onLevelChanged -= UpdatePlayerLevel;
-            _iHUDCompatible.onExperienceProgressChanged -= UpdateExperienceProgress;
-            _iHUDCompatible.onStatsChanged -= UpdateStats;
-        }
+        _iHUDCompatible.onWeaponChanged -= UpdateEquippedWeapon;
+        _iHUDCompatible.onAmmoChanged -= UpdateAmmo;
+        _iHUDCompatible.onLevelChanged -= UpdatePlayerLevel;
+        _iHUDCompatible.onExperienceProgressChanged -= UpdateExperienceProgress;
+        _iHUDCompatible.onStatsChanged -= UpdateStats;
 
-        if (_levelProgressManager != null)
-        {
-            _levelProgressManager.onKillProgressChnaged -= UpdateLevelKillProgress;
-            _levelProgressManager.onGameLevelChanged -= SetGameLevel;
-        }
+        _levelProgressManager.onKillProgressChnaged -= UpdateLevelKillProgress;
+        _levelProgressManager.onGameLevelChanged -= SetGameLevel;
     }
 
     private void UpdateEquippedWeapon(EWeaponType weapon)

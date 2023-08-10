@@ -27,6 +27,11 @@ public class UIRoot : MonoBehaviour
     public event Action onGameOverMenuPressed;
     public event Action onStartNextLevel;
 
+    private void Awake()
+    {
+        SetUI(EUI.Menu);
+    }
+
     private void OnEnable()
     {
         _menuButton.start.onClick.AddListener(() => onStartPressed.Invoke());
@@ -46,11 +51,6 @@ public class UIRoot : MonoBehaviour
         _gameOverButton.restart.onClick.AddListener(() => onGameOverRestartPressed.Invoke());
         _gameOverButton.menu.onClick.AddListener(() => onGameOverMenuPressed.Invoke());
         _levelCompleteButton.continueGame.onClick.AddListener(() => onStartNextLevel.Invoke());
-    }
-
-    private void Awake()
-    {
-        SetUI(EUI.Menu);
     }
 
     private void OnDisable()

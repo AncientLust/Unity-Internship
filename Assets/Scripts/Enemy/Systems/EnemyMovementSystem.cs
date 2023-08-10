@@ -42,8 +42,11 @@ public class EnemyMovementSystem : MonoBehaviour
 
     private void OnEnable()
     {
-        StartMoving();
-        Subscribe();
+        if (_isInitialized)
+        {
+            StartMoving();
+            Subscribe();
+        }
     }
 
     private void OnDisable()
@@ -53,14 +56,14 @@ public class EnemyMovementSystem : MonoBehaviour
 
     private void Subscribe()
     {
-        if (_statsSystem != null) _statsSystem.onStatsChanged += ApplyLevelUpMultipliers;
-        if (_healthSystem != null) _healthSystem.onDie += StopMoving;
+        _statsSystem.onStatsChanged += ApplyLevelUpMultipliers;
+        _healthSystem.onDie += StopMoving;
     }
 
     private void Unsubscribe()
     {
-        if (_statsSystem != null) _statsSystem.onStatsChanged -= ApplyLevelUpMultipliers;
-        if (_healthSystem != null) _healthSystem.onDie -= StopMoving;
+        _statsSystem.onStatsChanged -= ApplyLevelUpMultipliers;
+        _healthSystem.onDie -= StopMoving;
     }
 
     private void FixedUpdate()

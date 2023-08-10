@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a68ee7ed1ff55b04bb5d20ba44bee474, type: 3}
   m_Name: RocketLauncher
   m_EditorClassIdentifier: 
-  clip: {fileID: 8300000, guid: 44a6c5a9399eed147a25c41ff9d47362, type: 3}
-  volume: 0.4
+  clip: {fileID: 8300000, guid: 13a7485b579277f4faf9e7e9654346c6, type: 3}
+  volume: 0.5
