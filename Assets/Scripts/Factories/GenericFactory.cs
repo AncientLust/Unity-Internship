@@ -1,31 +1,29 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Enums;
+using System;
 
 public class GenericFactory : IObjectFactory
 {
-    private readonly Dictionary<string, GameObject> _prefabDict;
+    private readonly Dictionary<EResource, GameObject> _prefabDict = new();
 
     public GenericFactory()
     {
-        _prefabDict = new Dictionary<string, GameObject>();
         var prefabs = Resources.LoadAll<GameObject>("Prefabs");
         foreach (var prefab in prefabs)
         {
-            _prefabDict[prefab.name] = prefab;
+            if (Enum.TryParse(prefab.name, out EResource resource))
+            {
+                _prefabDict[resource] = prefab;
+                continue;
+            }
+
+            Debug.LogError($"EResource doesn't have value {prefab.name}.");
         }
     }
 
     public GameObject Instantiate(EResource resource)
     {
-        if (_prefabDict.TryGetValue(resource.ToString(), out var prefab))
-        {
-            return Object.Instantiate(prefab);
-        }
-        else
-        {
-            Debug.LogError($"No prefab found with name {resource}");
-            return null;
-        }
+        return UnityEngine.Object.Instantiate(_prefabDict[resource]);
     }
 }

@@ -5,24 +5,22 @@ using UnityEngine;
 
 public class GrenadeFactory : IObjectFactory
 {
-    private readonly Dictionary<EResource, GameObject> _prefabDict;
+    private readonly Dictionary<EResource, GameObject> _prefabDict = new();
     private ObjectPool _objectPool;
     private AudioPlayer _audioPlayer;
 
     public GrenadeFactory()
     {
-        _prefabDict = new Dictionary<EResource, GameObject>();
         var prefabs = Resources.LoadAll<GameObject>("Prefabs/Throwables");
         foreach (var prefab in prefabs)
         {
             if (Enum.TryParse(prefab.name, out EResource resource))
             {
                 _prefabDict[resource] = prefab;
+                continue;
             }
-            else
-            {
-                Debug.LogError($"EResource doesn't have {prefab.name} element.");
-            }
+
+            Debug.LogError($"EResource doesn't have value {prefab.name}.");
         }
     }
 

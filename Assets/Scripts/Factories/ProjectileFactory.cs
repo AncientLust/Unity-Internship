@@ -1,20 +1,26 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Enums;
+using System;
 
 public class ProjectileFactory : IObjectFactory
 {
-    private readonly Dictionary<string, GameObject> _prefabDict;
+    private readonly Dictionary<EResource, GameObject> _prefabDict = new();
     private ObjectPool _objectPool;
     private AudioPlayer _audioPlayer;
 
     public ProjectileFactory()
     {
-        _prefabDict = new Dictionary<string, GameObject>();
         var prefabs = Resources.LoadAll<GameObject>("Prefabs/Projectiles");
         foreach (var prefab in prefabs)
         {
-            _prefabDict[prefab.name] = prefab;
+            if (Enum.TryParse(prefab.name, out EResource resource))
+            {
+                _prefabDict[resource] = prefab;
+                continue;
+            }
+
+            Debug.LogError($"EResource doesn't have value {prefab.name}.");
         }
     }
 
@@ -26,17 +32,9 @@ public class ProjectileFactory : IObjectFactory
 
     public GameObject Instantiate(EResource resource)
     {
-        if (_prefabDict.TryGetValue(resource.ToString(), out var prefab))
-        {
-            var projectileObj = Object.Instantiate(prefab);
-            var projectile = projectileObj.GetComponent<Projectile>();
-            projectile.Init(_objectPool, _audioPlayer);
-            return projectileObj;
-        }
-        else
-        {
-            Debug.LogError($"No prefab found with name {resource}");
-            return null;
-        }
+        var projectileObj = UnityEngine.Object.Instantiate(_prefabDict[resource]);
+        var projectile = projectileObj.GetComponent<Projectile>();
+        projectile.Init(_objectPool, _audioPlayer);
+        return projectileObj;
     }
 }

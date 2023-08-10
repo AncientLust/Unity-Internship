@@ -1,21 +1,27 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Enums;
+using System;
 
 public class EnemyFactory : IObjectFactory
 {
-    private readonly Dictionary<string, GameObject> _prefabDict;
+    private readonly Dictionary<EResource, GameObject> _prefabDict = new();
     private AudioPlayer _audioPlayer;
     private GameSettings _gameSettings;
     private ObjectPool _objectPool;
     private Transform _target;
     public EnemyFactory()
     {
-        _prefabDict = new Dictionary<string, GameObject>();
         var prefabs = Resources.LoadAll<GameObject>("Prefabs/Characters");
         foreach (var prefab in prefabs)
         {
-            _prefabDict[prefab.name] = prefab;
+            if (Enum.TryParse(prefab.name, out EResource resource))
+            {
+                _prefabDict[resource] = prefab;
+                continue;
+            }
+
+            Debug.LogError($"EResource doesn't have value {prefab.name}.");
         }
     }
 
@@ -35,38 +41,30 @@ public class EnemyFactory : IObjectFactory
 
     public GameObject Instantiate(EResource resource)
     {
-        if (_prefabDict.TryGetValue(resource.ToString(), out var prefab))
+        if (resource == EResource.EnemyMelee)
         {
-            if (prefab.CompareTag(EResource.EnemyMelee.ToString()))
-            {
-                return CreateMeleeEnemy(prefab);
-            }
-
-            if (prefab.CompareTag(EResource.EnemyRange.ToString()))
-            {
-                return CreateAndInitRangeEnemy(prefab);
-            }
-
-            throw new System.Exception("");
+            return CreateMeleeEnemy(resource);
         }
-        else
+
+        if (resource == EResource.EnemyRange)
         {
-            Debug.LogError($"No prefab found with name {resource}");
-            return null;
+            return CreateAndInitRangeEnemy(resource);
         }
+
+        throw new Exception("The resource must be eather EnemyMelee or EnemyRange.");
     }
 
-    private GameObject CreateMeleeEnemy(GameObject prefab)
+    private GameObject CreateMeleeEnemy(EResource resource)
     {
-        var meleeEnemyObj = Object.Instantiate(prefab);
+        var meleeEnemyObj = UnityEngine.Object.Instantiate(_prefabDict[resource]);
         var meleeEnemy = meleeEnemyObj.GetComponent<MeleeEnemy>();
         meleeEnemy.Init(_audioPlayer, _target, _gameSettings);
         return meleeEnemyObj;
     }
 
-    private GameObject CreateAndInitRangeEnemy(GameObject prefab)
+    private GameObject CreateAndInitRangeEnemy(EResource resource)
     {
-        var rangeEnemyObj = Object.Instantiate(prefab);
+        var rangeEnemyObj = UnityEngine.Object.Instantiate(_prefabDict[resource]);
         var rangeEnemy = rangeEnemyObj.GetComponent<RangeEnemy>();
         rangeEnemy.Init(_audioPlayer, _objectPool, _target, _gameSettings);
         return rangeEnemyObj;
