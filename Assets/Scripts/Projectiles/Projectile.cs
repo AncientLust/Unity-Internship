@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class Projectile : MonoBehaviour
@@ -9,8 +10,9 @@ public class Projectile : MonoBehaviour
     protected float _speed;
     protected float _damage;
     protected float _pushPower;
-
-    public bool IsPenetratiable { get; set; } = false;
+    protected bool _isPenetratable;
+    protected bool _canBeReturned;
+    protected WaitForSeconds _minimumLifetime = new(2f);
 
     public void Init(ObjectPool objectPool, AudioPlayer audioPlayer)
     {
@@ -18,11 +20,15 @@ public class Projectile : MonoBehaviour
         _audioPlayer = audioPlayer;
     }
 
-    public void Launch(float speed, float damage, float pushPower)
+    public void Launch(float speed, float damage, float pushPower, bool isPenetratable)
     {
         _speed = speed;
         _damage = damage;
         _pushPower = pushPower;
+        _isPenetratable = isPenetratable;
+
+        _canBeReturned = false;
+        StartCoroutine(MinimumLifetimeCountdown());
     }
 
     protected void Start()
@@ -43,9 +49,10 @@ public class Projectile : MonoBehaviour
 
     protected void ReturnToPoolOnceOutOfSight()
     {
-        if (!_renderer.isVisible)
+        if (!_renderer.isVisible && _canBeReturned)
         {
             _objectPool.Return(gameObject);
+            _canBeReturned = false;
         }
     }
 
@@ -56,7 +63,7 @@ public class Projectile : MonoBehaviour
         PenetrationCheck();
     }
 
-    virtual protected void TryApplyDamage(Collider collider)
+    protected void TryApplyDamage(Collider collider)
     {
         var damagable = collider.gameObject.GetComponent<IDamageable>();
         if (damagable != null)
@@ -65,7 +72,7 @@ public class Projectile : MonoBehaviour
         }
     }
 
-    virtual protected void TryApplyPush(Collider collider)
+    protected void TryApplyPush(Collider collider)
     {
         var pushiable = collider.gameObject.GetComponent<IPushiable>();
         if (pushiable != null)
@@ -74,11 +81,18 @@ public class Projectile : MonoBehaviour
         }
     }
 
-    virtual protected void PenetrationCheck()
+    private protected void PenetrationCheck()
     {
-        if (!IsPenetratiable)
+        if (!_isPenetratable)
         {
             _objectPool.Return(gameObject);
+            _canBeReturned = false;
         }
+    }
+
+    private IEnumerator MinimumLifetimeCountdown()
+    {
+        yield return _minimumLifetime;
+        _canBeReturned = true;
     }
 }

@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using Enums;
+using UnityEditor;
 
 public class Weapon : MonoBehaviour
 {
@@ -58,22 +59,18 @@ public class Weapon : MonoBehaviour
         {
             var projectileResource = ProjectileTypeToResource(_stats.projectileType);
             var projectile = _objectPool.Get(projectileResource).GetComponent<Projectile>();
-            if (projectile != null)
-            {
-                InitProjectile(projectile);
-            }
+            InitProjectile(projectile);
         }
     }
 
     private void InitProjectile(Projectile projectile)
     {
-        projectile.Launch(_stats.projectileSpeed, _stats.damage * DamageMultiplier, _stats.pushPower);
         projectile.transform.position = _shootPoint.position;
-
+        projectile.Launch(_stats.projectileSpeed, _stats.damage * DamageMultiplier, _stats.pushPower, _stats.isPenetratable);
+        
         var semiSpread = _stats.spreadAngle / 2;
         var spreadRotation = Quaternion.Euler(0, Random.Range(-semiSpread, semiSpread), 0);
         projectile.transform.rotation = _shootPoint.rotation * spreadRotation;
-        projectile.IsPenetratiable = _stats.isPenetratable;
     }
 
     private EResource ProjectileTypeToResource(EProjectileType projectileType)

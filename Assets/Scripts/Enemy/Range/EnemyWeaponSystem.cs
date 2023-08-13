@@ -5,8 +5,8 @@ using Structs;
 
 public class EnemyWeaponSystem : MonoBehaviour
 {
-    private float _firstShootDelay = 3;
-    private float _shootRepeatTime = 3;
+    private float _firstShootDelay = 2;
+    private float _shootRepeatTime = 2f;
     private EnemyStatsSystem _statsSystem;
     private ObjectPool _objectPool;
     private EnemyHealthSystem _healthSystem;
@@ -87,7 +87,7 @@ public class EnemyWeaponSystem : MonoBehaviour
             !_currentWeapon.IsInDowntime() &&
             !_currentWeapon.InReloading)
         {
-            _currentWeapon.Shoot();
+            _currentWeapon.Shoot(); 
             _iAudioPlayer.PlaySound(_currentWeapon.ShootSound);
         }
         else
@@ -140,7 +140,7 @@ public class EnemyWeaponSystem : MonoBehaviour
     {
         foreach (var weapon in _weapons)
         {
-            weapon.Init(_objectPool);
+            weapon.Init(_objectPool);  
         }
     }
 
