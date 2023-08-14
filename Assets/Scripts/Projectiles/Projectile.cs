@@ -5,7 +5,7 @@ public class Projectile : MonoBehaviour
 {
     protected Renderer _renderer;
     protected ObjectPool _objectPool;
-    protected AudioPlayer _audioPlayer;
+    protected IAudioPlayer _iAudioPlayer;
 
     protected float _speed;
     protected float _damage;
@@ -14,10 +14,10 @@ public class Projectile : MonoBehaviour
     protected bool _canBeReturned;
     protected WaitForSeconds _minimumLifetime = new(2f);
 
-    public void Init(ObjectPool objectPool, AudioPlayer audioPlayer)
+    public void Init(ObjectPool objectPool, IAudioPlayer iAudioPlayer)
     {
         _objectPool = objectPool;
-        _audioPlayer = audioPlayer;
+        _iAudioPlayer = iAudioPlayer;
     }
 
     public void Launch(float speed, float damage, float pushPower, bool isPenetratable)

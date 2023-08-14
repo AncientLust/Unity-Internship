@@ -6,7 +6,7 @@ using System;
 public class EnemyFactory : IObjectFactory
 {
     private readonly Dictionary<EResource, GameObject> _prefabDict = new();
-    private AudioPlayer _audioPlayer;
+    private IAudioPlayer _iAudioPlayer;
     private GameSettings _gameSettings;
     private ObjectPool _objectPool;
     private Transform _target;
@@ -27,13 +27,13 @@ public class EnemyFactory : IObjectFactory
 
     public void Init
     (
-        AudioPlayer audioPlayer,
+        IAudioPlayer iAudioPlayer,
         GameSettings gameSettings,
         ObjectPool objectPool, 
         Transform target
     )
     {
-        _audioPlayer = audioPlayer;
+        _iAudioPlayer = iAudioPlayer;
         _gameSettings = gameSettings;
         _objectPool = objectPool;
         _target = target;
@@ -58,7 +58,7 @@ public class EnemyFactory : IObjectFactory
     {
         var meleeEnemyObj = UnityEngine.Object.Instantiate(_prefabDict[resource]);
         var meleeEnemy = meleeEnemyObj.GetComponent<MeleeEnemy>();
-        meleeEnemy.Init(_audioPlayer, _target, _gameSettings);
+        meleeEnemy.Init(_iAudioPlayer, _target, _gameSettings, _objectPool);
         return meleeEnemyObj;
     }
 
@@ -66,7 +66,7 @@ public class EnemyFactory : IObjectFactory
     {
         var rangeEnemyObj = UnityEngine.Object.Instantiate(_prefabDict[resource]);
         var rangeEnemy = rangeEnemyObj.GetComponent<RangeEnemy>();
-        rangeEnemy.Init(_audioPlayer, _objectPool, _target, _gameSettings);
+        rangeEnemy.Init(_iAudioPlayer, _objectPool, _target, _gameSettings);
         return rangeEnemyObj;
     }
 }

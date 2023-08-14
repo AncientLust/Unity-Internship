@@ -84,6 +84,15 @@ public class PlayerHealthSystem : MonoBehaviour
         }
     }
 
+    public void AddHealth(float health)
+    {
+        if (!_isDead)
+        {
+            _health += health;
+            _healthBar.SetFill(_health / _maxHealth);
+        }
+    }
+
     private void CheckIfDied()
     {
         if (_health <= 0)

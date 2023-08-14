@@ -8,17 +8,25 @@ public class ObjectPool
     private Dictionary<EResource, Queue<GameObject>> _resourcePoolMap;
     private Dictionary<EResource, IObjectFactory> _resourceFactoryMap;
 
-    public void Init(ProjectileFactory projectileFactory, EnemyFactory enemyFactory, EffectFactory effectFactory, GrenadeFactory _grenadeFactory)
+    public void Init
+    (
+        ProjectileFactory projectileFactory, 
+        EnemyFactory enemyFactory, 
+        EffectFactory effectFactory, 
+        GrenadeFactory grenadeFactory,
+        PickupFactory pickupFactory
+    )
     {
         _resourcePoolMap = new Dictionary<EResource, Queue<GameObject>>();
         _resourceFactoryMap = new Dictionary<EResource, IObjectFactory>()
         {
             { EResource.Bullet, projectileFactory },
             { EResource.Rocket, projectileFactory },
-            { EResource.Grenade, _grenadeFactory },
+            { EResource.Grenade, grenadeFactory },
             { EResource.EnemyMelee, enemyFactory },
             { EResource.EnemyRange, enemyFactory },
-            { EResource.Explosion, effectFactory }
+            { EResource.Explosion, effectFactory },
+            { EResource.FirstAidKit, pickupFactory }
         };
     }
 

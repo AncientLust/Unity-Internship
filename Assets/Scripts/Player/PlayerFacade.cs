@@ -4,7 +4,7 @@ using Structs;
 using Enums;
 
 public class PlayerFacade : MonoBehaviour, 
-    IPlayerFacade, IHUDCompatible, IExperienceTaker, IDamageable, IPushiable
+    IPlayerFacade, IHUDCompatible, IExperienceTaker, IDamageable, IPushiable, IHealable
 {
     private PlayerHealthSystem _healthSystem;
     private PlayerWeaponSystem _weaponSystem;
@@ -99,6 +99,11 @@ public class PlayerFacade : MonoBehaviour,
     public void TakeDamage(float damage)
     {
         _healthSystem.ReduceHealth(damage);
+    }
+
+    public void Heal(float health)
+    {
+        _healthSystem.AddHealth(health);
     }
 
     public void SetInputHandling(bool state)

@@ -12,6 +12,7 @@ TagManager:
   - Undefined
   - Rocket
   - Explosion
+  - FirstAidKit
   layers:
   - Default
   - TransparentFX

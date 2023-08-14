@@ -13,6 +13,7 @@ public class MeleeEnemy : MonoBehaviour
     private EnemyEffectsSystem _effectSystem;
     private EnemyDisposalSystem _enemyDisposalSystem;
     private EnemyAnimationSystem _animationSystem;
+    private EnemyDropSystem _dropSystem;
 
     private float _followPlayerDistance = 0.75f;
 
@@ -29,9 +30,10 @@ public class MeleeEnemy : MonoBehaviour
         _effectSystem = gameObject.AddComponent<EnemyEffectsSystem>();
         _enemyDisposalSystem = gameObject.AddComponent<EnemyDisposalSystem>();
         _animationSystem = gameObject.AddComponent<EnemyAnimationSystem>();
+        _dropSystem = gameObject.AddComponent<EnemyDropSystem>();
     }
 
-    public void Init(IAudioPlayer iAudioPlayer, Transform target, GameSettings gameSettings)
+    public void Init(IAudioPlayer iAudioPlayer, Transform target, GameSettings gameSettings, ObjectPool objectPool)
     {
         _statsSystem.Init(_experienceSystem);
         _movementSystem.Init(target, _rigidBody, _collider, _statsSystem, _healthSystem, _followPlayerDistance);
@@ -40,6 +42,7 @@ public class MeleeEnemy : MonoBehaviour
         _effectSystem.Init(_healthSystem, gameSettings);
         _enemyDisposalSystem.Init(_healthSystem);
         _animationSystem.Init(_healthSystem);
+        _dropSystem.Init(objectPool, _healthSystem);
 
         _enemyFacade.Init(
             _experienceSystem,

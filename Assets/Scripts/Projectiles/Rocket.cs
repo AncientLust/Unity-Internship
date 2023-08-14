@@ -19,7 +19,7 @@ public class Rocket : Projectile
 
     private void Exlode()
     {
-        _audioPlayer.PlaySound(ESound.Explosion);
+        _iAudioPlayer.PlaySound(ESound.Explosion);
         var explosion = _objectPool.Get(EResource.Explosion).GetComponent<Effect>();
         explosion.transform.position = _explosionPoint.position;
         explosion.Play();

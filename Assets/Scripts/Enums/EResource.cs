@@ -16,6 +16,7 @@ namespace Enums
         Rocket,
         Grenade,
         Explosion,
-        BloodSplat
+        BloodSplat,
+        FirstAidKit
     }
 }

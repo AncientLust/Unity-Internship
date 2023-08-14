@@ -3,15 +3,15 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GrenadeFactory : IObjectFactory
+public class PickupFactory : IObjectFactory
 {
     private readonly Dictionary<EResource, GameObject> _prefabDict = new();
     private ObjectPool _objectPool;
     private IAudioPlayer _iAudioPlayer;
 
-    public GrenadeFactory()
+    public PickupFactory()
     {
-        var prefabs = Resources.LoadAll<GameObject>("Prefabs/Throwables");
+        var prefabs = Resources.LoadAll<GameObject>("Prefabs/Pickups");
         foreach (var prefab in prefabs)
         {
             if (Enum.TryParse(prefab.name, out EResource resource))
@@ -32,9 +32,9 @@ public class GrenadeFactory : IObjectFactory
 
     public GameObject Instantiate(EResource resource)
     {
-        var effectObj = UnityEngine.Object.Instantiate(_prefabDict[resource]);
-        var grenade = effectObj.GetComponent<Grenade>();
-        grenade.Init(_objectPool, _iAudioPlayer);
-        return effectObj;
+        var pickupObj = UnityEngine.Object.Instantiate(_prefabDict[resource]);
+        var pickup = pickupObj.GetComponent<Pickup>();
+        pickup.Init(_objectPool, _iAudioPlayer);
+        return pickupObj;
     }
 }
