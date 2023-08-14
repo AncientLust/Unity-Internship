@@ -3,7 +3,7 @@ using Enums;
 
 public class EnemyDropSystem : MonoBehaviour
 {
-    private float _firstAidKitSpawnChance = 1.15f;
+    private float _firstAidKitSpawnChance = 0.15f;
     private bool _isInitialized;
     private ObjectPool _objectPool;
     private EnemyHealthSystem _enemyHealthSystem;

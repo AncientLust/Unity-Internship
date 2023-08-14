@@ -11,7 +11,6 @@ public class MeleeEnemy : MonoBehaviour
     private EnemyHealthSystem _healthSystem;
     private EnemyFacade _enemyFacade;
     private EnemyEffectsSystem _effectSystem;
-    private EnemyDisposalSystem _enemyDisposalSystem;
     private EnemyAnimationSystem _animationSystem;
     private EnemyDropSystem _dropSystem;
 
@@ -28,7 +27,6 @@ public class MeleeEnemy : MonoBehaviour
         _healthSystem = gameObject.AddComponent<EnemyHealthSystem>();
         _enemyFacade = gameObject.AddComponent<EnemyFacade>();
         _effectSystem = gameObject.AddComponent<EnemyEffectsSystem>();
-        _enemyDisposalSystem = gameObject.AddComponent<EnemyDisposalSystem>();
         _animationSystem = gameObject.AddComponent<EnemyAnimationSystem>();
         _dropSystem = gameObject.AddComponent<EnemyDropSystem>();
     }
@@ -40,7 +38,6 @@ public class MeleeEnemy : MonoBehaviour
         _healthSystem.Init(_statsSystem, iAudioPlayer);
         _attackSystem.Init(_statsSystem);
         _effectSystem.Init(_healthSystem, gameSettings);
-        _enemyDisposalSystem.Init(_healthSystem);
         _animationSystem.Init(_healthSystem);
         _dropSystem.Init(objectPool, _healthSystem);
 

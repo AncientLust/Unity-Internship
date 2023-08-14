@@ -81,8 +81,8 @@ public class EnemySpawner : MonoBehaviour
             var enemy = _objectPool.Get(enemyType);
             if (enemy != null)
             {
-                var enemyDisposalSystem = enemy.GetComponent<EnemyDisposalSystem>();
-                _disposalManager.SubscribeEnemy(enemyDisposalSystem);
+                var healthSystem = enemy.GetComponent<EnemyHealthSystem>();
+                _disposalManager.SubscribeEnemy(healthSystem);
                 enemy.transform.position = GetEnemySpawnPosition();
                 enemy.GetComponent<IResetable>().ResetState();
                 enemy.GetComponent<EnemyExperienceSystem>().SetLevel(_enemyLevel);

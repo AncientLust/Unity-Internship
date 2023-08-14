@@ -32,12 +32,12 @@ public class LevelProgressManager
 
     private void Subscribe()
     {
-        if (_enemyDisposalManager != null) _enemyDisposalManager.onDisposed += EnemyKilled;
+        _enemyDisposalManager.onEnemyKilled += EnemyKilled;
     }
 
     private void Unsubscribe()
     {
-        if (_enemyDisposalManager != null) _enemyDisposalManager.onDisposed -= EnemyKilled;
+        _enemyDisposalManager.onEnemyKilled -= EnemyKilled;
     }
 
     private void EnemyKilled()
