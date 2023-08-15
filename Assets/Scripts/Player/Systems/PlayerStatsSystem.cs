@@ -3,15 +3,16 @@ using UnityEngine;
 using Structs;
 using System.Collections;
 
-public class PlayerStatsSystem : MonoBehaviour
+public class PlayerStatsSystem : MonoBehaviour, IMoveSpeedBoostable
 {
     private BonusRegenerationSkill _bonusRegenerationSkill;
     private BonusDamageSkill _bonusDamageSkill;
     private PlayerExperienceSystem _experienceSystem;
     private SPlayerStatsMultipliers _multipliers;
     private int _level;
-    private bool _isBonusDamageActive = false;
-    private bool _isBonusRegenActive = false;
+    private bool _isDamageAndReloadBonusActive = false;
+    private bool _isRegenBonusActive = false;
+    private bool _isMoveSpeedBonusActive = false;
 
     private struct _levelUpGrowth
     {
@@ -46,36 +47,38 @@ public class PlayerStatsSystem : MonoBehaviour
     {
         _experienceSystem.onLevelChanged += SetLevelStats;
         _bonusRegenerationSkill.onActivation += (duration, bonus) => StartCoroutine(ApplyRegenerationBonus(duration, bonus));
-        _bonusDamageSkill.onActivation += (duration, bonus) => StartCoroutine(ApplyDamageBonus(duration, bonus));
-
+        _bonusDamageSkill.onActivation += (duration, bonus) => StartCoroutine(ApplyDamageAndReloadBonus(duration, bonus));
     }
 
     private void Unsubscribe()
     {
         _experienceSystem.onLevelChanged -= SetLevelStats;
         _bonusRegenerationSkill.onActivation -= (duration, bonus) => StartCoroutine(ApplyRegenerationBonus(duration, bonus));
-        _bonusDamageSkill.onActivation -= (duration, bonus) => StartCoroutine(ApplyDamageBonus(duration, bonus));
+        _bonusDamageSkill.onActivation -= (duration, bonus) => StartCoroutine(ApplyDamageAndReloadBonus(duration, bonus));
     }
 
     private void SetLevelStats(int level)
     {
         _level = level--; // Player level starts with 1, so when he reaches level 2, 1x growth will be given.
 
-        if (!_isBonusRegenActive && !_isBonusRegenActive)
-        {
-            _multipliers.damage = GetLevelBasedDamage();
-            _multipliers.ammo = GetLevelBasedAmmo();
-            _multipliers.reload = GetLevelBasedReload();
-            _multipliers.maxHealth = GetLevelBasedMaxHealth();
-            _multipliers.healthRegen = GetLevelBasedHealthRegen();
-            _multipliers.moveSpeed = GetLevelBasedMoveSpeed();
-            onStatsChanged.Invoke(_multipliers);
-        }
+        _multipliers.ammo = GetLevelBasedAmmo();
+        _multipliers.maxHealth = GetLevelBasedMaxHealth();
+        _multipliers.damage = _isDamageAndReloadBonusActive ? _multipliers.damage : GetLevelBasedDamage();
+        _multipliers.reload = _isDamageAndReloadBonusActive ? _multipliers.reload : GetLevelBasedReload();
+        _multipliers.healthRegen = _isRegenBonusActive ? _multipliers.healthRegen : GetLevelBasedHealthRegen();
+        _multipliers.moveSpeed = _isMoveSpeedBonusActive ? _multipliers.moveSpeed : GetLevelBasedMoveSpeed();
+        
+        onStatsChanged.Invoke(_multipliers);
     }
 
-    private IEnumerator ApplyDamageBonus(float duration, float bonus)
+    public void BoostMoveSpeed(float duration, float bonus)
     {
-        _isBonusDamageActive = true;
+        StartCoroutine(ApplyMoveSpeedBonus(duration, bonus));
+    }
+
+    private IEnumerator ApplyDamageAndReloadBonus(float duration, float bonus)
+    {
+        _isDamageAndReloadBonusActive = true;
         _multipliers.damage *= bonus;
         _multipliers.reload = 0;
         onStatsChanged.Invoke(_multipliers);
@@ -83,28 +86,29 @@ public class PlayerStatsSystem : MonoBehaviour
         _multipliers.damage = GetLevelBasedDamage();
         _multipliers.reload = GetLevelBasedReload();
         onStatsChanged.Invoke(_multipliers);
-        _isBonusDamageActive = false;
-
-        if (!_isBonusRegenActive)
-        {
-            SetLevelStats(_level);
-        }
+        _isDamageAndReloadBonusActive = false;
     }
 
     private IEnumerator ApplyRegenerationBonus(float duration, float bonus)
     {
-        _isBonusRegenActive = true;
+        _isRegenBonusActive = true;
         _multipliers.healthRegen *= bonus;
         onStatsChanged.Invoke(_multipliers);
         yield return new WaitForSeconds(duration);
         _multipliers.healthRegen = GetLevelBasedHealthRegen();
         onStatsChanged.Invoke(_multipliers);
-        _isBonusRegenActive = false;
+        _isRegenBonusActive = false;
+    }
 
-        if (!_isBonusDamageActive)
-        {
-            SetLevelStats(_level);
-        }
+    public IEnumerator ApplyMoveSpeedBonus(float duration, float bonus)
+    {
+        _isMoveSpeedBonusActive = true;
+        _multipliers.moveSpeed *= bonus;
+        onStatsChanged.Invoke(_multipliers);
+        yield return new WaitForSeconds(duration);
+        _multipliers.moveSpeed = GetLevelBasedMoveSpeed();
+        onStatsChanged.Invoke(_multipliers);
+        _isMoveSpeedBonusActive = false;
     }
 
     private float GetLevelBasedDamage()

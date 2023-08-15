@@ -13,6 +13,8 @@ TagManager:
   - Rocket
   - Explosion
   - FirstAidKit
+  - SlowMotion
+  - SpeedUp
   layers:
   - Default
   - TransparentFX

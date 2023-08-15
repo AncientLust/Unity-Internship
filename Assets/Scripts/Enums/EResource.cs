@@ -17,6 +17,8 @@ namespace Enums
         Grenade,
         Explosion,
         BloodSplat,
-        FirstAidKit
+        FirstAidKit,
+        SlowMotion,
+        SpeedUp
     }
 }

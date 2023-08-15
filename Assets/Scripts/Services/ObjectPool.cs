@@ -26,7 +26,9 @@ public class ObjectPool
             { EResource.EnemyMelee, enemyFactory },
             { EResource.EnemyRange, enemyFactory },
             { EResource.Explosion, effectFactory },
-            { EResource.FirstAidKit, pickupFactory }
+            { EResource.FirstAidKit, pickupFactory },
+            { EResource.SlowMotion, pickupFactory },
+            { EResource.SpeedUp, pickupFactory }
         };
     }
 
