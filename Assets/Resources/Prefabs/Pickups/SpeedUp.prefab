@@ -107,9 +107,10 @@ GameObject:
   - component: {fileID: 8458327820116848750}
   - component: {fileID: 9029139450688481817}
   - component: {fileID: 9050209074954596608}
+  - component: {fileID: -5111433657344727518}
   m_Layer: 0
   m_Name: SpeedUp
-  m_TagString: SpeedUp
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -214,3 +215,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bb31db9c38035cd41a4bd9bc53fe11aa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &-5111433657344727518
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5314936184379642390}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0ee65bca8f0c5c1458ddb2516430e794, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  type: 17

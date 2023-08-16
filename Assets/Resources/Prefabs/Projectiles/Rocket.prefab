@@ -4909,9 +4909,10 @@ GameObject:
   - component: {fileID: 8592802102671844254}
   - component: {fileID: 2246031989681712037}
   - component: {fileID: 707853140233914990}
+  - component: {fileID: -4415575642981437081}
   m_Layer: 0
   m_Name: Rocket
-  m_TagString: Rocket
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -4968,6 +4969,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _explosionPoint: {fileID: 719816677179968077}
+--- !u!114 &-4415575642981437081
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5916739764324589355}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0ee65bca8f0c5c1458ddb2516430e794, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  type: 11
 --- !u!1 &6365067443906104982
 GameObject:
   m_ObjectHideFlags: 0

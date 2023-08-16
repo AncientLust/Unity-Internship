@@ -107,9 +107,10 @@ GameObject:
   - component: {fileID: 8548341227084942271}
   - component: {fileID: 8507526938241872523}
   - component: {fileID: 4979466494531501787}
+  - component: {fileID: -6675080142438874419}
   m_Layer: 0
   m_Name: SlowMotion
-  m_TagString: SlowMotion
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -214,3 +215,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 36411741f08fe2746807776f8bf03588, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &-6675080142438874419
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8572139565433713095}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0ee65bca8f0c5c1458ddb2516430e794, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  type: 16

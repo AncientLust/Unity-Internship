@@ -1,15 +1,19 @@
 using UnityEngine;
 using Enums;
 using UnityEngine.EventSystems;
+using Structs;
 
 public class Main : MonoBehaviour
 {
+    private FactoryGroup _factoryGroup;
+    
     private GenericFactory _genericFactory;
     private ProjectileFactory _projectileFactory;
     private EnemyFactory _enemyFactory;
     private EffectFactory _effectFactory;
     private GrenadeFactory _grenadeFactory;
     private PickupFactory _pickupFactory;
+    
     private ObjectPool _objectPool;
     private StandaloneInputModule _eventSystem;
     private AudioPlayer _audioPlayer;
@@ -43,14 +47,23 @@ public class Main : MonoBehaviour
 
     private void CreateObjects()
     {
+        _objectPool = new ObjectPool();
         _genericFactory = new GenericFactory();
         _projectileFactory = new ProjectileFactory();
         _enemyFactory = new EnemyFactory();
         _effectFactory = new EffectFactory();
         _grenadeFactory = new GrenadeFactory();
         _pickupFactory = new PickupFactory();
-        _objectPool = new ObjectPool();
-        
+
+        _factoryGroup = new(
+            _genericFactory,
+            _projectileFactory,
+            _enemyFactory,
+            _effectFactory,
+            _grenadeFactory,
+            _pickupFactory
+        );
+
         _pauseManager = new PauseManager();
         _sceneLoader = new SceneController();
         _sceneObjectBuilder = new SceneObjectBuilder();
@@ -101,7 +114,7 @@ public class Main : MonoBehaviour
         _levelProgressManager.Init(_enemyDisposalManager);
         _audioPlayer.Init(_gameSettings);
 
-        _objectPool.Init(_projectileFactory, _enemyFactory, _effectFactory, _grenadeFactory, _pickupFactory);
+        _objectPool.Init(_factoryGroup);
         _projectileFactory.Init(_objectPool, _iAudioPlayer);
         _enemyFactory.Init(_iAudioPlayer, _gameSettings, _objectPool, _playerTransform);
         _effectFactory.Init(_objectPool);

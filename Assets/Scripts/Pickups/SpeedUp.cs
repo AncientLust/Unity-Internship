@@ -4,7 +4,7 @@ using UnityEngine;
 public class SpeedUp : Pickup
 {
     private float _duration = 5;
-    private float _moveSpeedBonus = 1.25f;
+    private float _moveSpeedBonus = 1.5f;
 
     private void OnTriggerEnter(Collider collider)
     {
