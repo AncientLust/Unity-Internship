@@ -5,10 +5,9 @@ public class Pickup : MonoBehaviour
     private float _lifetime = 10f;
     private float _timeElapsed = 0f;
     private float _rotationSpeedY = 100f; 
+    private Vector3 originalScale;
     protected ObjectPool _objectPool;
     protected IAudioPlayer _iAudioPlayer;
-
-    private Vector3 originalScale;
 
     public void Init(ObjectPool objectPool, IAudioPlayer iAudioPlayer)
     {

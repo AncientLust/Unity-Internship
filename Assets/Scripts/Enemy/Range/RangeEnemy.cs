@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.AI;
 
 public class RangeEnemy : MonoBehaviour
 {
@@ -13,13 +14,13 @@ public class RangeEnemy : MonoBehaviour
     private EnemyWeaponSystem _weaponSystem;
     private EnemyAnimationSystem _animationSystem;
     private EnemyDropSystem _dropSystem;
-
-    private float _followPlayerDistance = 5f;
+    private NavMeshAgent _navMeshAgent;
 
     private void Awake()
     {
         _rigidBody = gameObject.GetComponent<Rigidbody>();
         _collider = gameObject.GetComponent<CapsuleCollider>();
+        _navMeshAgent = GetComponent<NavMeshAgent>();
         _experienceSystem = gameObject.AddComponent<EnemyExperienceSystem>();
         _statsSystem = gameObject.AddComponent<EnemyStatsSystem>();
         _movementSystem = gameObject.AddComponent<EnemyMovementSystem>();
@@ -34,7 +35,7 @@ public class RangeEnemy : MonoBehaviour
     public void Init(IAudioPlayer iAudioPlayer, ObjectPool objectPool, Transform target, GameSettings gameSettings)
     {
         _statsSystem.Init(_experienceSystem);
-        _movementSystem.Init(target, _rigidBody, _collider, _statsSystem, _healthSystem, _followPlayerDistance);
+        _movementSystem.Init(target, _rigidBody, _collider, _statsSystem, _healthSystem, _navMeshAgent);
         _healthSystem.Init(_statsSystem, iAudioPlayer);
         _effectSystem.Init(_healthSystem, gameSettings);
         _weaponSystem.Init(_statsSystem, objectPool, _healthSystem, iAudioPlayer);

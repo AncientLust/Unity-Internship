@@ -9,8 +9,13 @@ public class SpeedUp : Pickup
     private void OnTriggerEnter(Collider collider)
     {
         var player = collider.gameObject.GetComponent<IPlayerFacade>();
+        if (player == null)
+        {
+            return;
+        }
+
         var speedBoostable = collider.gameObject.GetComponent<IMoveSpeedBoostable>();
-        if (player != null && speedBoostable != null)
+        if (speedBoostable != null)
         {
             speedBoostable.BoostMoveSpeed(_duration, _moveSpeedBonus);
             _iAudioPlayer.PlaySound(ESound.Pickup);

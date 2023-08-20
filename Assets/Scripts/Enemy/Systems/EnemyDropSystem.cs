@@ -5,7 +5,7 @@ public class EnemyDropSystem : MonoBehaviour
 {
     private float _firstAidKitSpawnChance = 0.15f;
     private float _slowMotionSpawnChance = 0.10f;
-    private float _speedUpSpawnChance = 0.20f;
+    private float _speedUpSpawnChance = 0.10f;
     private bool _isInitialized;
     private ObjectPool _objectPool;
     private EnemyHealthSystem _enemyHealthSystem;
@@ -68,7 +68,7 @@ public class EnemyDropSystem : MonoBehaviour
         var obj = _objectPool.Get(EResource.SlowMotion);
         obj.transform.position = transform.position;
     }
-
+    
     private void SpawnSpeedUp()
     {
         var obj = _objectPool.Get(EResource.SpeedUp);

@@ -8,8 +8,13 @@ public class FirstAidKit : Pickup
     private void OnTriggerEnter(Collider collider)
     {
         var player = collider.gameObject.GetComponent<Player>();
+        if (player == null)
+        {
+            return;
+        }
+
         var iHealable = collider.gameObject.GetComponent<IHealable>();
-        if (player != null && iHealable != null)
+        if (iHealable != null)
         {
             iHealable.Heal(_healthHeal);
             _iAudioPlayer.PlaySound(ESound.Pickup);
