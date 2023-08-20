@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using Enums;
+using UnityEngine.AI;
 
 public class EnemySpawner : MonoBehaviour
 {
@@ -92,8 +93,7 @@ public class EnemySpawner : MonoBehaviour
 
     private EResource GetRandomEnemyType()
     {
-        float randomValue = Random.value;
-        if (randomValue < _meleeEnemySpawnChance)
+        if (Random.value < _meleeEnemySpawnChance)
         {
             return EResource.EnemyMelee; 
         }
@@ -105,11 +105,19 @@ public class EnemySpawner : MonoBehaviour
 
     private Vector3 GetEnemySpawnPosition()
     {
-        var angle = Random.Range(0f, _spawnAngle);
-        var theta = Mathf.Deg2Rad * angle;
-        var radius = Random.Range(_minRadius, _maxRadius);
-        var spawnVector = new Vector3(radius * Mathf.Cos(theta), 0, radius * Mathf.Sin(theta));
-
-        return spawnVector + _target.position;
+        while (true)
+        {
+            var angle = Random.Range(0f, _spawnAngle);
+            var theta = Mathf.Deg2Rad * angle;
+            var radius = Random.Range(_minRadius, _maxRadius);
+            var spawnVector = new Vector3(radius * Mathf.Cos(theta), 0, radius * Mathf.Sin(theta));
+            var spawnVectorRelativeToTarget = spawnVector + _target.position;
+            
+            NavMeshHit hit;
+            if (NavMesh.SamplePosition(spawnVectorRelativeToTarget, out hit, 1f, NavMesh.AllAreas))
+            {
+                return hit.position;
+            }
+        }
     }
 }

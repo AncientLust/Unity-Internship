@@ -8,4 +8,5 @@ public interface IPlayerFacade
     public void LoadState();
     public void SetInputHandling(bool state);
     public void EnableForGameSession();
+    public void PrepareForNextLevel();
 }

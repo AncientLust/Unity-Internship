@@ -38,7 +38,7 @@ public class RangeEnemy : MonoBehaviour
         _movementSystem.Init(target, _rigidBody, _collider, _statsSystem, _healthSystem, _navMeshAgent);
         _healthSystem.Init(_statsSystem, iAudioPlayer);
         _effectSystem.Init(_healthSystem, gameSettings);
-        _weaponSystem.Init(_statsSystem, objectPool, _healthSystem, iAudioPlayer);
+        _weaponSystem.Init(_statsSystem, objectPool, _healthSystem, iAudioPlayer, _navMeshAgent);
         _animationSystem.Init(_healthSystem);
         _dropSystem.Init(objectPool, _healthSystem);
 

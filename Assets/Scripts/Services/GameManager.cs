@@ -215,6 +215,7 @@ public class GameManager
         _sceneController.CleanScene(EScene.GameSession);
         _objectPool.Reset();
         _enemySpawner.StartSpawn();
+        _iPlayerFacade.PrepareForNextLevel();
         _cameraController.MoveToPlayer();
         _uiRoot.SetUI(EUI.HUD);
         _iAudioPlayer.PlayMusic(EMusic.Game);

@@ -55,7 +55,7 @@ public class SceneObjectBuilder
 
     private void CreateLevelEnvironment()
     {
-        //_genericFactory.Instantiate(EResource.Environment);
-        //_genericFactory.Instantiate(EResource.DirectionalLight);
+        _genericFactory.Instantiate(EResource.Environment);
+        _genericFactory.Instantiate(EResource.DirectionalLight);
     }
 }
