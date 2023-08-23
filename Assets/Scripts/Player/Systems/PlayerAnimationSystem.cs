@@ -3,15 +3,15 @@ using UnityEngine;
 public class PlayerAnimationSystem : MonoBehaviour
 {
     private Animator _animator;
-    private Rigidbody _rigidbody;
     private PlayerHealthSystem _healthSystem;
     private float _velocityTreshhold = 1;
+    private Vector3 _previousPosition;
+    private Vector3 _estimatedVelocity;
     private bool _isInitialized;
 
-    public void Init(Rigidbody rigidbody, PlayerHealthSystem healthSystem)
+    public void Init(PlayerHealthSystem healthSystem)
     {
         _animator = GetComponent<Animator>();
-        _rigidbody = rigidbody;
         _healthSystem = healthSystem;
         _isInitialized = true;
         Subscribe();
@@ -42,14 +42,20 @@ public class PlayerAnimationSystem : MonoBehaviour
 
     private void Update()
     {
+        CalculateEstimatedVelocity();
         PlayMove();
+    }
+
+    private void CalculateEstimatedVelocity()
+    {
+        _estimatedVelocity = (transform.position - _previousPosition) / Time.deltaTime;
+        _previousPosition = transform.position;
     }
 
     private void PlayMove()
     {
-        var velocity = _rigidbody.velocity;
-        if (Mathf.Abs(velocity.x) >= _velocityTreshhold || 
-            Mathf.Abs(velocity.z) >= _velocityTreshhold)
+        if (Mathf.Abs(_estimatedVelocity.x) >= _velocityTreshhold ||
+            Mathf.Abs(_estimatedVelocity.z) >= _velocityTreshhold)
         {
             _animator.SetBool("isRunning", true);
         }

@@ -3,7 +3,7 @@ using Structs;
 
 public class PlayerMovementSystem : MonoBehaviour
 {
-    private float _baseMoveSpeed = 5;
+    private float _baseMoveSpeed = 4;
     private float _moveSpeed;
     private Vector3 _moveDirection;
     private bool _isActive;
@@ -53,7 +53,8 @@ public class PlayerMovementSystem : MonoBehaviour
         _healthSystem.onDie -= () => SetActive(false);
     }
 
-    private void FixedUpdate()
+    //private void FixedUpdate()
+    private void Update()
     {
         MoveIfNecessary();
     }
@@ -72,10 +73,27 @@ public class PlayerMovementSystem : MonoBehaviour
         _moveDirection = direction;
     }
 
+    //private void Move()
+    //{
+    //    _moveDirection.Normalize();
+    //    _rigidbody.velocity = _moveDirection * _moveSpeed;
+    //    _moveDirection = Vector3.zero;
+    //}
+
+    //private void Rotate()
+    //{
+    //    var mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+    //    var playerToMouseDirection = mousePosition - transform.position;
+    //    var angle = Mathf.Atan2(playerToMouseDirection.x, playerToMouseDirection.z) * Mathf.Rad2Deg;
+
+    //    Quaternion targetRotation = Quaternion.Euler(0, angle, 0);
+    //    _rigidbody.MoveRotation(targetRotation);
+    //}
+
     private void Move()
     {
         _moveDirection.Normalize();
-        _rigidbody.velocity = _moveDirection * _moveSpeed;
+        transform.position += _moveDirection * _moveSpeed * Time.deltaTime; // Multiply by Time.fixedDeltaTime for frame-independent movement.
         _moveDirection = Vector3.zero;
     }
 
@@ -84,9 +102,9 @@ public class PlayerMovementSystem : MonoBehaviour
         var mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         var playerToMouseDirection = mousePosition - transform.position;
         var angle = Mathf.Atan2(playerToMouseDirection.x, playerToMouseDirection.z) * Mathf.Rad2Deg;
-        
+
         Quaternion targetRotation = Quaternion.Euler(0, angle, 0);
-        _rigidbody.MoveRotation(targetRotation);
+        transform.rotation = targetRotation;
     }
 
     public void ResetVelosity()

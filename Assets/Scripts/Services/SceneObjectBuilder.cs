@@ -2,15 +2,17 @@ using System;
 using UnityEngine;
 using Enums;
 using UnityEngine.SceneManagement;
+using Unity.VisualScripting;
 
 public class SceneObjectBuilder
 {
     private GenericFactory _genericFactory;
-
+    private GameSettings _gameSettings;   
     public Action<EScene> onSceneObjectsBuild;
 
-    public void Init(GenericFactory genericFactory)
+    public void Init(GenericFactory genericFactory, GameSettings gameSettings)
     {
+        _gameSettings = gameSettings;
         _genericFactory = genericFactory;
         SceneManager.sceneLoaded += SceneLoadHandler;
     }
@@ -43,7 +45,7 @@ public class SceneObjectBuilder
     {
         switch (scene)
         {
-            case EScene.Environment:
+            case EScene.LevelEnvironment:
                 CreateLevelEnvironment();
                 break;
             default:
@@ -55,7 +57,16 @@ public class SceneObjectBuilder
 
     private void CreateLevelEnvironment()
     {
-        _genericFactory.Instantiate(EResource.Environment);
+        switch (_gameSettings.LevelEnvironment)
+        {
+            case ELevelEnvironment.WarZone:
+                _genericFactory.Instantiate(EResource.WarZone);
+                break;
+            case ELevelEnvironment.Forest:
+                _genericFactory.Instantiate(EResource.Forest);
+                break;
+        }
+
         _genericFactory.Instantiate(EResource.DirectionalLight);
     }
 }

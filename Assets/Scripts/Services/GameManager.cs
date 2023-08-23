@@ -86,7 +86,7 @@ public class GameManager
 
     private void PrepareGame(EGameSession eGameSession)
     {
-        _sceneController.LoadScene(EScene.Environment, LoadSceneMode.Additive);
+        _sceneController.LoadScene(EScene.LevelEnvironment, LoadSceneMode.Additive);
         _sceneController.LoadScene(EScene.GameSession, LoadSceneMode.Additive);
         _eGameSession = eGameSession;
     }
@@ -140,7 +140,7 @@ public class GameManager
         _pauseManager.ResumeGame();
         _enemySpawner.StopSpawn();
         _uiRoot.SetUI(EUI.Menu);
-        _sceneController.UnloadScene(EScene.Environment);
+        _sceneController.UnloadScene(EScene.LevelEnvironment);
         _sceneController.UnloadScene(EScene.GameSession);
         _iAudioPlayer.PlayMusic(EMusic.Lobby);
     }
@@ -202,6 +202,7 @@ public class GameManager
 
     private void LevelCompleted()
     {
+        _iPlayerFacade.SetInputHandling(false);
         _pauseManager.PauseGame();
         _uiRoot.SetUI(EUI.LevelCompleted);
         _iAudioPlayer.PlaySound(ESound.LevelComplete);
@@ -210,6 +211,7 @@ public class GameManager
 
     private void StartNextLevel()
     {
+        _iPlayerFacade.SetInputHandling(true);
         _pauseManager.ResumeGame();
         _enemySpawner.StopSpawn();
         _sceneController.CleanScene(EScene.GameSession);

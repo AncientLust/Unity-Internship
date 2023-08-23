@@ -106,7 +106,7 @@ public class Main : MonoBehaviour
     private void InitObjects()
     {
         _hud.Init(_iHUDCompatible, _levelProgressManager);
-        _sceneObjectBuilder.Init(_genericFactory);
+        _sceneObjectBuilder.Init(_genericFactory, _gameSettings);
         _cameraController.Init(_playerTransform);
         _enemySpawner.Init(_playerTransform, _objectPool, _enemyDisposalManager, _levelProgressManager);
         _enemyDisposalManager.Init(_iExperienceTaker, _objectPool);
