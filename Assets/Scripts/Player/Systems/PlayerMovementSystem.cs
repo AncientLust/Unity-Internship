@@ -53,7 +53,6 @@ public class PlayerMovementSystem : MonoBehaviour
         _healthSystem.onDie -= () => SetActive(false);
     }
 
-    //private void FixedUpdate()
     private void Update()
     {
         MoveIfNecessary();
@@ -73,27 +72,10 @@ public class PlayerMovementSystem : MonoBehaviour
         _moveDirection = direction;
     }
 
-    //private void Move()
-    //{
-    //    _moveDirection.Normalize();
-    //    _rigidbody.velocity = _moveDirection * _moveSpeed;
-    //    _moveDirection = Vector3.zero;
-    //}
-
-    //private void Rotate()
-    //{
-    //    var mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-    //    var playerToMouseDirection = mousePosition - transform.position;
-    //    var angle = Mathf.Atan2(playerToMouseDirection.x, playerToMouseDirection.z) * Mathf.Rad2Deg;
-
-    //    Quaternion targetRotation = Quaternion.Euler(0, angle, 0);
-    //    _rigidbody.MoveRotation(targetRotation);
-    //}
-
     private void Move()
     {
         _moveDirection.Normalize();
-        transform.position += _moveDirection * _moveSpeed * Time.deltaTime; // Multiply by Time.fixedDeltaTime for frame-independent movement.
+        transform.position += _moveDirection * _moveSpeed * Time.deltaTime;
         _moveDirection = Vector3.zero;
     }
 
