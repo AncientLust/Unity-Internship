@@ -126,7 +126,7 @@ public class Main : MonoBehaviour
         _throwGrenadeSkill.Init(_iAudioPlayer);
 
         _gameManager.Init(
-            _uiRoot, 
+            _uiRoot,    
             _sceneObjectBuilder, 
             _sceneLoader, 
             _enemySpawner, 

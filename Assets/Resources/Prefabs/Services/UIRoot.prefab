@@ -5986,7 +5986,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: War Zone
+  m_text: Forest
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: fd8f833d6987b7248827a5c48c521f5f, type: 2}
   m_sharedMaterial: {fileID: -416060171403804303, guid: fd8f833d6987b7248827a5c48c521f5f, type: 2}
@@ -11686,9 +11686,9 @@ MonoBehaviour:
   m_Value: 0
   m_Options:
     m_Options:
-    - m_Text: War Zone
-      m_Image: {fileID: 0}
     - m_Text: Forest
+      m_Image: {fileID: 0}
+    - m_Text: War Zone
       m_Image: {fileID: 0}
   m_OnValueChanged:
     m_PersistentCalls:
