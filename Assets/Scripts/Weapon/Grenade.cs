@@ -9,14 +9,14 @@ public class Grenade : MonoBehaviour
     private WaitForSeconds _detonationDelay = new WaitForSeconds(0.25f);
 
     private ObjectPool _objectPool;
-    private AudioPlayer _audioPlayer;
+    private IAudioPlayer _iAudioPlayer;
     private Rigidbody _rigidbody;
     private MeshCollider _meshCollider;
     private MeshRenderer _meshRenderer;
 
-    public void Init(ObjectPool objectPool, AudioPlayer audioPlayer)
+    public void Init(ObjectPool objectPool, IAudioPlayer iAudioPlayer)
     {
-        _audioPlayer = audioPlayer;
+        _iAudioPlayer = iAudioPlayer;
         _objectPool = objectPool;
     }
 
@@ -57,7 +57,7 @@ public class Grenade : MonoBehaviour
         _meshRenderer.enabled = false;
         _meshCollider.enabled = false;
 
-        _audioPlayer.PlaySound(ESound.Explosion);
+        _iAudioPlayer.PlaySound(ESound.Explosion);
         var explosion = _objectPool.Get(EResource.Explosion).GetComponent<Effect>();
         explosion.transform.position = transform.position;
         explosion.Play();

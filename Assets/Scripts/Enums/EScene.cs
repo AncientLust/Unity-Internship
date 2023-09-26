@@ -4,6 +4,6 @@ namespace Enums
     {
         Main,
         GameSession,
-        Environment
+        LevelEnvironment
     }
 }

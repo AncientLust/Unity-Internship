@@ -1,12 +1,13 @@
 using System.Collections;
 using UnityEngine;
 using Enums;
+using UnityEngine.AI;
 
 public class EnemySpawner : MonoBehaviour
 {
     private float _minRadius = 10f;
     private float _maxRadius = 20f;
-    private float _spawnRaduis = 360f;
+    private float _spawnAngle = 360f;
     private float _minEnemySpawnTime = 1;
     private float _maxEnemySpawnTime = 2;
     private int _minEnemiesToSpawn = 1;
@@ -23,13 +24,13 @@ public class EnemySpawner : MonoBehaviour
      
     public void Init
     (
-        Transform playerTransform, 
+        Transform targetTransform, 
         ObjectPool objectPool, 
         EnemyDisposalManager disposalManager, 
         LevelProgressManager levelProgressManager
     )
     {
-        _target = playerTransform;
+        _target = targetTransform;
         _objectPool = objectPool;
         _disposalManager = disposalManager;
         _levelProgressManager = levelProgressManager;
@@ -81,19 +82,18 @@ public class EnemySpawner : MonoBehaviour
             var enemy = _objectPool.Get(enemyType);
             if (enemy != null)
             {
-                var enemyDisposalSystem = enemy.GetComponent<EnemyDisposalSystem>();
-                _disposalManager.SubscribeEnemy(enemyDisposalSystem);
-                enemy.transform.position = GetEnemySpawnPosition();
+                var healthSystem = enemy.GetComponent<EnemyHealthSystem>();
+                _disposalManager.SubscribeEnemy(healthSystem);
                 enemy.GetComponent<IResetable>().ResetState();
                 enemy.GetComponent<EnemyExperienceSystem>().SetLevel(_enemyLevel);
+                enemy.GetComponent<EnemyMovementSystem>().SetPosition(GetEnemySpawnPosition());
             }
         }
     }
 
     private EResource GetRandomEnemyType()
     {
-        float randomValue = Random.value;
-        if (randomValue < _meleeEnemySpawnChance)
+        if (Random.value < _meleeEnemySpawnChance)
         {
             return EResource.EnemyMelee; 
         }
@@ -105,11 +105,19 @@ public class EnemySpawner : MonoBehaviour
 
     private Vector3 GetEnemySpawnPosition()
     {
-        var angle = Random.Range(0f, _spawnRaduis);
-        var theta = Mathf.Deg2Rad * angle;
-        var radius = Random.Range(_minRadius, _maxRadius);
-        var spawnVector = new Vector3(radius * Mathf.Cos(theta), 0, radius * Mathf.Sin(theta));
-
-        return spawnVector + _target.position;
+        while (true)
+        {
+            var angle = Random.Range(0f, _spawnAngle);
+            var theta = Mathf.Deg2Rad * angle;
+            var radius = Random.Range(_minRadius, _maxRadius);
+            var spawnVector = new Vector3(radius * Mathf.Cos(theta), 0, radius * Mathf.Sin(theta));
+            var spawnVectorRelativeToTarget = spawnVector + _target.position;
+            
+            NavMeshHit hit;
+            if (NavMesh.SamplePosition(spawnVectorRelativeToTarget, out hit, 1f, NavMesh.AllAreas))
+            {
+                return hit.position;
+            }
+        }
     }
 }

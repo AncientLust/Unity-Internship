@@ -13,7 +13,7 @@ public class GameManager
     private CameraController _cameraController;
     private PauseManager _pauseManager;
     private LevelProgressManager _levelProgressManager;
-    private AudioPlayer _audioPlayer;
+    private IAudioPlayer _iAudioPlayer;
     private EGameSession _eGameSession;
 
     public void Init(UIRoot uiRoot, 
@@ -25,7 +25,7 @@ public class GameManager
         CameraController cameraController,
         PauseManager pauseManager,
         LevelProgressManager levelProgressManager,
-        AudioPlayer audioPlayer)
+        IAudioPlayer iAudioPlayer)
     {
         _uiRoot = uiRoot;
         _sceneObjectLoader = sceneObjectLoader;
@@ -36,7 +36,7 @@ public class GameManager
         _cameraController = cameraController;
         _pauseManager = pauseManager;
         _levelProgressManager = levelProgressManager;
-        _audioPlayer = audioPlayer;
+        _iAudioPlayer = iAudioPlayer;
 
         Subscribe();
     }
@@ -86,7 +86,7 @@ public class GameManager
 
     private void PrepareGame(EGameSession eGameSession)
     {
-        _sceneController.LoadScene(EScene.Environment, LoadSceneMode.Additive);
+        _sceneController.LoadScene(EScene.LevelEnvironment, LoadSceneMode.Additive);
         _sceneController.LoadScene(EScene.GameSession, LoadSceneMode.Additive);
         _eGameSession = eGameSession;
     }
@@ -118,7 +118,7 @@ public class GameManager
         _iPlayerFacade.EnableForGameSession();
         _cameraController.MoveToPlayer();
         _levelProgressManager.ResetProgress();
-        _audioPlayer.PlayMusic(EMusic.Game);
+        _iAudioPlayer.PlayMusic(EMusic.Game);
     }
 
     private void PauseGame()
@@ -140,9 +140,9 @@ public class GameManager
         _pauseManager.ResumeGame();
         _enemySpawner.StopSpawn();
         _uiRoot.SetUI(EUI.Menu);
-        _sceneController.UnloadScene(EScene.Environment);
+        _sceneController.UnloadScene(EScene.LevelEnvironment);
         _sceneController.UnloadScene(EScene.GameSession);
-        _audioPlayer.PlayMusic(EMusic.Lobby);
+        _iAudioPlayer.PlayMusic(EMusic.Lobby);
     }
 
     private void LoadGameFromMenu()
@@ -154,7 +154,7 @@ public class GameManager
         _iPlayerFacade.EnableForGameSession();
         _iPlayerFacade.LoadState();
         _cameraController.MoveToPlayer();
-        _audioPlayer.PlayMusic(EMusic.Game);
+        _iAudioPlayer.PlayMusic(EMusic.Game);
     }
 
     private void LoadGameFromPause()
@@ -169,7 +169,7 @@ public class GameManager
         _uiRoot.SetUI(EUI.HUD);
         _cameraController.MoveToPlayer();
         _pauseManager.ResumeGame();
-        _audioPlayer.PlayMusic(EMusic.Game);
+        _iAudioPlayer.PlayMusic(EMusic.Game);
     }
 
     private void SaveGame()
@@ -190,34 +190,37 @@ public class GameManager
         _levelProgressManager.ResetProgress();
         _cameraController.MoveToPlayer();
         _pauseManager.ResumeGame();
-        _audioPlayer.PlayMusic(EMusic.Game);
+        _iAudioPlayer.PlayMusic(EMusic.Game);
     }
 
     private void GameOver()
     {
         _uiRoot.SetUI(EUI.GameOver);
         _pauseManager.PauseGame();
-        _audioPlayer.FadeOutMusic();
+        _iAudioPlayer.FadeOutMusic();
     }
 
     private void LevelCompleted()
     {
+        _iPlayerFacade.SetInputHandling(false);
         _pauseManager.PauseGame();
         _uiRoot.SetUI(EUI.LevelCompleted);
-        _audioPlayer.PlaySound(ESound.LevelComplete);
-        _audioPlayer.FadeOutMusic();
+        _iAudioPlayer.PlaySound(ESound.LevelComplete);
+        _iAudioPlayer.FadeOutMusic();
     }
 
     private void StartNextLevel()
     {
+        _iPlayerFacade.SetInputHandling(true);
         _pauseManager.ResumeGame();
         _enemySpawner.StopSpawn();
         _sceneController.CleanScene(EScene.GameSession);
         _objectPool.Reset();
         _enemySpawner.StartSpawn();
+        _iPlayerFacade.PrepareForNextLevel();
         _cameraController.MoveToPlayer();
         _uiRoot.SetUI(EUI.HUD);
-        _audioPlayer.PlayMusic(EMusic.Game);
+        _iAudioPlayer.PlayMusic(EMusic.Game);
     }
 
     private void QuitGame()

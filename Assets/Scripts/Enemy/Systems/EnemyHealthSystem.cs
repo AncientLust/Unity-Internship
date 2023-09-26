@@ -20,7 +20,8 @@ public class EnemyHealthSystem : MonoBehaviour
 
     public event Action onDamaged;
     public event Action onDie;
-    
+    public Action<GameObject> onDisposal;
+
     public void Init(EnemyStatsSystem statsSystem, IAudioPlayer iAudioPlayer)
     {
         _statsSystem = statsSystem;
@@ -84,6 +85,7 @@ public class EnemyHealthSystem : MonoBehaviour
             _isDead = true;
             _iAudioPlayer.PlaySound(ESound.EnemyDeath);
             onDie.Invoke();
+            onDisposal.Invoke(gameObject);
         }
     }
 

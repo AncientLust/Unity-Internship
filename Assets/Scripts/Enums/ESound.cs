@@ -14,6 +14,7 @@ namespace Enums
         Shotgun,
         MachineGun,
         Sniper,
-        RocketLauncher
+        RocketLauncher,
+        Pickup
     }
 }

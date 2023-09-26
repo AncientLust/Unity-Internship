@@ -7,7 +7,7 @@ public class GrenadeFactory : IObjectFactory
 {
     private readonly Dictionary<EResource, GameObject> _prefabDict = new();
     private ObjectPool _objectPool;
-    private AudioPlayer _audioPlayer;
+    private IAudioPlayer _iAudioPlayer;
 
     public GrenadeFactory()
     {
@@ -24,17 +24,17 @@ public class GrenadeFactory : IObjectFactory
         }
     }
 
-    public void Init(ObjectPool objectPool, AudioPlayer audioPlayer)
+    public void Init(ObjectPool objectPool, IAudioPlayer iAudioPlayer)
     {
         _objectPool = objectPool;
-        _audioPlayer = audioPlayer;
+        _iAudioPlayer = iAudioPlayer;
     }
 
     public GameObject Instantiate(EResource resource)
     {
         var effectObj = UnityEngine.Object.Instantiate(_prefabDict[resource]);
         var grenade = effectObj.GetComponent<Grenade>();
-        grenade.Init(_objectPool, _audioPlayer);
+        grenade.Init(_objectPool, _iAudioPlayer);
         return effectObj;
     }
 }

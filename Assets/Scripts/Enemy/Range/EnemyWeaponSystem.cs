@@ -2,26 +2,34 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Structs;
+using UnityEngine.AI;
 
 public class EnemyWeaponSystem : MonoBehaviour
 {
-    private float _firstShootDelay = 3;
-    private float _shootRepeatTime = 3;
-    private EnemyStatsSystem _statsSystem;
-    private ObjectPool _objectPool;
-    private EnemyHealthSystem _healthSystem;
+    private float _firstShootDelay = 2;
+    private float _shootRepeatTime = 2f;
     private List<Weapon> _weapons;
     private Weapon _currentWeapon;
     private Queue<Coroutine> _reloadCoroutines = new Queue<Coroutine>();
     private IAudioPlayer _iAudioPlayer;
     private bool _isInitializated = false;
+    private EnemyStatsSystem _statsSystem;
+    private ObjectPool _objectPool;
+    private EnemyHealthSystem _healthSystem;
+    private NavMeshAgent _navMeshAgent;
     
-    public void Init(EnemyStatsSystem statsSystem, ObjectPool objectPool, EnemyHealthSystem healthSystem, IAudioPlayer iAudioPlayer)
+    public void Init(
+        EnemyStatsSystem statsSystem, 
+        ObjectPool objectPool, 
+        EnemyHealthSystem healthSystem, 
+        IAudioPlayer iAudioPlayer,
+        NavMeshAgent navMeshAgent)
     {
         _statsSystem = statsSystem;
         _objectPool = objectPool;
         _healthSystem = healthSystem;
         _iAudioPlayer = iAudioPlayer;
+        _navMeshAgent = navMeshAgent;
         _isInitializated = true;
         
         CacheComponents();
@@ -83,17 +91,22 @@ public class EnemyWeaponSystem : MonoBehaviour
 
     private void ShootHandler()
     {
-        if (!_currentWeapon.HasEmptyClip() &&
-            !_currentWeapon.IsInDowntime() &&
-            !_currentWeapon.InReloading)
-        {
-            _currentWeapon.Shoot();
-            _iAudioPlayer.PlaySound(_currentWeapon.ShootSound);
-        }
-        else
+        if (_currentWeapon.HasEmptyClip())
         {
             ReloadHandler();
+            return;
         }
+
+        if (OnShootDistance())
+        {
+            _currentWeapon.Shoot(); 
+            _iAudioPlayer.PlaySound(_currentWeapon.ShootSound);
+        }
+    }
+
+    private bool OnShootDistance()
+    {
+        return _navMeshAgent.remainingDistance <= _navMeshAgent.stoppingDistance;
     }
 
     private void ReloadHandler()
@@ -140,7 +153,7 @@ public class EnemyWeaponSystem : MonoBehaviour
     {
         foreach (var weapon in _weapons)
         {
-            weapon.Init(_objectPool);
+            weapon.Init(_objectPool);  
         }
     }
 

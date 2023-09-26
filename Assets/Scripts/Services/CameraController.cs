@@ -11,7 +11,7 @@ public class CameraController : MonoBehaviour
         _playerTransform = playerTarget;
     }
 
-    private void FixedUpdate()
+    private void LateUpdate()
     {
         FollowPlayer();
     }
@@ -21,7 +21,7 @@ public class CameraController : MonoBehaviour
         if (_playerTransform != null)
         {
             var targetPosition = _playerTransform.position + _startOffset;
-            transform.position = Vector3.Lerp(transform.position, targetPosition, smoothSpeed * Time.fixedDeltaTime);
+            transform.position = Vector3.Lerp(transform.position, targetPosition, smoothSpeed * Time.deltaTime);
         }
     }
 

@@ -35,7 +35,7 @@ public class Player : MonoBehaviour
         skillSystem.Init(inputSystem, skills);
         effectsSystem.Init(healthSystem, experienceSystem, bonusRegenerationSkill, bonusDamageSkill, gameSettings);
         throwSystem.Init(objectPool, throwGrenadeSkill);
-        animationSystem.Init(rigidBody, healthSystem);
+        animationSystem.Init(healthSystem);
         inputSystem.Init(healthSystem);
 
         playerFacade.Init(

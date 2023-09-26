@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.AI;
 
 public class RangeEnemy : MonoBehaviour
 {
@@ -11,15 +12,15 @@ public class RangeEnemy : MonoBehaviour
     private EnemyFacade _enemyFacade;
     private EnemyEffectsSystem _effectSystem;
     private EnemyWeaponSystem _weaponSystem;
-    private EnemyDisposalSystem _enemyDisposalSystem;
     private EnemyAnimationSystem _animationSystem;
-
-    private float _followPlayerDistance = 5f;
+    private EnemyDropSystem _dropSystem;
+    private NavMeshAgent _navMeshAgent;
 
     private void Awake()
     {
         _rigidBody = gameObject.GetComponent<Rigidbody>();
         _collider = gameObject.GetComponent<CapsuleCollider>();
+        _navMeshAgent = GetComponent<NavMeshAgent>();
         _experienceSystem = gameObject.AddComponent<EnemyExperienceSystem>();
         _statsSystem = gameObject.AddComponent<EnemyStatsSystem>();
         _movementSystem = gameObject.AddComponent<EnemyMovementSystem>();
@@ -27,19 +28,19 @@ public class RangeEnemy : MonoBehaviour
         _enemyFacade = gameObject.AddComponent<EnemyFacade>();
         _effectSystem = gameObject.AddComponent<EnemyEffectsSystem>();
         _weaponSystem = gameObject.AddComponent<EnemyWeaponSystem>();
-        _enemyDisposalSystem = gameObject.AddComponent<EnemyDisposalSystem>();
         _animationSystem = gameObject.AddComponent<EnemyAnimationSystem>();
+        _dropSystem = gameObject.AddComponent<EnemyDropSystem>();
     }
 
     public void Init(IAudioPlayer iAudioPlayer, ObjectPool objectPool, Transform target, GameSettings gameSettings)
     {
         _statsSystem.Init(_experienceSystem);
-        _movementSystem.Init(target, _rigidBody, _collider, _statsSystem, _healthSystem, _followPlayerDistance);
+        _movementSystem.Init(target, _rigidBody, _collider, _statsSystem, _healthSystem, _navMeshAgent);
         _healthSystem.Init(_statsSystem, iAudioPlayer);
         _effectSystem.Init(_healthSystem, gameSettings);
-        _weaponSystem.Init(_statsSystem, objectPool, _healthSystem, iAudioPlayer);
-        _enemyDisposalSystem.Init(_healthSystem);
+        _weaponSystem.Init(_statsSystem, objectPool, _healthSystem, iAudioPlayer, _navMeshAgent);
         _animationSystem.Init(_healthSystem);
+        _dropSystem.Init(objectPool, _healthSystem);
 
         _enemyFacade.Init(
             _experienceSystem,

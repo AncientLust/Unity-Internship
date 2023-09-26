@@ -2,24 +2,41 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Enums;
+using Structs;
 
 public class ObjectPool
 {
     private Dictionary<EResource, Queue<GameObject>> _resourcePoolMap;
     private Dictionary<EResource, IObjectFactory> _resourceFactoryMap;
 
-    public void Init(ProjectileFactory projectileFactory, EnemyFactory enemyFactory, EffectFactory effectFactory, GrenadeFactory _grenadeFactory)
+    public void Init(FactoryGroup factoryGroup)
+    {
+        CreateResourceFactoryMap(factoryGroup);
+        CreateResourcePoolMap();
+    }
+
+    private void CreateResourceFactoryMap(FactoryGroup factoryGroup)
+    {
+        _resourceFactoryMap = new Dictionary<EResource, IObjectFactory>(){
+            { EResource.Bullet, factoryGroup.projectileFactory },
+            { EResource.Rocket, factoryGroup.projectileFactory },
+            { EResource.Grenade, factoryGroup.grenadeFactory },
+            { EResource.EnemyMelee, factoryGroup.enemyFactory },
+            { EResource.EnemyRange, factoryGroup.enemyFactory },
+            { EResource.Explosion, factoryGroup.effectFactory },
+            { EResource.FirstAidKit, factoryGroup.pickupFactory },
+            { EResource.SlowMotion, factoryGroup.pickupFactory },
+            { EResource.SpeedUp, factoryGroup.pickupFactory }
+        };
+    }
+
+    private void CreateResourcePoolMap()
     {
         _resourcePoolMap = new Dictionary<EResource, Queue<GameObject>>();
-        _resourceFactoryMap = new Dictionary<EResource, IObjectFactory>()
+        foreach (KeyValuePair<EResource, IObjectFactory> entry in _resourceFactoryMap)
         {
-            { EResource.Bullet, projectileFactory },
-            { EResource.Rocket, projectileFactory },
-            { EResource.Grenade, _grenadeFactory },
-            { EResource.EnemyMelee, enemyFactory },
-            { EResource.EnemyRange, enemyFactory },
-            { EResource.Explosion, effectFactory }
-        };
+            _resourcePoolMap[entry.Key] = new Queue<GameObject>();
+        }
     }
 
     public GameObject Get(EResource resource)
@@ -40,24 +57,24 @@ public class ObjectPool
 
     public void Return(GameObject obj)
     {
-        if (Enum.TryParse(obj.tag, out EResource resource))
+        var pooledResource = obj.GetComponent<PooledResource>();
+        if (pooledResource != null)
         {
-            if (!_resourcePoolMap.ContainsKey(resource))
-            {
-                _resourcePoolMap[resource] = new Queue<GameObject>();
-            }
-
+            var resource = pooledResource.type;
             obj.SetActive(false);
             _resourcePoolMap[resource].Enqueue(obj);
         }
         else
         {
-            Debug.LogError("Invalid object type: " + obj.tag);
+            Debug.LogError("Returned game object doesn't have PooledResource component attached");
         }
     }
 
     public void Reset()
     {
-        _resourcePoolMap = new Dictionary<EResource, Queue<GameObject>>();
+        foreach (var keyValuePair in _resourcePoolMap)
+        {
+            keyValuePair.Value.Clear();
+        }
     }
 }

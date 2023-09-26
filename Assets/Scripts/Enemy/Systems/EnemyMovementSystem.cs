@@ -1,19 +1,17 @@
 using UnityEngine;
 using Structs;
+using UnityEngine.AI;
 
 public class EnemyMovementSystem : MonoBehaviour
 {
-    private float _followPlayerDistance;
-    private float _slowDownDistance;
-    private float _slowDownDistanceMultiplicator = 1.25f;
-    private float _baseMoveSpeed = 6f;
-    private float _moveSpeed;
+    private float _baseMoveSpeed = 3.5f;
     private bool _isInitialized;
     private bool _isEnabled;
     private Rigidbody _rigidbody;
     private CapsuleCollider _collider;
     private EnemyStatsSystem _statsSystem;
     private EnemyHealthSystem _healthSystem;
+    private NavMeshAgent _navMeshAgent;
     private Transform _target;
 
     public void Init
@@ -23,7 +21,7 @@ public class EnemyMovementSystem : MonoBehaviour
         CapsuleCollider collider,
         EnemyStatsSystem enemyStatsSystem,
         EnemyHealthSystem healthSystem,
-        float followPlayerDistance
+        NavMeshAgent navMeshAgent
     )
     {
         _target = target;
@@ -31,12 +29,13 @@ public class EnemyMovementSystem : MonoBehaviour
         _collider = collider;
         _statsSystem = enemyStatsSystem;
         _healthSystem = healthSystem;
-        
-        _moveSpeed = _baseMoveSpeed;
-        _followPlayerDistance = followPlayerDistance;
-        _slowDownDistance = _followPlayerDistance * _slowDownDistanceMultiplicator;
+        _navMeshAgent = navMeshAgent;
+
+        _navMeshAgent.speed = _baseMoveSpeed;
         _isInitialized = true;
         _isEnabled = true;
+
+        StartMoving();
         Subscribe();
     }
 
@@ -44,6 +43,7 @@ public class EnemyMovementSystem : MonoBehaviour
     {
         if (_isInitialized)
         {
+            ResetMoveSpeed();
             StartMoving();
             Subscribe();
         }
@@ -66,53 +66,48 @@ public class EnemyMovementSystem : MonoBehaviour
         _healthSystem.onDie -= StopMoving;
     }
 
-    private void FixedUpdate()
+    private void Update()
     {
-        ActPhisically();
+        SetDestination();
+        LookAtTarget();
     }
-
-    private void ActPhisically()
+     
+    private void SetDestination()
     {
-        if (_isInitialized && _isEnabled)
+        if (_isEnabled)
         {
-            MoveToPlayer();
-            RotateToPlayer();
-        }
-    }
-
-    private void MoveToPlayer()
-    {
-        var distanceToPlayer = Vector3.Distance(transform.position, _target.position);
-        var direction = (_target.position - transform.position).normalized;
-
-        if (distanceToPlayer > _slowDownDistance)
-        {
-            _rigidbody.velocity = direction * _moveSpeed;
-        }
-        else if (distanceToPlayer > _followPlayerDistance)
-        {
-            float slowdownFactor = (distanceToPlayer - _followPlayerDistance) / (_slowDownDistance - _followPlayerDistance);
-            _rigidbody.velocity = direction * _moveSpeed * slowdownFactor;
-        }
-        else
-        {
-            _rigidbody.velocity = Vector3.zero;
+            _navMeshAgent.SetDestination(_target.position);
         }
     }
 
-    private void RotateToPlayer()
+    public void SetPosition(Vector3 position)
     {
-        Vector3 directionToTarget = (_target.position - _rigidbody.position).normalized;
+        _navMeshAgent.enabled = false;
+        transform.position = position;
+        _navMeshAgent.enabled = true;
+    }
+
+    private void LookAtTarget()
+    {
+        if (!_isEnabled || _navMeshAgent.remainingDistance >= _navMeshAgent.stoppingDistance)
+            return;
+
+        Vector3 directionToTarget = (_target.position - transform.position).normalized;
         if (directionToTarget != Vector3.zero)
         {
             Quaternion targetRotation = Quaternion.LookRotation(directionToTarget);
-            _rigidbody.MoveRotation(targetRotation);
+            transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, _navMeshAgent.angularSpeed * Time.deltaTime);
         }
     }
 
     private void ApplyLevelUpMultipliers(SEnemyStatsMultipliers multipliers)
     {
-        _moveSpeed = _baseMoveSpeed * multipliers.moveSpeed;
+        _navMeshAgent.speed = _baseMoveSpeed * multipliers.moveSpeed;
+    }
+
+    private void ResetMoveSpeed()
+    {
+        _navMeshAgent.speed = _baseMoveSpeed;
     }
 
     public void Push(Vector3 force)
@@ -125,6 +120,7 @@ public class EnemyMovementSystem : MonoBehaviour
         if (_isInitialized)
         {
             _isEnabled = true;
+            _navMeshAgent.enabled = true;
             _rigidbody.isKinematic = false;
             _collider.enabled = true;
         }
@@ -133,6 +129,7 @@ public class EnemyMovementSystem : MonoBehaviour
     private void StopMoving()
     {
         _isEnabled = false;
+        _navMeshAgent.enabled = false;
         _rigidbody.isKinematic = true;
         _collider.enabled = false;
     }

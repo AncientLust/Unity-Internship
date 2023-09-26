@@ -7,7 +7,7 @@ public class ProjectileFactory : IObjectFactory
 {
     private readonly Dictionary<EResource, GameObject> _prefabDict = new();
     private ObjectPool _objectPool;
-    private AudioPlayer _audioPlayer;
+    private IAudioPlayer _iAudioPlayer;
 
     public ProjectileFactory()
     {
@@ -24,17 +24,17 @@ public class ProjectileFactory : IObjectFactory
         }
     }
 
-    public void Init(ObjectPool objectPool, AudioPlayer audioPlayer)
+    public void Init(ObjectPool objectPool, IAudioPlayer iAudioPlayer)
     {
         _objectPool = objectPool;
-        _audioPlayer = audioPlayer;
+        _iAudioPlayer = iAudioPlayer;
     }
 
     public GameObject Instantiate(EResource resource)
     {
         var projectileObj = UnityEngine.Object.Instantiate(_prefabDict[resource]);
         var projectile = projectileObj.GetComponent<Projectile>();
-        projectile.Init(_objectPool, _audioPlayer);
+        projectile.Init(_objectPool, _iAudioPlayer);
         return projectileObj;
     }
 }

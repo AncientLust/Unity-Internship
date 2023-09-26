@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.AI;
 
 public class MeleeEnemy : MonoBehaviour
 {
@@ -11,15 +12,15 @@ public class MeleeEnemy : MonoBehaviour
     private EnemyHealthSystem _healthSystem;
     private EnemyFacade _enemyFacade;
     private EnemyEffectsSystem _effectSystem;
-    private EnemyDisposalSystem _enemyDisposalSystem;
     private EnemyAnimationSystem _animationSystem;
-
-    private float _followPlayerDistance = 0.75f;
+    private EnemyDropSystem _dropSystem;
+    private NavMeshAgent _navMeshAgent;
 
     private void Awake()
     {
         _rigidBody = gameObject.GetComponent<Rigidbody>();
         _collider = gameObject.GetComponent<CapsuleCollider>();
+        _navMeshAgent = GetComponent<NavMeshAgent>();
         _experienceSystem = gameObject.AddComponent<EnemyExperienceSystem>();
         _statsSystem = gameObject.AddComponent<EnemyStatsSystem>();
         _attackSystem = gameObject.AddComponent<MeleeEnemyAttackSystem>();
@@ -27,19 +28,19 @@ public class MeleeEnemy : MonoBehaviour
         _healthSystem = gameObject.AddComponent<EnemyHealthSystem>();
         _enemyFacade = gameObject.AddComponent<EnemyFacade>();
         _effectSystem = gameObject.AddComponent<EnemyEffectsSystem>();
-        _enemyDisposalSystem = gameObject.AddComponent<EnemyDisposalSystem>();
         _animationSystem = gameObject.AddComponent<EnemyAnimationSystem>();
+        _dropSystem = gameObject.AddComponent<EnemyDropSystem>();
     }
 
-    public void Init(IAudioPlayer iAudioPlayer, Transform target, GameSettings gameSettings)
+    public void Init(IAudioPlayer iAudioPlayer, Transform target, GameSettings gameSettings, ObjectPool objectPool)
     {
         _statsSystem.Init(_experienceSystem);
-        _movementSystem.Init(target, _rigidBody, _collider, _statsSystem, _healthSystem, _followPlayerDistance);
+        _movementSystem.Init(target, _rigidBody, _collider, _statsSystem, _healthSystem, _navMeshAgent);
         _healthSystem.Init(_statsSystem, iAudioPlayer);
         _attackSystem.Init(_statsSystem);
         _effectSystem.Init(_healthSystem, gameSettings);
-        _enemyDisposalSystem.Init(_healthSystem);
         _animationSystem.Init(_healthSystem);
+        _dropSystem.Init(objectPool, _healthSystem);
 
         _enemyFacade.Init(
             _experienceSystem,

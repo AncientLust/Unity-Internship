@@ -17,35 +17,9 @@ public class Rocket : Projectile
         }
     }
 
-    override protected void TryApplyDamage(Collider collider)
-    {
-        var damagable = collider.gameObject.GetComponent<IDamageable>();
-        if (damagable != null)
-        {
-            damagable.TakeDamage(_damage);
-        }
-    }
-
-    override protected void TryApplyPush(Collider collider)
-    {
-        var pushiable = collider.gameObject.GetComponent<IPushiable>();
-        if (pushiable != null)
-        {
-            pushiable.Push(transform.forward * _pushPower);
-        }
-    }
-
-    override protected void PenetrationCheck()
-    {
-        if (!IsPenetratiable)
-        {
-            _objectPool.Return(gameObject);
-        }
-    }
-
     private void Exlode()
     {
-        _audioPlayer.PlaySound(ESound.Explosion);
+        _iAudioPlayer.PlaySound(ESound.Explosion);
         var explosion = _objectPool.Get(EResource.Explosion).GetComponent<Effect>();
         explosion.transform.position = _explosionPoint.position;
         explosion.Play();

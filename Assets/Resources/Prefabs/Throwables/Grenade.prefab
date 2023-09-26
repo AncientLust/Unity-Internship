@@ -14,9 +14,10 @@ GameObject:
   - component: {fileID: 64553691687714530}
   - component: {fileID: 1893787554307569729}
   - component: {fileID: 1193621428731314442}
+  - component: {fileID: -8260011940493511483}
   m_Layer: 0
   m_Name: Grenade
-  m_TagString: Grenade
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -123,7 +124,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1f40a5522869ad247b13dc87e388c525, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _explosionEffect: {fileID: 2901978092642907705}
 --- !u!54 &1193621428731314442
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -151,6 +151,19 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &-8260011940493511483
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1000582683020524}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0ee65bca8f0c5c1458ddb2516430e794, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  type: 12
 --- !u!1 &1227266571915306
 GameObject:
   m_ObjectHideFlags: 0
@@ -374,11 +387,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b900abbc697045845bf37dd082832bbb, type: 3}
---- !u!198 &2901978092642907705 stripped
-ParticleSystem:
-  m_CorrespondingSourceObject: {fileID: 7748291554984417525, guid: b900abbc697045845bf37dd082832bbb, type: 3}
-  m_PrefabInstance: {fileID: 4882627325230018252}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &3092733710086482569 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7577600228344710213, guid: b900abbc697045845bf37dd082832bbb, type: 3}

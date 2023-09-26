@@ -7,7 +7,7 @@ namespace Enums
         GameManager,
         DirectionalLight,
         EventSystem,
-        Environment,
+        WarZone,
         EnemySpawner,
         Player,
         EnemyMelee,
@@ -16,6 +16,10 @@ namespace Enums
         Rocket,
         Grenade,
         Explosion,
-        BloodSplat
+        BloodSplat,
+        FirstAidKit,
+        SlowMotion,
+        SpeedUp,
+        Forest
     }
 }
